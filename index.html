@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url=frontend/dashboard.html">
+  <title>PCOS Smart Assistant - Redirecting...</title>
+  <link rel="icon" href="frontend/assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="frontend/manifest.json">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: white;
+    }
+    .redirect-container {
+      text-align: center;
+      padding: 2rem;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    a {
+      color: white;
+      text-decoration: underline;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+    a:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="redirect-container">
+    <div class="spinner"></div>
+    <h1>🏥 PCOS Smart Assistant</h1>
+    <p>Redirecting to dashboard...</p>
+    <p style="margin-top: 2rem; font-size: 0.875rem;">
+      If you are not redirected, <a href="frontend/dashboard.html">click here</a>.
+    </p>
+  </div>
+  
+  <script>
+    // Immediate redirect as backup to meta refresh
+    window.location.href = 'frontend/dashboard.html';
+  </script>
+</body>
+</html>

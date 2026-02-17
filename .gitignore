@@ -1,0 +1,43 @@
+# Environment variables (DO NOT COMMIT)
+.env
+.env.local
+.env.production
+
+# API Keys and Secrets
+config.js
+secrets.js
+
+# Node modules
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Local database
+*.db
+*.sqlite
+
+# Temporary files
+*.tmp
+.cache/

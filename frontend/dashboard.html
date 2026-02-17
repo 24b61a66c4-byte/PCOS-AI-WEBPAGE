@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Smart Assistant — Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/gh/darkroomengineering/lenis@latest/bundled/lenis.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">🏥 PCOS Smart Assistant</div>
+            <div class="nav-actions">
+                <ul class="nav-menu">
+                    <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+                </ul>
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+                    <span class="theme-icon"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <main class="container dashboard">
+        <section class="dashboard-hero reveal">
+            <div class="dashboard-hero-text">
+                <p class="eyebrow">PCOS Smart Assistant</p>
+                <div class="hero-row">
+                    <h1 class="hero-title">Welcome back</h1>
+                    <a href="#" class="assistant-pill">AI Assistant</a>
+                </div>
+                <p class="hero-subtitle">A calm, private space to capture your cycle and symptom notes. Add details once, then review insights here.</p>
+            </div>
+        </section>
+
+        <section class="today-stack">
+            <div class="stack-card large reveal delay-1">
+                <div class="stack-header">
+                    <h2>Latest Entry</h2>
+                    <span class="stack-meta" id="latest-timestamp">No entries yet</span>
+                </div>
+                <div class="latest-grid">
+                    <div>
+                        <p class="label">Last period</p>
+                        <p class="value" id="latest-last-period">—</p>
+                    </div>
+                    <div>
+                        <p class="label">Cycle length</p>
+                        <p class="value" id="latest-cycle">—</p>
+                    </div>
+                    <div>
+                        <p class="label">Period length</p>
+                        <p class="value" id="latest-period">—</p>
+                    </div>
+                    <div>
+                        <p class="label">Symptoms</p>
+                        <p class="value" id="latest-symptoms">—</p>
+                    </div>
+                </div>
+                <p class="muted" id="latest-summary">Add your first details to unlock insights.</p>
+            </div>
+
+            <div class="stack-column">
+                <div class="stack-card reveal delay-2">
+                    <h3>Quick Check</h3>
+                    <p class="muted">Track cycle length, period length, and symptoms in under two minutes.</p>
+                </div>
+                <div class="stack-card reveal delay-3">
+                    <h3>Privacy</h3>
+                    <p class="muted">Your data stays on this device and never leaves your browser.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="insights-strip reveal delay-2">
+            <div class="insight-pill">
+                <p class="label">Average cycle</p>
+                <p class="value" id="insight-cycle">—</p>
+            </div>
+            <div class="insight-pill">
+                <p class="label">Average period</p>
+                <p class="value" id="insight-period">—</p>
+            </div>
+            <div class="insight-pill">
+                <p class="label">Symptoms tracked</p>
+                <p class="value" id="insight-symptoms">—</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 PCOS Smart Assistant. Empowering health decisions.</p>
+    </footer>
+
+    <div class="action-bar">
+        <a href="form.html" class="btn btn-primary btn-lg cta-pulse">Add Details</a>
+        <div class="export-buttons">
+            <button class="btn btn-secondary" id="exportJSON" type="button">Download JSON</button>
+            <button class="btn btn-secondary" id="exportCSV" type="button">Download CSV</button>
+        </div>
+    </div>
+
+    <div class="assistant-panel" id="assistantPanel" aria-hidden="true">
+        <div class="assistant-card">
+            <div class="assistant-header">
+                <h2>AI Health Insights</h2>
+                <button class="assistant-close" id="assistantClose" type="button">Close</button>
+            </div>
+            <div class="assistant-body">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message assistant-msg">
+                        <p>👋 Hi! I'm your AI health assistant. I can analyze your PCOS data and provide personalized insights.</p>
+                        <p>Ask me about:</p>
+                        <ul>
+                            <li>Your cycle patterns and trends</li>
+                            <li>Symptom analysis</li>
+                            <li>Lifestyle recommendations</li>
+                            <li>What your data suggests</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                    <button class="btn btn-secondary" id="uploadBtn" type="button" title="Upload image">📷</button>
+                    <textarea id="chatInput" placeholder="Ask me anything or upload a photo..." rows="2"></textarea>
+                    <button class="btn btn-primary" id="chatSend" type="button">Send</button>
+                </div>
+                <div id="imagePreview" class="image-preview" style="display: none;">
+                    <img id="previewImg" alt="Preview">
+                    <button class="remove-image" id="removeImage" type="button">×</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

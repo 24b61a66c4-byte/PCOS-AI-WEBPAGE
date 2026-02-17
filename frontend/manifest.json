@@ -1,0 +1,15 @@
+{
+  "name": "PCOS Smart Assistant",
+  "short_name": "PCOS Assistant",
+  "start_url": "dashboard.html",
+  "display": "standalone",
+  "background_color": "#0a0f14",
+  "theme_color": "#0a0f14",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    }
+  ]
+}
