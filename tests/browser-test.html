@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Smart Assistant - Browser Tests</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        
+        .test-pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .test-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .summary {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .summary.all-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .summary.some-fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .progress {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: #007bff;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        #test-output {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .test-details {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 PCOS Smart Assistant - Browser Tests</h1>
+    
+    <div class="progress">
+        <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+    </div>
+    
+    <div class="test-container">
+        <h2>Test Controls</h2>
+        <button id="runAllBtn">Run All Tests</button>
+        <button id="runFormTests">Form Tests</button>
+        <button id="runValidationTests">Validation Tests</button>
+        <button id="runInsightTests">Insight Tests</button>
+        <button id="clearResultsBtn">Clear Results</button>
+    </div>
+    
+    <div id="test-output"></div>
+    
+    <div class="summary" id="summary"></div>
+
+    <script>
+        // Test Framework
+        const TestRunner = {
+            results: [],
+            passed: 0,
+            failed: 0,
+            pending: 0,
+            
+            reset() {
+                this.results = [];
+                this.passed = 0;
+                this.failed = 0;
+                this.pending = 0;
+                document.getElementById('test-output').innerHTML = '';
+                document.getElementById('summary').innerHTML = '';
+                document.getElementById('summary').className = 'summary';
+            },
+            
+            assert(condition, message) {
+                if (condition) {
+                    this.pass(message);
+                } else {
+                    this.fail(message);
+                }
+            },
+            
+            pass(message) {
+                this.passed++;
+                this.results.push({ status: 'pass', message });
+                this.renderResult('pass', message);
+            },
+            
+            fail(message) {
+                this.failed++;
+                this.results.push({ status: 'fail', message });
+                this.renderResult('fail', message);
+            },
+            
+            pending(message) {
+                this.pending++;
+                this.results.push({ status: 'pending', message });
+                this.renderResult('pending', message);
+            },
+            
+            renderResult(status, message) {
+                const output = document.getElementById('test-output');
+                const div = document.createElement('div');
+                div.className = `test-result test-${status}`;
+                div.innerHTML = `<strong>${status.toUpperCase()}:</strong> ${message}`;
+                output.appendChild(div);
+            },
+            
+            updateSummary() {
+                const summary = document.getElementById('summary');
+                const total = this.passed + this.failed + this.pending;
+                const percentage = total > 0 ? Math.round((this.passed / total) * 100) : 0;
+                
+                summary.innerHTML = `
+                    Total: ${total} | 
+                    Passed: ${this.passed} | 
+                    Failed: ${this.failed} | 
+                    Pending: ${this.pending} |
+                    Success Rate: ${percentage}%
+                `;
+                
+                if (this.failed > 0) {
+                    summary.className = 'summary some-fail';
+                } else if (this.passed > 0) {
+                    summary.className = 'summary all-pass';
+                }
+                
+                // Update progress bar
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.width = `${percentage}%`;
+                progressBar.textContent = `${percentage}%`;
+            }
+        };
+
+        // Test Suites
+        const FormTests = {
+            async run() {
+                TestRunner.pending('Testing form page loading...');
+                
+                // Test 1: Form page exists
+                const formExists = !!document.getElementById('pcos-form');
+                TestRunner.assert(formExists, 'Form element exists');
+                
+                // Test 2: Step indicators exist
+                const stepIndicators = document.querySelectorAll('.step-indicator');
+                TestRunner.assert(stepIndicators.length === 6, `Step indicators count: ${stepIndicators.length} (expected 6)`);
+                
+                // Test 3: First step is active
+                const firstStep = document.querySelector('.form-step[data-step="1"]');
+                TestRunner.assert(firstStep && firstStep.classList.contains('active'), 'First step is active');
+                
+                // Test 4: Progress bar exists
+                const progressFill = document.getElementById('progressFill');
+                TestRunner.assert(!!progressFill, 'Progress bar exists');
+                
+                // Test 5: Navigation buttons exist
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                TestRunner.assert(prevBtn && nextBtn, 'Navigation buttons exist');
+                
+                // Test 6: Previous button is hidden on step 1
+                TestRunner.assert(prevBtn && prevBtn.style.display === 'none', 'Previous button hidden on step 1');
+                
+                // Test 7: Theme toggle exists
+                const themeToggle = document.getElementById('themeToggle');
+                TestRunner.assert(!!themeToggle, 'Theme toggle exists');
+                
+                // Test 8: Language selector exists
+                const langSelect = document.getElementById('insightLanguage');
+                TestRunner.assert(!!langSelect, 'Language selector exists');
+                
+                // Test 9: PCOS Insight panel exists
+                const insightPanel = document.getElementById('pcosInsight');
+                TestRunner.assert(!!insightPanel, 'PCOS Insight panel exists');
+                
+                // Test 10: Care suggestions panel exists
+                const suggestionsPanel = document.getElementById('assistantInline');
+                TestRunner.assert(!!suggestionsPanel, 'Care suggestions panel exists');
+                
+                TestRunner.updateSummary();
+            }
+        };
+
+        const ValidationTests = {
+            async run() {
+                TestRunner.pending('Running validation tests...');
+                
+                // Test age validation
+                const testAgeValidation = (age, expected) => {
+                    const ageNum = Number(age || NaN);
+                    const isValid = Number.isFinite(ageNum) && ageNum >= 10 && ageNum <= 80;
+                    return isValid === expected;
+                };
+                
+                TestRunner.assert(testAgeValidation(25, true), 'Age 25 is valid');
+                TestRunner.assert(testAgeValidation(10, true), 'Age 10 is valid');
+                TestRunner.assert(testAgeValidation(80, true), 'Age 80 is valid');
+                TestRunner.assert(testAgeValidation(9, false), 'Age 9 is invalid');
+                TestRunner.assert(testAgeValidation(81, false), 'Age 81 is invalid');
+                
+                // Test cycle length validation
+                const testCycleValidation = (cycle, expected) => {
+                    const cycleNum = Number(cycle || NaN);
+                    const isValid = Number.isFinite(cycleNum) && cycleNum >= 15 && cycleNum <= 120;
+                    return isValid === expected;
+                };
+                
+                TestRunner.assert(testCycleValidation(28, true), 'Cycle 28 is valid');
+                TestRunner.assert(testCycleValidation(15, true), 'Cycle 15 is valid');
+                TestRunner.assert(testCycleValidation(120, true), 'Cycle 120 is valid');
+                TestRunner.assert(testCycleValidation(14, false), 'Cycle 14 is invalid');
+                TestRunner.assert(testCycleValidation(121, false), 'Cycle 121 is invalid');
+                
+                // Test period length validation
+                const testPeriodValidation = (period, expected) => {
+                    const periodNum = Number(period || NaN);
+                    const isValid = Number.isFinite(periodNum) && periodNum >= 1 && periodNum <= 30;
+                    return isValid === expected;
+                };
+                
+                TestRunner.assert(testPeriodValidation(5, true), 'Period 5 is valid');
+                TestRunner.assert(testPeriodValidation(1, true), 'Period 1 is valid');
+                TestRunner.assert(testPeriodValidation(30, true), 'Period 30 is valid');
+                TestRunner.assert(testPeriodValidation(0, false), 'Period 0 is invalid');
+                TestRunner.assert(testPeriodValidation(31, false), 'Period 31 is invalid');
+                
+                // Test weight validation
+                const testWeightValidation = (weight, expected) => {
+                    const weightNum = Number(weight || 0);
+                    const isValid = weightNum >= 30 && weightNum <= 300;
+                    return isValid === expected;
+                };
+                
+                TestRunner.assert(testWeightValidation(65, true), 'Weight 65 is valid');
+                TestRunner.assert(testWeightValidation(30, true), 'Weight 30 is valid');
+                TestRunner.assert(testWeightValidation(300, true), 'Weight 300 is valid');
+                TestRunner.assert(testWeightValidation(29, false), 'Weight 29 is invalid');
+                TestRunner.assert(testWeightValidation(301, false), 'Weight 301 is invalid');
+                
+                // Test height validation
+                const testHeightValidation = (height, expected) => {
+                    const heightNum = Number(height || 0);
+                    const isValid = heightNum >= 100 && heightNum <= 250;
+                    return isValid === expected;
+                };
+                
+                TestRunner.assert(testHeightValidation(165, true), 'Height 165 is valid');
+                TestRunner.assert(testHeightValidation(100, true), 'Height 100 is valid');
+                TestRunner.assert(testHeightValidation(250, true), 'Height 250 is valid');
+                TestRunner.assert(testHeightValidation(99, false), 'Height 99 is invalid');
+                TestRunner.assert(testHeightValidation(251, false), 'Height 251 is invalid');
+                
+                // Test city length validation
+                const testCityValidation = (city, expected) => {
+                    return city.length <= 100 === expected;
+                };
+                
+                TestRunner.assert(testCityValidation('New York', true), 'Short city name is valid');
+                TestRunner.assert(testCityValidation('', true), 'Empty city is valid');
+                TestRunner.assert(testCityValidation('a'.repeat(100), true), 'City with 100 chars is valid');
+                TestRunner.assert(testCityValidation('a'.repeat(101), false), 'City with 101 chars is invalid');
+                
+                // Test medications length validation
+                const testMedsValidation = (meds, expected) => {
+                    return meds.length <= 200 === expected;
+                };
+                
+                TestRunner.assert(testMedsValidation('Metformin', true), 'Short medications is valid');
+                TestRunner.assert(testMedsValidation('a'.repeat(200), true), 'Medications with 200 chars is valid');
+                TestRunner.assert(testMedsValidation('a'.repeat(201), false), 'Medications with 201 chars is invalid');
+                
+                TestRunner.updateSummary();
+            }
+        };
+
+        const InsightTests = {
+            async run() {
+                TestRunner.pending('Running PCOS insight tests...');
+                
+                // Test risk score calculation
+                const calculateRiskScore = (data) => {
+                    let score = 0;
+                    
+                    // Cycle analysis
+                    const cycle = data.cycle_length;
+                    if (cycle < 21) score += 25;
+                    else if (cycle > 35) score += 30;
+                    else if (cycle > 32) score += 15;
+                    
+                    // Period analysis
+                    const period = data.period_length;
+                    if (period < 3) score += 10;
+                    else if (period > 7) score += 15;
+                    
+                    // Symptom analysis
+                    const symptoms = data.symptoms || [];
+                    const highRiskSymptoms = ['irregular_cycles', 'hirsutism', 'acne', 'weight_gain', 'hair_loss', 'infertility'];
+                    const symptomCount = symptoms.length;
+                    const highRiskCount = symptoms.filter(s => highRiskSymptoms.includes(s)).length;
+                    score += Math.min(25, symptomCount * 4);
+                    score += Math.min(15, highRiskCount * 5);
+                    
+                    // Age factor
+                    const age = data.age;
+                    if (15 <= age <= 35) score += 10;
+                    
+                    // Lifestyle
+                    if (data.stress === 'high') score += 3;
+                    if ((data.sleep || 7) < 6) score += 2;
+                    
+                    return Math.min(100, score);
+                };
+                
+                // High risk test
+                const highRiskData = {
+                    cycle_length: 45,
+                    period_length: 10,
+                    symptoms: ['irregular_cycles', 'hirsutism', 'acne', 'weight_gain', 'hair_loss'],
+                    age: 25,
+                    stress: 'high',
+                    sleep: 5
+                };
+                const highRiskScore = calculateRiskScore(highRiskData);
+                TestRunner.assert(highRiskScore > 60, `High risk score: ${highRiskScore}`);
+                
+                // Low risk test
+                const lowRiskData = {
+                    cycle_length: 28,
+                    period_length: 5,
+                    symptoms: [],
+                    age: 30,
+                    stress: 'low',
+                    sleep: 8
+                };
+                const lowRiskScore = calculateRiskScore(lowRiskData);
+                TestRunner.assert(lowRiskScore < 30, `Low risk score: ${lowRiskScore}`);
+                
+                // Test risk level determination
+                const determineRiskLevel = (score) => {
+                    if (score < 30) return 'low';
+                    else if (score < 60) return 'moderate';
+                    else return 'high';
+                };
+                
+                TestRunner.assert(determineRiskLevel(20) === 'low', 'Score 20 is low risk');
+                TestRunner.assert(determineRiskLevel(40) === 'moderate', 'Score 40 is moderate risk');
+                TestRunner.assert(determineRiskLevel(70) === 'high', 'Score 70 is high risk');
+                
+                // Test cycle analysis
+                const analyzeCycle = (cycleLength) => {
+                    if (21 <= cycleLength <= 35) return 'within normal range';
+                    else if (cycleLength < 21) return 'shorter than typical';
+                    else return 'longer than typical';
+                };
+                
+                TestRunner.assert(analyzeCycle(28) === 'within normal range', 'Cycle 28 is normal');
+                TestRunner.assert(analyzeCycle(15) === 'shorter than typical', 'Cycle 15 is short');
+                TestRunner.assert(analyzeCycle(45) === 'longer than typical', 'Cycle 45 is long');
+                
+                // Test period analysis
+                const analyzePeriod = (periodLength) => {
+                    if (3 <= periodLength <= 7) return 'within normal range';
+                    else if (periodLength < 3) return 'shorter than typical';
+                    else return 'longer than typical';
+                };
+                
+                TestRunner.assert(analyzePeriod(5) === 'within normal range', 'Period 5 is normal');
+                TestRunner.assert(analyzePeriod(2) === 'shorter than typical', 'Period 2 is short');
+                TestRunner.assert(analyzePeriod(10) === 'longer than typical', 'Period 10 is long');
+                
+                TestRunner.updateSummary();
+            }
+        };
+
+        // Event Listeners
+        document.getElementById('runAllBtn').addEventListener('click', async () => {
+            TestRunner.reset();
+            await FormTests.run();
+            await ValidationTests.run();
+            await InsightTests.run();
+        });
+
+        document.getElementById('runFormTests').addEventListener('click', async () => {
+            TestRunner.reset();
+            await FormTests.run();
+        });
+
+        document.getElementById('runValidationTests').addEventListener('click', async () => {
+            TestRunner.reset();
+            await ValidationTests.run();
+        });
+
+        document.getElementById('runInsightTests').addEventListener('click', async () => {
+            TestRunner.reset();
+            await InsightTests.run();
+        });
+
+        document.getElementById('clearResultsBtn').addEventListener('click', () => {
+            TestRunner.reset();
+        });
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            console.log('Browser test page loaded. Click "Run All Tests" to begin.');
+        });
+    </script>
+</body>
+</html>
