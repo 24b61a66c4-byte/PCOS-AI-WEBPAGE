@@ -20,10 +20,9 @@
 
 ## Phase 5: Suggested Enhancements
 - [ ] 11. Add more languages (Tamil, Hindi already present - add more)
-- [x] 12. Add data export feature (JSON/CSV) ✅ FIXED
-- [ ] 13. Add data visualization (charts for cycle trends)
-- [ ] 14. Add medication reminders feature
-- [x] 15. Add dark/light theme toggle ✅ FIXED
+- [ ] 12. Add data visualization (charts for cycle trends)
+- [ ] 13. Add medication reminders feature
+- [x] 14. Add dark/light theme toggle ✅ FIXED
 
 ## Completed:
 - [x] Initial project analysis
@@ -33,5 +32,4 @@
 - [x] Loading states for chat
 - [x] ARIA labels for required fields
 - [x] Focus management for form navigation
-- [x] Data export (JSON & CSV)
 - [x] Dark/Light theme toggle
