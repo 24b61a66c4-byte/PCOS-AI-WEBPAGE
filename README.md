@@ -25,6 +25,9 @@ A comprehensive health analysis platform for PCOS (Polycystic Ovary Syndrome) wi
 
 ## 🚀 Quick Start
 
+> **📘 New to setup?** Check out our interactive setup guide:  
+> **[Open Setup Guide →](setup.html)** | **[Detailed Setup Instructions →](SETUP.md)**
+
 ### Prerequisites
 
 - Modern web browser (Chrome, Firefox, Safari, Edge)

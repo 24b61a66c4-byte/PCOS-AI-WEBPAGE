@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Guide - PCOS Smart Assistant</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #ffffff;
+            --bg-secondary: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg);
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .progress-bar {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            height: 8px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--success) 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .step {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .step.completed {
+            border-left-color: var(--success);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .step.active {
+            border-left-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+
+        .step.completed .step-number {
+            background: var(--success);
+        }
+
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-status {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-active {
+            background: #ddd6fe;
+            color: #5b21b6;
+        }
+
+        .step-content {
+            margin-left: 2.5rem;
+            color: var(--text-light);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            display: block;
+            white-space: pre;
+        }
+
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .note strong {
+            color: #92400e;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 0.25rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #16a34a;
+        }
+
+        .btn-secondary {
+            background: var(--text-light);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .checklist li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.75rem;
+            cursor: pointer;
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .status-check {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+        }
+
+        .check-result {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .check-result.success {
+            display: block;
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .check-result.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .step-content {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 PCOS Smart Assistant Setup</h1>
+            <p>Follow these steps to get your application running</p>
+        </div>
+
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="step" data-step="1">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-number">1</span>
+                        Install Git
+                    </div>
+                    <span class="step-status status-pending">Pending</span>
+                </div>
+                <div class="step-content">
+                    <p>Git is required to clone the repository and manage code versions.</p>
+                    <div class="code-block">
+                        <code># Using winget (recommended)
+winget install Git.Git
+
+# Or download from: https://git-scm.com/download/win</code>
+                    </div>
+                    <p><strong>Verify installation:</strong></p>
+                    <div class="code-block">
+                        <code>git --version</code>
+                    </div>
+                    <button class="btn" onclick="checkGit()">Check Git Installation</button>
+                    <div class="check-result" id="gitResult"></div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step" data-step="2">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-number">2</span>
+                        Install Python 3.8+
+                    </div>
+                    <span class="step-status status-pending">Pending</span>
+                </div>
+                <div class="step-content">
+                    <p>Python is required for the backend analysis engine.</p>
+                    <div class="code-block">
+                        <code># Using Microsoft Store (easiest)
+python
+
+# Or using winget
+winget install Python.Python.3.12
+
+# Or download from: https://www.python.org/downloads/</code>
+                    </div>
+                    <div class="note">
+                        <strong>⚠️ Important:</strong> During installation, check "Add Python to PATH"
+                    </div>
+                    <p><strong>Verify installation:</strong></p>
+                    <div class="code-block">
+                        <code>python --version
+pip --version</code>
+                    </div>
+                    <button class="btn" onclick="checkPython()">Check Python Installation</button>
+                    <div class="check-result" id="pythonResult"></div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step" data-step="3">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-number">3</span>
+                        Clone Repository
+                    </div>
+                    <span class="step-status status-pending">Pending</span>
+                </div>
+                <div class="step-content">
+                    <p>Download the project files to your computer.</p>
+                    <div class="code-block">
+                        <code>cd C:\Users\YourUsername\Desktop
+git clone https://github.com/24b61a66c4-byte/PCOS-AI-WEBPAGE.git
+cd PCOS-AI-WEBPAGE</code>
+                    </div>
+                    <a href="https://github.com/24b61a66c4-byte/PCOS-AI-WEBPAGE" target="_blank" class="btn">View on GitHub</a>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step" data-step="4">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-number">4</span>
+                        Install Dependencies
+                    </div>
+                    <span class="step-status status-pending">Pending</span>
+                </div>
+                <div class="step-content">
+                    <p>Install Python packages required for the backend.</p>
+                    <div class="code-block">
+                        <code>cd backend
+pip install -r requirements.txt</code>
+                    </div>
+                    <p>This installs: Flask, Flask-CORS, Supabase, NumPy, Pandas, python-dotenv</p>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step" data-step="5">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-number">5</span>
+                        Get API Keys
+                    </div>
+                    <span class="step-status status-pending">Pending</span>
+                </div>
+                <div class="step-content">
+                    <p><strong>OpenRouter API Key (for AI features):</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Sign up at <a href="https://openrouter.ai/" target="_blank">OpenRouter.ai</a> (FREE)</li>
+                        <li>Go to Keys section and create a new key</li>
+                        <li>Copy the key (starts with sk-or-v1-...)</li>
+                    </ul>
+
+                    <p><strong>Supabase Credentials (for backend):</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Create account at <a href="https://supabase.com/" target="_blank">Supabase.com</a></li>
+                        <li>Create a new project</li>
+                        <li>Go to Settings → API</li>
+                        <li>Copy: Project URL, anon key, and service_role key</li>
+                    </ul>
+
+                    <a href="https://openrouter.ai/keys" target="_blank" class="btn">Get OpenRouter Key</a>
+                    <a href="https://supabase.com/dashboard" target="_blank" class="btn btn-secondary">Get Supabase Keys</a>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step" data-step="6">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-number">6</span>
+                        Configure Frontend
+                    </div>
+                    <span class="step-status status-pending">Pending</span>
+                </div>
+                <div class="step-content">
+                    <p>Create configuration file with your API keys.</p>
+                    <div class="code-block">
+                        <code>cd frontend
+Copy-Item config.example.js config.js</code>
+                    </div>
+                    <p>Edit <code>frontend/config.js</code> and add your keys:</p>
+                    <div class="code-block">
+                        <code>window.CONFIG = {
+  OPENROUTER_API_KEY: 'sk-or-v1-YOUR-KEY-HERE',
+  SUPABASE_URL: 'https://xxxxx.supabase.co',
+  SUPABASE_ANON_KEY: 'your-anon-key',
+  BACKEND_URL: 'http://localhost:5000'
+};</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step" data-step="7">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-number">7</span>
+                        Configure Backend
+                    </div>
+                    <span class="step-status status-pending">Pending</span>
+                </div>
+                <div class="step-content">
+                    <p>Create backend environment file.</p>
+                    <div class="code-block">
+                        <code>cd backend
+Copy-Item .env.example .env</code>
+                    </div>
+                    <p>Edit <code>backend/.env</code> and add:</p>
+                    <div class="code-block">
+                        <code>SUPABASE_URL=https://xxxxx.supabase.co
+SUPABASE_SERVICE_KEY=your-service-role-key
+PORT=5000</code>
+                    </div>
+                    <div class="note">
+                        <strong>⚠️ Important:</strong> Use service_role key in backend, NOT the anon key!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 8 -->
+            <div class="step" data-step="8">
+                <div class="step-header">
+                    <div class="step-title">
+                        <span class="step-number">8</span>
+                        Run the Application
+                    </div>
+                    <span class="step-status status-pending">Pending</span>
+                </div>
+                <div class="step-content">
+                    <p><strong>Terminal 1 - Start Backend:</strong></p>
+                    <div class="code-block">
+                        <code>cd backend
+python app.py</code>
+                    </div>
+                    <p>Should show: Running on http://localhost:5000</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Terminal 2 - Start Frontend:</strong></p>
+                    <div class="code-block">
+                        <code>cd ..
+python -m http.server 8080</code>
+                    </div>
+                    <p>Should show: Serving HTTP on port 8080</p>
+
+                    <div style="margin-top: 1rem;">
+                        <a href="http://localhost:5000/health" target="_blank" class="btn">Test Backend</a>
+                        <a href="http://localhost:8080" target="_blank" class="btn btn-success">Open Application</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Checklist -->
+            <div class="status-check">
+                <h3>✅ Final Verification Checklist</h3>
+                <ul class="checklist">
+                    <li><input type="checkbox" id="check1"> Git installed and verified</li>
+                    <li><input type="checkbox" id="check2"> Python 3.8+ installed and verified</li>
+                    <li><input type="checkbox" id="check3"> Repository cloned</li>
+                    <li><input type="checkbox" id="check4"> Python dependencies installed</li>
+                    <li><input type="checkbox" id="check5"> OpenRouter API key obtained</li>
+                    <li><input type="checkbox" id="check6"> Supabase credentials obtained</li>
+                    <li><input type="checkbox" id="check7"> frontend/config.js created and configured</li>
+                    <li><input type="checkbox" id="check8"> backend/.env created and configured</li>
+                    <li><input type="checkbox" id="check9"> Backend running on http://localhost:5000</li>
+                    <li><input type="checkbox" id="check10"> Frontend running on http://localhost:8080</li>
+                </ul>
+                <button class="btn btn-success" onclick="verifyComplete()" style="margin-top: 1rem; width: 100%;">
+                    🎉 Verify Setup Complete
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Need more help? Check out these resources:</p>
+            <div class="footer-links">
+                <a href="SETUP.md" target="_blank">📋 Detailed Setup Guide</a>
+                <a href="README.md" target="_blank">📖 README</a>
+                <a href="backend/README.md" target="_blank">🔧 Backend Docs</a>
+                <a href="https://github.com/24b61a66c4-byte/PCOS-AI-WEBPAGE/issues" target="_blank">🆘 Get Help</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update progress bar
+        function updateProgress() {
+            const steps = document.querySelectorAll('.step');
+            const completed = document.querySelectorAll('.step.completed').length;
+            const progress = (completed / steps.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Mark step as completed
+        function markComplete(stepNumber) {
+            const step = document.querySelector(`.step[data-step="${stepNumber}"]`);
+            if (step) {
+                step.classList.remove('active');
+                step.classList.add('completed');
+                const status = step.querySelector('.step-status');
+                status.textContent = 'Completed';
+                status.className = 'step-status status-completed';
+                
+                // Activate next step
+                const nextStep = document.querySelector(`.step[data-step="${stepNumber + 1}"]`);
+                if (nextStep && !nextStep.classList.contains('completed')) {
+                    nextStep.classList.add('active');
+                    const nextStatus = nextStep.querySelector('.step-status');
+                    nextStatus.textContent = 'In Progress';
+                    nextStatus.className = 'step-status status-active';
+                }
+                
+                updateProgress();
+                saveProgress();
+            }
+        }
+
+        // Check Git installation
+        function checkGit() {
+            const result = document.getElementById('gitResult');
+            result.textContent = 'Git is likely installed if the command worked in your terminal. Mark this step as complete if "git --version" shows a version number.';
+            result.className = 'check-result success';
+            markComplete(1);
+        }
+
+        // Check Python installation
+        function checkPython() {
+            const result = document.getElementById('pythonResult');
+            result.textContent = 'Python is likely installed if the command worked in your terminal. Mark this step as complete if "python --version" shows Python 3.8 or higher.';
+            result.className = 'check-result success';
+            markComplete(2);
+        }
+
+        // Verify all steps complete
+        function verifyComplete() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            if (allChecked) {
+                alert('🎉 Congratulations! Your setup is complete!\n\nYou can now:\n- Fill out health forms\n- Get AI-powered analysis\n- Receive doctor recommendations\n- Track your PCOS journey\n\nStart at: http://localhost:8080');
+            } else {
+                alert('⚠️ Please complete all checklist items before verifying.');
+            }
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const completed = Array.from(document.querySelectorAll('.step.completed')).map(
+                step => step.getAttribute('data-step')
+            );
+            localStorage.setItem('setupProgress', JSON.stringify(completed));
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('setupProgress');
+            if (saved) {
+                const completed = JSON.parse(saved);
+                completed.forEach(stepNum => {
+                    markComplete(parseInt(stepNum));
+                });
+            } else {
+                // Mark first step as active
+                const firstStep = document.querySelector('.step[data-step="1"]');
+                if (firstStep) {
+                    firstStep.classList.add('active');
+                    const status = firstStep.querySelector('.step-status');
+                    status.textContent = 'In Progress';
+                    status.className = 'step-status status-active';
+                }
+            }
+        }
+
+        // Add click handlers to step headers to toggle complete
+        document.querySelectorAll('.step').forEach(step => {
+            const header = step.querySelector('.step-header');
+            header.style.cursor = 'pointer';
+            header.addEventListener('click', () => {
+                const stepNum = parseInt(step.getAttribute('data-step'));
+                if (!step.classList.contains('completed')) {
+                    markComplete(stepNum);
+                }
+            });
+        });
+
+        // Track checkbox changes
+        document.querySelectorAll('.checklist input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+                const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+                localStorage.setItem('checklistProgress', checked);
+            });
+        });
+
+        // Load checklist progress
+        const checklistProgress = localStorage.getItem('checklistProgress');
+        if (checklistProgress) {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            for (let i = 0; i < parseInt(checklistProgress) && i < checkboxes.length; i++) {
+                checkboxes[i].checked = true;
+            }
+        }
+
+        // Initialize on page load
+        loadProgress();
+        updateProgress();
+    </script>
+</body>
+</html>
