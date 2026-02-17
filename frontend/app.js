@@ -1162,7 +1162,7 @@ Image Analysis Instructions:
     showStep(currentStep);
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     if (validateStep(currentStep)) {
@@ -1173,26 +1173,67 @@ Image Analysis Instructions:
       };
 
       try {
+        // Save locally
         const entries = JSON.parse(localStorage.getItem('pcos_entries') || '[]');
         entries.push(fullData);
         localStorage.setItem('pcos_entries', JSON.stringify(entries));
         localStorage.setItem('pcos_last_entry', JSON.stringify(fullData));
         localStorage.removeItem(DRAFT_KEY);
 
+        // Push to Supabase
         pushEntryToSupabase(fullData);
 
-        showMessage('✨ Your health details have been saved securely!', 'success');
-        console.log('PCOS data saved:', fullData);
+        // Call backend API for analysis
+        const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:5000';
+        
+        try {
+          const response = await fetch(`${backendUrl}/api/analyze`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(fullData)
+          });
 
-        setTimeout(() => {
-          form.reset();
-          currentStep = 1;
-          Object.keys(formData).forEach(key => delete formData[key]);
-          showStep(currentStep);
-          renderFormSuggestions();
-          renderPcosInsight();
-          setSubmitting(false);
-        }, 2000);
+          if (response.ok) {
+            const result = await response.json();
+            
+            // Save analysis result
+            localStorage.setItem('pcos_last_analysis', JSON.stringify(result));
+            
+            // Show analysis and redirect to results page
+            showMessage('✨ Analysis complete! Redirecting to your health report...', 'success');
+            
+            setTimeout(() => {
+              window.location.href = 'results.html';
+            }, 2000);
+          } else {
+            // Fallback if backend is not available
+            showMessage('✨ Your health details have been saved securely!', 'success');
+            setTimeout(() => {
+              form.reset();
+              currentStep = 1;
+              Object.keys(formData).forEach(key => delete formData[key]);
+              showStep(currentStep);
+              renderFormSuggestions();
+              renderPcosInsight();
+              setSubmitting(false);
+            }, 2000);
+          }
+        } catch (apiError) {
+          console.log('Backend API not available, using fallback:', apiError);
+          showMessage('✨ Your health details have been saved securely!', 'success');
+          setTimeout(() => {
+            form.reset();
+            currentStep = 1;
+            Object.keys(formData).forEach(key => delete formData[key]);
+            showStep(currentStep);
+            renderFormSuggestions();
+            renderPcosInsight();
+            setSubmitting(false);
+          }, 2000);
+        }
+        
       } catch (err) {
         showMessage('⚠️ Error saving data. Please try again.', 'error');
         console.error('Storage error:', err);

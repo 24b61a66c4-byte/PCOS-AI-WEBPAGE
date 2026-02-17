@@ -16,5 +16,10 @@ window.CONFIG = {
   
   // Supabase configuration (optional - app works with localStorage only)
   SUPABASE_URL: 'your-supabase-project-url',
-  SUPABASE_ANON_KEY: 'your-supabase-anon-key'
+  SUPABASE_ANON_KEY: 'your-supabase-anon-key',
+  
+  // Backend API URL (for health analysis and doctor recommendations)
+  // Use 'http://localhost:5000' for local development
+  // Use your deployed API URL for production (e.g., 'https://your-api.herokuapp.com')
+  BACKEND_URL: 'http://localhost:5000'
 };

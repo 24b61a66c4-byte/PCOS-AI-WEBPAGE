@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Health Report — PCOS Smart Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/gh/darkroomengineering/lenis@latest/bundled/lenis.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">🏥 PCOS Smart Assistant</div>
+            <div class="nav-actions">
+                <ul class="nav-menu">
+                    <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                    <li><a href="results.html" class="nav-link active">My Report</a></li>
+                </ul>
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+                    <span class="theme-icon"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="results-header reveal">
+            <div class="eyebrow">Your Personalized</div>
+            <h1 class="hero-title">Health Analysis Report</h1>
+            <p class="hero-subtitle">Based on your health data and comparison with medical dataset</p>
+        </div>
+
+        <!-- Risk Assessment Card -->
+        <section class="report-section reveal delay-1">
+            <div class="report-card risk-card">
+                <h2>📊 Risk Assessment</h2>
+                <div class="risk-level-display">
+                    <div class="risk-badge" id="riskBadge">Analyzing...</div>
+                    <div class="risk-score">
+                        <span class="score-label">Risk Score</span>
+                        <span class="score-value" id="riskScore">--</span>
+                        <span class="score-max">/100</span>
+                    </div>
+                </div>
+                <p class="summary-text" id="summaryText">Loading your analysis...</p>
+            </div>
+        </section>
+
+        <!-- Key Findings -->
+        <section class="report-section reveal delay-2">
+            <div class="report-card">
+                <h2>🔍 Key Findings</h2>
+                <ul class="findings-list" id="findingsList">
+                    <li>Loading findings...</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Recommendations -->
+        <section class="report-section reveal delay-3">
+            <div class="report-card">
+                <h2>💡 Personalized Recommendations</h2>
+                <ul class="recommendations-list" id="recommendationsList">
+                    <li>Loading recommendations...</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Doctor Recommendations -->
+        <section class="report-section reveal delay-4">
+            <div class="report-card doctors-card">
+                <h2>👨‍⚕️ Recommended Doctors</h2>
+                <p id="urgentMessage" class="urgent-message"></p>
+                <div class="doctors-grid" id="doctorsGrid">
+                    <p>Loading doctor recommendations...</p>
+                </div>
+                
+                <div class="helplines-section">
+                    <h3>Emergency Helplines</h3>
+                    <div class="helplines-grid" id="helplinesGrid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps -->
+        <section class="report-section reveal delay-5">
+            <div class="report-card">
+                <h2>📋 Next Steps</h2>
+                <ol class="next-steps-list" id="nextStepsList">
+                    <li>Loading next steps...</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Lifestyle Tips -->
+        <section class="report-section reveal delay-6">
+            <div class="report-card">
+                <h2>🌱 Lifestyle Tips</h2>
+                <ul class="tips-list" id="tipsList">
+                    <li>Loading lifestyle tips...</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- When to See Doctor -->
+        <section class="report-section reveal delay-7">
+            <div class="report-card warning-card">
+                <h2>⚠️ When to See a Doctor Immediately</h2>
+                <ul class="warning-list" id="warningList">
+                    <li>Loading warning signs...</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="report-actions">
+            <button class="btn btn-primary btn-lg" id="printReport">🖨️ Print Report</button>
+            <button class="btn btn-secondary" id="downloadPDF">📄 Download PDF</button>
+            <a href="form.html" class="btn btn-secondary">📝 Add New Entry</a>
+            <a href="dashboard.html" class="btn btn-secondary">🏠 Back to Dashboard</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 PCOS Smart Assistant. This report is for educational purposes only and does not replace professional medical advice.</p>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="results.js"></script>
+</body>
+</html>
