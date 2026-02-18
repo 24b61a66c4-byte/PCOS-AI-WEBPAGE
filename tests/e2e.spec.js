@@ -1,5 +1,3 @@
-ests/e2e.spec.js</path>
-<content E2E test file.>
 /**
  * PCOS Smart Assistant - E2E Tests
  * Playwright tests for end-to-end user flows
