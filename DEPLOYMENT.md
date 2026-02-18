@@ -131,10 +131,12 @@ Railway provides built-in monitoring:
 
 ## Costs
 
-Railway offers a free tier with:
-- $5 free credit per month
+Railway offers a free tier to get started:
+- Free trial credits available for new users
 - Resource-based pricing after free tier
-- No credit card required to start
+- Pay only for what you use
+
+For current pricing details, visit the [Railway Pricing Page](https://railway.app/pricing).
 
 For production deployments, consider upgrading to a paid plan for better reliability and resources.
 
