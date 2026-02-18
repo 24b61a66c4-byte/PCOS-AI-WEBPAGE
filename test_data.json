@@ -1,0 +1,7 @@
+﻿{
+  "age": 28,
+  "cycle_length": 35,
+  "period_length": 6,
+  "symptoms": ["irregular_periods", "weight_gain", "fatigue", "acne"],
+  "city": "Hyderabad"
+}
