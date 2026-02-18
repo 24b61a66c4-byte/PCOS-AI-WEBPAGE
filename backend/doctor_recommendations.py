@@ -294,6 +294,15 @@ class DoctorRecommender:
     def get_all_cities(self) -> List[str]:
         """Get list of all cities with doctors"""
         return list(self.doctors_db.keys())
+
+    def get_helplines(self) -> Dict[str, str]:
+        """Return standardized helpline keys for tests and UI usage"""
+        return {
+            "india": self.helplines.get("National Health Helpline", "1800-180-1104"),
+            "women": self.helplines.get("Women's Helpline", "1091"),
+            "emergency": "102",
+            "all": self.helplines
+        }
     
     def search_doctor_by_name(self, name: str) -> List[Dict]:
         """Search for doctor by name"""

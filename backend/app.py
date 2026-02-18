@@ -23,7 +23,12 @@ CORS(app)
 # Supabase setup
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_KEY')  # Use service key for backend
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+SKIP_SUPABASE = os.getenv('SKIP_SUPABASE') == '1'
+
+if SKIP_SUPABASE:
+    supabase = None
+else:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Initialize analyzers
 analyzer = PCOSAnalyzer(supabase)

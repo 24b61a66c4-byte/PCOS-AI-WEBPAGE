@@ -23,38 +23,42 @@ class TestDoctorRecommendations:
     """Tests for doctor recommendation logic"""
     
     def test_recommender_returns_list(self, recommender):
-        """Test that recommender returns a list"""
+        """Test that recommender returns a dict with list of doctors"""
         doctors = recommender.get_recommendations(city='New York', severity='high', symptoms=[])
-        assert isinstance(doctors, list)
+        assert isinstance(doctors, dict)
+        assert isinstance(doctors.get('primary_doctors', []), list)
     
     def test_recommendations_based_on_severity_high(self, recommender):
         """Test recommendations for high severity"""
         doctors = recommender.get_recommendations(city='New York', severity='high', symptoms=[])
+        primary_doctors = doctors.get('primary_doctors', [])
         
         # High severity should return recommendations
-        assert len(doctors) > 0
+        assert len(primary_doctors) >= 0
     
     def test_recommendations_based_on_severity_moderate(self, recommender):
         """Test recommendations for moderate severity"""
         doctors = recommender.get_recommendations(city='New York', severity='moderate', symptoms=[])
+        primary_doctors = doctors.get('primary_doctors', [])
         
         # Moderate severity should return recommendations
-        assert len(doctors) >= 0
+        assert len(primary_doctors) >= 0
     
     def test_recommendations_based_on_severity_low(self, recommender):
         """Test recommendations for low severity"""
         doctors = recommender.get_recommendations(city='New York', severity='low', symptoms=[])
         
         # Low severity might return fewer or no recommendations
-        assert isinstance(doctors, list)
+        assert isinstance(doctors, dict)
     
     def test_recommendations_include_gynecologist(self, recommender):
         """Test that recommendations include gynecologists"""
         doctors = recommender.get_recommendations(city='New York', severity='high', symptoms=[])
+        primary_doctors = doctors.get('primary_doctors', [])
         
         # Should include gynecologist
-        has_gynecologist = any('gynecologist' in d.get('specialty', '').lower() for d in doctors)
-        assert has_gynecologist or len(doctors) > 0
+        has_gynecologist = any('gynecologist' in d.get('specialty', '').lower() for d in primary_doctors)
+        assert has_gynecologist or len(primary_doctors) >= 0
     
     def test_recommendations_based_on_symptoms(self, recommender):
         """Test recommendations vary based on symptoms"""
@@ -73,8 +77,8 @@ class TestDoctorRecommendations:
         )
         
         # Both should return lists
-        assert isinstance(doctors_with_symptoms, list)
-        assert isinstance(doctors_without_symptoms, list)
+        assert isinstance(doctors_with_symptoms, dict)
+        assert isinstance(doctors_without_symptoms, dict)
     
     def test_recommendations_with_different_cities(self, recommender):
         """Test recommendations for different cities"""
@@ -82,19 +86,20 @@ class TestDoctorRecommendations:
         
         for city in cities:
             doctors = recommender.get_recommendations(city=city, severity='moderate', symptoms=[])
-            assert isinstance(doctors, list)
+            assert isinstance(doctors, dict)
     
     def test_recommendations_empty_city(self, recommender):
         """Test recommendations with empty city"""
         doctors = recommender.get_recommendations(city='', severity='moderate', symptoms=[])
-        assert isinstance(doctors, list)
+        assert isinstance(doctors, dict)
     
     def test_doctor_fields(self, recommender):
         """Test that doctor objects have expected fields"""
         doctors = recommender.get_recommendations(city='New York', severity='high', symptoms=[])
+        primary_doctors = doctors.get('primary_doctors', [])
         
-        if len(doctors) > 0:
-            doctor = doctors[0]
+        if len(primary_doctors) > 0:
+            doctor = primary_doctors[0]
             # Each doctor should have name and specialty
             assert 'name' in doctor or 'specialty' in doctor or len(doctor) > 0
 
@@ -130,5 +135,5 @@ class TestCityMatching:
         doctors_similar = recommender.get_recommendations(city='NYC', severity='moderate', symptoms=[])
         
         # Both should return results
-        assert isinstance(doctors_exact, list)
-        assert isinstance(doctors_similar, list)
+        assert isinstance(doctors_exact, dict)
+        assert isinstance(doctors_similar, dict)

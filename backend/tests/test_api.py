@@ -12,6 +12,11 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Ensure Supabase env vars exist before app import
+os.environ.setdefault('SKIP_SUPABASE', '1')
+os.environ.setdefault('SUPABASE_URL', 'http://localhost:8000')
+os.environ.setdefault('SUPABASE_SERVICE_KEY', 'test-service-key')
+
 from app import app
 
 
