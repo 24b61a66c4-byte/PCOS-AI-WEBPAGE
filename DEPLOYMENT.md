@@ -29,14 +29,13 @@ Railway will use the configuration from `railway.toml`, but you need to set up e
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_SERVICE_KEY=your_supabase_service_role_key
 FLASK_ENV=production
-PORT=5000
 ```
 
 **How to get Supabase credentials:**
 - `SUPABASE_URL`: Found in your Supabase project settings under "API"
 - `SUPABASE_SERVICE_KEY`: Found in your Supabase project settings under "API" → "service_role key" (keep this secret!)
 
-**Note:** Railway automatically provides the `PORT` variable, but you can override it if needed.
+**Note:** Railway automatically provides the `PORT` variable, so you don't need to set it manually.
 
 ### 3. Deploy
 
