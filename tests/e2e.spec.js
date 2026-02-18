@@ -8,8 +8,8 @@ const { test, expect, chromium } = require('@playwright/test');
 test.describe('PCOS Smart Assistant - E2E Tests', () => {
   
   test.beforeEach(async ({ page }) => {
-    // Navigate to the form page
-    await page.goto('file://' + process.cwd() + '/frontend/form.html');
+    // Navigate to the form page using HTTP server
+    await page.goto('http://localhost:8080/frontend/form.html');
   });
 
   test.describe('Form Navigation', () => {
@@ -500,13 +500,13 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.describe('Dashboard Page', () => {
     
     test('should load dashboard page', async ({ page }) => {
-      await page.goto('file://' + process.cwd() + '/frontend/dashboard.html');
+      await page.goto('http://localhost:8080/frontend/dashboard.html');
       
       await expect(page).toHaveTitle(/PCOS Smart Assistant/);
     });
 
     test('should show no entries message initially', async ({ page }) => {
-      await page.goto('file://' + process.cwd() + '/frontend/dashboard.html');
+      await page.goto('http://localhost:8080/frontend/dashboard.html');
       
       await expect(page.locator('#latest-summary')).toContainText(/no entries|add your first/i);
     });
@@ -515,13 +515,13 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.describe('Results Page', () => {
     
     test('should load results page', async ({ page }) => {
-      await page.goto('file://' + process.cwd() + '/frontend/results.html');
+      await page.goto('http://localhost:8080/frontend/results.html');
       
       await expect(page).toHaveTitle(/Health Report|PCOS/i);
     });
 
     test('should have print button', async ({ page }) => {
-      await page.goto('file://' + process.cwd() + '/frontend/results.html');
+      await page.goto('http://localhost:8080/frontend/results.html');
       
       await expect(page.locator('#printReport')).toBeVisible();
     });
