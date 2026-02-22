@@ -1165,7 +1165,145 @@ Image Analysis Instructions:
     } catch (error) {
       console.log('Step analysis API not available, using local fallback');
     }
-    return null;
+    // Always return local analysis so modal always shows
+    return generateLocalAnalysis(step, stepData);
+  }
+  
+  // Generate local analysis when backend is not available
+  function generateLocalAnalysis(step, stepData) {
+    const analysis = {
+      step: step,
+      step_name: getStepName(step),
+      findings: [],
+      tips: [],
+      next_step_preview: getStepPreview(step + 1)
+    };
+    
+    if (step === 1) {
+      const age = Number(stepData.age);
+      if (age && age >= 10 && age <= 80) {
+        analysis.findings.push(`Age: ${age} years recorded`);
+        if (age >= 15 && age <= 35) {
+          analysis.tips.push('This is a common age range for PCOS diagnosis (15-35 years)');
+        }
+      }
+      const weight = Number(stepData.weight);
+      const height = Number(stepData.height);
+      if (weight && height && height > 0) {
+        const bmi = weight / Math.pow(height/100, 2);
+        const bmiCat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+        analysis.findings.push(`BMI: ${bmi.toFixed(1)} (${bmiCat})`);
+        if (bmi > 25) {
+          analysis.tips.push('Weight management through diet and exercise can help improve PCOS symptoms');
+        }
+      }
+      analysis.tips.push('Click Next to continue with menstrual cycle information');
+    } else if (step === 2) {
+      const cycle = Number(stepData.cycle_length);
+      if (cycle) {
+        if (cycle >= 21 && cycle <= 35) {
+          analysis.findings.push(`Cycle length: ${cycle} days (normal range)`);
+        } else if (cycle < 21) {
+          analysis.findings.push(`Cycle length: ${cycle} days (shorter than typical)`);
+          analysis.tips.push('Short cycles may indicate hormonal imbalances');
+        } else {
+          analysis.findings.push(`Cycle length: ${cycle} days (longer than typical)`);
+          analysis.tips.push('Longer cycles are common with PCOS');
+        }
+      }
+      const period = Number(stepData.period_length);
+      if (period) {
+        if (period >= 2 && period <= 7) {
+          analysis.findings.push(`Period length: ${period} days (normal range)`);
+        } else if (period < 2) {
+          analysis.findings.push(`Period length: ${period} days (shorter than typical)`);
+        } else {
+          analysis.findings.push(`Period length: ${period} days (longer than typical)`);
+        }
+      }
+      analysis.tips.push('Click Next to continue with symptoms information');
+    } else if (step === 3) {
+      const symptoms = Array.isArray(stepData.symptoms) ? stepData.symptoms : [];
+      if (symptoms.length > 0) {
+        analysis.findings.push(`${symptoms.length} symptom(s) reported`);
+        if (symptoms.includes('irregular_cycles')) {
+          analysis.tips.push('Irregular cycles are a key PCOS indicator');
+        }
+        if (symptoms.includes('weight_gain')) {
+          analysis.tips.push('Weight changes may relate to insulin resistance');
+        }
+        if (symptoms.includes('hirsutism') || symptoms.includes('acne')) {
+          analysis.tips.push('These symptoms often improve with hormonal treatments');
+        }
+      } else {
+        analysis.findings.push('No symptoms selected');
+        analysis.tips.push('Adding symptoms helps us understand your health better');
+      }
+      analysis.tips.push('Click Next to continue with lifestyle information');
+    } else if (step === 4) {
+      const activity = stepData.activity;
+      if (activity) {
+        const labels = { sedentary: 'Sedentary', light: 'Lightly active', moderate: 'Moderately active', active: 'Very active' };
+        analysis.findings.push(`Activity: ${labels[activity] || activity}`);
+        if (activity === 'sedentary') {
+          analysis.tips.push('Regular exercise improves insulin sensitivity');
+        }
+      }
+      const sleep = Number(stepData.sleep);
+      if (sleep) {
+        analysis.findings.push(`Sleep: ${sleep} hours/night`);
+        if (sleep < 6) {
+          analysis.tips.push('Poor sleep can worsen PCOS symptoms. Aim for 7-8 hours');
+        }
+      }
+      const stress = stepData.stress;
+      if (stress) {
+        const labels = { low: 'Low', moderate: 'Moderate', high: 'High' };
+        analysis.findings.push(`Stress: ${labels[stress] || stress}`);
+        if (stress === 'high') {
+          analysis.tips.push('High stress affects hormones. Try yoga or meditation');
+        }
+      }
+      analysis.tips.push('Click Next to continue with clinical information');
+    } else if (step === 5) {
+      const city = stepData.city;
+      if (city) {
+        analysis.findings.push(`Location: ${city}`);
+        analysis.tips.push('Based on your location, we\'ll recommend nearby specialists if needed');
+      }
+      const pcos = stepData.pcos;
+      if (pcos) {
+        const labels = { diagnosed: 'Already diagnosed', suspected: 'Suspected PCOS', family_history: 'Family history', not_diagnosed: 'Not diagnosed' };
+        analysis.findings.push(`PCOS Status: ${labels[pcos] || pcos}`);
+        if (pcos === 'diagnosed') {
+          analysis.tips.push('Regular follow-ups help manage PCOS effectively');
+        } else if (pcos === 'suspected') {
+          analysis.tips.push('Getting proper tests can confirm diagnosis');
+        }
+      }
+      analysis.tips.push('Click Next to review your information');
+    } else if (step === 6) {
+      analysis.findings.push('All information collected');
+      analysis.tips.push('Click "Save My Data" to get your complete health report with doctor recommendations');
+    }
+    
+    return { success: true, step: step, analysis: analysis };
+  }
+  
+  function getStepName(step) {
+    const names = { 1: 'Personal Information', 2: 'Menstrual Cycle', 3: 'Symptoms', 4: 'Lifestyle', 5: 'Clinical', 6: 'Review' };
+    return names[step] || 'Step ' + step;
+  }
+  
+  function getStepPreview(step) {
+    const previews = {
+      2: 'Next: Menstrual Cycle details',
+      3: 'Next: Symptoms you experience',
+      4: 'Next: Your lifestyle habits',
+      5: 'Next: Clinical information',
+      6: 'Next: Review your information'
+    };
+    return previews[step] || '';
   }
 
   function showStepAnalysis(analysis) {
