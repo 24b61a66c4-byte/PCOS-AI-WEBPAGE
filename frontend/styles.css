@@ -1555,3 +1555,134 @@ body.light-theme .doctor-card {
     color: black;
   }
 }
+
+/* Step-by-Step Analysis Modal */
+.step-result-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-result-modal.active {
+  display: flex;
+}
+
+.step-result-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 10, 16, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.step-result-content {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: min(600px, 90vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.step-result-header h2 {
+  font-family: 'Newsreader', serif;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.step-result-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.step-result-close:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.step-result-body {
+  padding: 24px;
+}
+
+.step-result-section {
+  margin-bottom: 20px;
+}
+
+.step-result-section:last-child {
+  margin-bottom: 0;
+}
+
+.step-result-section h3 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+
+.step-result-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.step-result-section li {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  background: rgba(56, 189, 248, 0.1);
+  border-left: 3px solid var(--primary);
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+.step-result-section p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.step-result-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+}
+
+body.light-theme .step-result-content {
+  background: #ffffff;
+}
+
+body.light-theme .step-result-overlay {
+  background: rgba(15, 23, 42, 0.5);
+}

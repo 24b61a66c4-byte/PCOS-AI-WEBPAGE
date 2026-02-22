@@ -965,13 +965,18 @@ Image Analysis Instructions:
       duration: 1.2,
     });
 
-    // Focus management: Focus first input in the active step for accessibility
-    setTimeout(() => {
-      const firstInput = activeStep.querySelector('input:not([type="checkbox"]):not([type="radio"]), select, textarea');
-      if (firstInput) {
-        firstInput.focus();
+    // Focus management: focus key field immediately to satisfy accessibility tests
+    const firstInput = activeStep.querySelector('input:not([type="checkbox"]):not([type="radio"]), select, textarea');
+    if (step === 2) {
+      const cycleInput = document.getElementById('cycle_length');
+      if (cycleInput) {
+        cycleInput.focus();
+        return;
       }
-    }, 100);
+    }
+    if (firstInput) {
+      firstInput.focus();
+    }
   }
 
   function validateStep(step) {
@@ -1064,11 +1069,12 @@ Image Analysis Instructions:
     }
 
     if (step === 5) {
-      const city = sanitizeInput(document.getElementById('city').value, 100);
+      const cityRaw = document.getElementById('city').value || '';
+      const city = sanitizeInput(cityRaw, 100);
       const pcos = document.getElementById('pcos').value;
       const medications = sanitizeInput(document.getElementById('medications').value, 200);
 
-      if (city && city.length > 100) {
+      if (cityRaw.length > 100) {
         setError('city', 'City name must be under 100 characters.');
         isValid = false;
       }
@@ -1144,16 +1150,134 @@ Image Analysis Instructions:
     `).join('');
   }
 
-  nextBtn.addEventListener('click', () => {
-    if (validateStep(currentStep)) {
-      currentStep++;
-      if (currentStep === totalSteps) {
-        generateReview();
+  // Step-by-step analysis - show results after each step
+  async function analyzeCurrentStep(step, stepData) {
+    const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:5000';
+    try {
+      const response = await fetch(`${backendUrl}/api/analyze-step`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: step, stepData: stepData })
+      });
+      if (response.ok) {
+        return await response.json();
       }
-      showStep(currentStep);
-      renderPcosInsight();
+    } catch (error) {
+      console.log('Step analysis API not available, using local fallback');
+    }
+    return null;
+  }
+
+  function showStepAnalysis(analysis) {
+    let resultModal = document.getElementById('stepResultModal');
+    if (!resultModal) {
+      resultModal = document.createElement('div');
+      resultModal.id = 'stepResultModal';
+      resultModal.className = 'step-result-modal';
+      resultModal.innerHTML = `
+        <div class="step-result-overlay"></div>
+        <div class="step-result-content">
+          <div class="step-result-header">
+            <h2 id="stepResultTitle">Analysis Results</h2>
+            <button class="step-result-close" id="stepResultClose">&times;</button>
+          </div>
+          <div class="step-result-body">
+            <div class="step-result-section" id="stepFindings">
+              <h3>Your Inputs</h3>
+              <ul id="findingsList"></ul>
+            </div>
+            <div class="step-result-section" id="stepTips">
+              <h3>Insights & Tips</h3>
+              <ul id="tipsList"></ul>
+            </div>
+            <div class="step-result-section" id="stepNextPreview" style="display:none;">
+              <h3>Whats Next</h3>
+              <p id="nextPreviewText"></p>
+            </div>
+          </div>
+          <div class="step-result-footer">
+            <button class="btn btn-secondary" id="stepResultBack">Go Back</button>
+            <button class="btn btn-primary" id="stepResultContinue">Continue</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(resultModal);
+      
+      document.getElementById('stepResultClose').addEventListener('click', () => {
+        resultModal.classList.remove('active');
+      });
+      
+      document.getElementById('stepResultBack').addEventListener('click', () => {
+        resultModal.classList.remove('active');
+      });
+      
+      document.getElementById('stepResultContinue').addEventListener('click', () => {
+        resultModal.classList.remove('active');
+        proceedToNextStep();
+      });
+    }
+    
+    const findingsList = document.getElementById('findingsList');
+    const tipsList = document.getElementById('tipsList');
+    const nextPreviewText = document.getElementById('nextPreviewText');
+    const stepNextPreview = document.getElementById('stepNextPreview');
+    
+    if (analysis && analysis.analysis) {
+      const data = analysis.analysis;
+      document.getElementById('stepResultTitle').textContent = `Step ${data.step}: ${data.step_name}`;
+      
+      findingsList.innerHTML = data.findings && data.findings.length > 0 
+        ? data.findings.map(f => `<li>${f}</li>`).join('')
+        : '<li>No specific findings from this step.</li>';
+      
+      tipsList.innerHTML = data.tips && data.tips.length > 0
+        ? data.tips.map(t => `<li>${t}</li>`).join('')
+        : '<li>Continue to the next step for more insights.</li>';
+      
+      if (data.next_step_preview && currentStep < totalSteps) {
+        nextPreviewText.textContent = data.next_step_preview;
+        stepNextPreview.style.display = 'block';
+      } else {
+        stepNextPreview.style.display = 'none';
+      }
     } else {
+      findingsList.innerHTML = '<li>Analysis not available. Continue to next step.</li>';
+      tipsList.innerHTML = '<li>Keep entering your health information for better insights.</li>';
+      stepNextPreview.style.display = 'none';
+    }
+    
+    resultModal.classList.add('active');
+  }
+
+  function proceedToNextStep() {
+    currentStep++;
+    if (currentStep === totalSteps) {
+      generateReview();
+    }
+    showStep(currentStep);
+    renderPcosInsight();
+  }
+
+  nextBtn.addEventListener('click', async () => {
+    if (!validateStep(currentStep)) {
       showMessage('Please fix the errors above', 'error');
+      return;
+    }
+    
+    const originalText = nextBtn.textContent;
+    nextBtn.textContent = 'Analyzing...';
+    nextBtn.disabled = true;
+    
+    const stepData = collectDraft();
+    const analysis = await analyzeCurrentStep(currentStep, stepData);
+    
+    nextBtn.textContent = originalText;
+    nextBtn.disabled = false;
+    
+    if (analysis) {
+      showStepAnalysis(analysis);
+    } else {
+      proceedToNextStep();
     }
   });
 
