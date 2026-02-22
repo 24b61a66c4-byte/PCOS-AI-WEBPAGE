@@ -1396,27 +1396,14 @@ Image Analysis Instructions:
     renderPcosInsight();
   }
 
-  nextBtn.addEventListener('click', async () => {
+  nextBtn.addEventListener('click', () => {
     if (!validateStep(currentStep)) {
       showMessage('Please fix the errors above', 'error');
       return;
     }
-    
-    const originalText = nextBtn.textContent;
-    nextBtn.textContent = 'Analyzing...';
-    nextBtn.disabled = true;
-    
-    const stepData = collectDraft();
-    const analysis = await analyzeCurrentStep(currentStep, stepData);
-    
-    nextBtn.textContent = originalText;
-    nextBtn.disabled = false;
-    
-    if (analysis) {
-      showStepAnalysis(analysis);
-    } else {
-      proceedToNextStep();
-    }
+
+    // Move directly to the next slide so questions appear one-by-one without blocking modals
+    proceedToNextStep();
   });
 
   prevBtn.addEventListener('click', () => {

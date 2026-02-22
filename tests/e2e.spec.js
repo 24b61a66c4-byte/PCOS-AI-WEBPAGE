@@ -178,10 +178,13 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       await page.click('#nextBtn');
       
       const lastPeriodInput = page.locator('#last_period');
-      const maxDate = await lastPeriodInput.getAttribute('max');
+      const maxDateRaw = await lastPeriodInput.getAttribute('max');
+      const maxDate = new Date(maxDateRaw || '').getTime();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
       
       // Max date should be today or earlier
-      expect(maxDate).toBeLessThanOrEqual(new Date().toISOString().split('T')[0]);
+      expect(maxDate).toBeLessThanOrEqual(today.getTime());
     });
 
     test('should show error for invalid cycle length', async ({ page }) => {
@@ -214,6 +217,8 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
     
     test('should navigate to step 3', async ({ page }) => {
       await fillStep1(page);
+      await page.click('#nextBtn');
+      await fillStep2(page);
       await page.click('#nextBtn');
       
       await expect(page.locator('.form-step[data-step="3"]')).toHaveClass(/active/);

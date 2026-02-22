@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const analysisData = localStorage.getItem('pcos_last_analysis');
     
     if (!analysisData) {
-      showNoDataMessage();
+      applyEmptyState();
       return;
     }
 
@@ -211,6 +211,46 @@ document.addEventListener('DOMContentLoaded', function() {
     warningList.innerHTML = warnings.map(warning => 
       `<li>${escapeHtml(warning)}</li>`
     ).join('');
+  }
+
+  function applyEmptyState() {
+    const fallbackText = 'No analysis data yet. Complete the health form to see your personalized report.';
+    const riskBadge = document.getElementById('riskBadge');
+    const riskScore = document.getElementById('riskScore');
+    const summaryText = document.getElementById('summaryText');
+
+    if (riskBadge) {
+      riskBadge.textContent = 'Pending';
+      riskBadge.className = 'risk-badge';
+    }
+    if (riskScore) riskScore.textContent = '--';
+    if (summaryText) summaryText.textContent = fallbackText;
+
+    const setList = (id, message) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = `<li>${message}</li>`;
+      }
+    };
+
+    setList('findingsList', 'Provide details to generate findings.');
+    setList('recommendationsList', 'Recommendations will appear after analysis.');
+    setList('nextStepsList', 'Next steps will appear after analysis.');
+    setList('tipsList', 'Lifestyle tips will appear after analysis.');
+    setList('warningList', 'Warning signs will appear after analysis.');
+
+    const doctorsGrid = document.getElementById('doctorsGrid');
+    if (doctorsGrid) {
+      doctorsGrid.innerHTML = '<p>Add your city in the form to see doctors near you.</p>';
+    }
+
+    const helplinesGrid = document.getElementById('helplinesGrid');
+    if (helplinesGrid) {
+      helplinesGrid.innerHTML = '<p>Helplines will be shown after analysis.</p>';
+    }
+
+    const urgentMessage = document.getElementById('urgentMessage');
+    if (urgentMessage) urgentMessage.textContent = '';
   }
 
   function showNoDataMessage() {
