@@ -5,7 +5,7 @@ Analyzes user data, generates health reports, and recommends doctors
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from supabase import create_client, Client
+from supabase._sync.client import create_client
 import os
 from dotenv import load_dotenv
 from datetime import datetime
@@ -25,10 +25,10 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")  # Use service key for backend
 SKIP_SUPABASE = os.getenv("SKIP_SUPABASE") == "1"
 
-if SKIP_SUPABASE:
+if SKIP_SUPABASE or not SUPABASE_URL or not SUPABASE_KEY:
     supabase = None
 else:
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Initialize analyzers
 analyzer = PCOSAnalyzer(supabase)
@@ -128,6 +128,9 @@ def get_statistics():
 def save_entry(data):
     """Save user entry to Supabase"""
     try:
+        if supabase is None:
+            print("Supabase is not configured. Skipping entry save.")
+            return None
         result = (
             supabase.table("pcos_entries")
             .insert({**data, "timestamp": datetime.now().isoformat()})
