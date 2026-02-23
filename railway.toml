@@ -1,0 +1,8 @@
+[build]
+builder = "dockerfile"
+buildpacks = []
+
+[[services.psoc-backend.variables]]
+PORT = "5000"
+FLASK_ENV = "production"
+SKIP_SUPABASE = "0"

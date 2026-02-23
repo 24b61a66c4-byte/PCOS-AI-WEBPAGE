@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaFlow — Modern SaaS Platform</title>
+  <style>
+    :root {
+      --bg: #06080f;
+      --panel: rgba(255, 255, 255, 0.04);
+      --panel-strong: rgba(255, 255, 255, 0.08);
+      --text: #e8ecf5;
+      --muted: #9aa5c0;
+      --primary: #7dd3fc;
+      --primary-strong: #38bdf8;
+      --accent: #a78bfa;
+      --accent-2: #22d3ee;
+      --border: rgba(255, 255, 255, 0.12);
+      --shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+      --radius: 18px;
+      --blur: 18px;
+      --transition: cubic-bezier(0.22, 1, 0.36, 1);
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* Layout */
+    .page {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(900px 900px at 15% 10%, rgba(124, 58, 237, 0.18), transparent 60%),
+        radial-gradient(1200px 900px at 80% 0%, rgba(34, 211, 238, 0.16), transparent 55%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%),
+        var(--bg);
+    }
+
+    .particle-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .blob { position: absolute; filter: blur(120px); opacity: 0.6; mix-blend-mode: screen; }
+    .blob-1 { width: 520px; height: 520px; background: #38bdf8; top: -120px; left: -80px; }
+    .blob-2 { width: 560px; height: 560px; background: #a855f7; top: -160px; right: -140px; }
+    .blob-3 { width: 460px; height: 460px; background: #22d3ee; bottom: -120px; left: 10%; }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(var(--blur));
+      background: rgba(6, 8, 15, 0.65);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+    .brand svg { width: 28px; height: 28px; }
+    .nav-links { display: flex; gap: 18px; align-items: center; }
+    .nav-links a { color: var(--muted); font-weight: 600; padding: 8px 12px; border-radius: 12px; transition: color 0.2s ease, background 0.2s ease; }
+    .nav-links a:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); }
+    .pill { padding: 12px 18px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font-weight: 700; box-shadow: var(--shadow); transition: transform 0.25s var(--transition), box-shadow 0.25s var(--transition); }
+    .pill:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 18px 40px rgba(56, 189, 248, 0.25); }
+
+    /* Hero */
+    .hero { position: relative; padding: 120px 24px 80px; max-width: 1200px; margin: 0 auto; z-index: 1; }
+    .hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; align-items: center; }
+    .eyebrow { text-transform: uppercase; letter-spacing: 2px; color: var(--primary); font-weight: 700; margin-bottom: 12px; font-size: 0.85rem; }
+    .hero h1 { font-size: clamp(2.6rem, 5vw, 3.6rem); margin: 0 0 18px; letter-spacing: -0.4px; }
+    .hero p.lead { color: var(--muted); font-size: 1.1rem; margin: 0 0 22px; max-width: 640px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 18px; border-radius: 14px; border: 1px solid var(--border); background: linear-gradient(135deg, rgba(125, 211, 252, 0.2), rgba(167, 139, 250, 0.2)); color: var(--text); font-weight: 700; cursor: pointer; transition: transform 0.25s var(--transition), box-shadow 0.25s var(--transition), border-color 0.25s; }
+    .btn.primary { background: linear-gradient(135deg, #38bdf8, #a78bfa); border-color: rgba(255, 255, 255, 0.2); color: #05060c; box-shadow: 0 18px 40px rgba(56, 189, 248, 0.35); }
+    .btn:hover { transform: translateY(-2px) scale(1.01); }
+    .hero-badges { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+    .badge { padding: 10px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border); color: var(--muted); font-weight: 600; backdrop-filter: blur(10px); }
+
+    /* Dashboard preview */
+    .preview-panel { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 22px; padding: 20px; box-shadow: var(--shadow); backdrop-filter: blur(var(--blur)); overflow: hidden; }
+    .preview-glow { position: absolute; inset: 0; background: radial-gradient(800px 520px at 20% 0%, rgba(56, 189, 248, 0.15), transparent 60%), radial-gradient(520px 320px at 80% 10%, rgba(167, 139, 250, 0.18), transparent 65%); pointer-events: none; opacity: 0.9; }
+    .preview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; position: relative; z-index: 1; }
+    .card { background: var(--panel-strong); border: 1px solid var(--border); border-radius: 16px; padding: 16px; position: relative; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.4s var(--transition), box-shadow 0.4s var(--transition); transform-style: preserve-3d; }
+    .card:hover { transform: perspective(900px) rotateX(8deg) rotateY(-8deg) translateY(-4px); box-shadow: 0 26px 60px rgba(0,0,0,0.45), 0 18px 50px rgba(56,189,248,0.25); }
+    .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+    /* Stats */
+    .stats { padding: 80px 24px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .stat { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); backdrop-filter: blur(var(--blur)); position: relative; overflow: hidden; }
+    .stat::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(56,189,248,0.16), rgba(167,139,250,0.12)); opacity: 0.6; pointer-events: none; }
+    .stat-value { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+    .stat-label { color: var(--muted); font-weight: 600; }
+
+    /* Sections */
+    .section { padding: 90px 24px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+    .section h2 { font-size: clamp(2rem, 4vw, 2.6rem); margin: 0 0 12px; }
+    .section p.lead { margin: 0 0 28px; color: var(--muted); max-width: 720px; }
+
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+    .feature { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; backdrop-filter: blur(var(--blur)); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    .feature svg { width: 28px; height: 28px; margin-bottom: 10px; }
+    .feature h3 { margin: 6px 0; }
+    .feature p { color: var(--muted); margin: 0; }
+    .feature::before { content: ''; position: absolute; inset: 0; background: radial-gradient(280px 180px at 20% 10%, rgba(56,189,248,0.18), transparent 60%); opacity: 0.7; pointer-events: none; }
+
+    /* CTA */
+    .cta { text-align: center; padding: 80px 24px 120px; }
+    .cta .panel { display: inline-block; padding: 26px 32px; border-radius: 18px; background: var(--panel); border: 1px solid var(--border); box-shadow: var(--shadow); backdrop-filter: blur(var(--blur)); min-width: min(720px, 100%); }
+    .cta h3 { margin: 0 0 10px; font-size: 2rem; }
+    .cta p { margin: 0 0 18px; color: var(--muted); }
+
+    /* Animations */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s var(--transition), transform 0.8s var(--transition); }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-inner { flex-direction: column; align-items: flex-start; }
+      .nav-links { flex-wrap: wrap; }
+      .preview-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <canvas class="particle-layer" id="particles"></canvas>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <nav class="nav">
+      <div class="nav-inner">
+        <div class="brand">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#38bdf8" />
+                <stop offset="1" stop-color="#a78bfa" />
+              </linearGradient>
+            </defs>
+            <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#g1)" opacity="0.25" />
+            <path d="M20 36c0-6 4-12 12-12s12 6 12 12" stroke="url(#g1)" stroke-width="4" stroke-linecap="round" />
+            <path d="M16 44c4 4 10 6 16 6s12-2 16-6" stroke="url(#g1)" stroke-width="4" stroke-linecap="round" />
+          </svg>
+          NovaFlow
+        </div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#preview">Preview</a>
+          <a href="#stats">Impact</a>
+          <a href="#cta" class="pill">Get access</a>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <div class="eyebrow">Future-ready SaaS</div>
+          <h1>Operate faster with a glassmorphic, AI-class UX.</h1>
+          <p class="lead">NovaFlow blends premium visuals with obsessive performance. Ship workflows that feel as fluid as native apps, with realtime dashboards, secure auth, and API-first flexibility.</p>
+          <div class="hero-actions">
+            <button class="btn primary">Start free trial</button>
+            <button class="btn">Book a demo</button>
+          </div>
+          <div class="hero-badges">
+            <span class="badge">99.99% uptime</span>
+            <span class="badge">SOC2-ready</span>
+            <span class="badge">Global edge</span>
+          </div>
+        </div>
+        <div class="preview-panel reveal" id="preview">
+          <div class="preview-glow"></div>
+          <div class="preview-grid">
+            <div class="card" data-tilt>
+              <h3>Realtime KPIs</h3>
+              <p>Latency, throughput, adoption — all in one pane.</p>
+              <div class="stat-value" style="margin-top:12px;">42.6k</div>
+              <div class="stat-label">events / min</div>
+            </div>
+            <div class="card" data-tilt>
+              <h3>AI Routing</h3>
+              <p>Smart load balancing that learns from traffic patterns.</p>
+              <svg width="120" height="60" viewBox="0 0 120 60" fill="none" aria-hidden="true">
+                <path d="M8 46C20 26 40 12 60 12s40 14 52 34" stroke="url(#g1)" stroke-width="3" stroke-linecap="round" />
+                <circle cx="60" cy="28" r="6" fill="url(#g1)" opacity="0.8">
+                  <animate attributeName="r" values="6;9;6" dur="2.2s" repeatCount="indefinite" />
+                </circle>
+              </svg>
+            </div>
+            <div class="card" data-tilt>
+              <h3>Ops Timeline</h3>
+              <p>Deploy previews, rollbacks, incidents — perfectly traced.</p>
+              <div style="display:flex; gap:8px; margin-top:10px;">
+                <span class="badge" style="background:rgba(56,189,248,0.12); color:var(--text);">Deploy</span>
+                <span class="badge" style="background:rgba(167,139,250,0.12); color:var(--text);">QA</span>
+              </div>
+            </div>
+            <div class="card" data-tilt>
+              <h3>Risk Radar</h3>
+              <p>Detect anomalies before customers ever feel them.</p>
+              <div class="stat-value" style="color:#22d3ee;">+18%</div>
+              <div class="stat-label">stability vs last week</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" id="features">
+      <h2 class="reveal">Built for the next decade</h2>
+      <p class="lead reveal">Glassmorphic layers, precision motion, and hardened security — all in a single platform. Inspired by Linear, Stripe, Vercel, and Apple-level polish.</p>
+      <div class="features">
+        <div class="feature reveal">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 22c0-7 5-14 16-14s16 7 16 14-5 14-16 14C15 36 8 29 8 22z" stroke="url(#g1)" stroke-width="3" stroke-linecap="round" />
+            <path d="M16 24l6 6 10-12" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <animate attributeName="stroke-dasharray" values="0 60;60 0" dur="2s" repeatCount="indefinite" />
+            </path>
+          </svg>
+          <h3>Trusted by design</h3>
+          <p>End-to-end encryption, audit trails, and role-aware access baked in.</p>
+        </div>
+        <div class="feature reveal">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 24c0-8 6-14 14-14s14 6 14 14-6 14-14 14S10 32 10 24z" stroke="url(#g1)" stroke-width="3" />
+            <path d="M24 14v10l6 6" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 24 24" to="360 24 24" dur="6s" repeatCount="indefinite" />
+            </path>
+          </svg>
+          <h3>Framer-grade motion</h3>
+          <p>Smooth easing, layered depth, and micro-interactions that feel native.</p>
+        </div>
+        <div class="feature reveal">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 18h24v16H12z" stroke="url(#g1)" stroke-width="3" rx="4" />
+            <path d="M16 14h16" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" />
+            <circle cx="18" cy="26" r="2" fill="#7dd3fc" />
+            <circle cx="30" cy="26" r="2" fill="#7dd3fc" />
+            <path d="M20 30c2 2 6 2 8 0" stroke="#22d3ee" stroke-width="2" stroke-linecap="round">
+              <animate attributeName="d" dur="2.5s" repeatCount="indefinite" values="M20 30c2 2 6 2 8 0;M20 30c2 -2 6 -2 8 0;M20 30c2 2 6 2 8 0" />
+            </path>
+          </svg>
+          <h3>Human onboarding</h3>
+          <p>Guided flows and adaptive walkthroughs that meet users where they are.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats" id="stats">
+      <div class="stat reveal">
+        <div class="stat-value" data-counter="128">0</div>
+        <div class="stat-label">Enterprises shipped</div>
+      </div>
+      <div class="stat reveal">
+        <div class="stat-value" data-counter="4.8">0</div>
+        <div class="stat-label">CSAT / 5.0</div>
+      </div>
+      <div class="stat reveal">
+        <div class="stat-value" data-counter="72">0</div>
+        <div class="stat-label">Regions on edge</div>
+      </div>
+      <div class="stat reveal">
+        <div class="stat-value" data-counter="0.18">0</div>
+        <div class="stat-label">Median latency (s)</div>
+      </div>
+    </section>
+
+    <section class="section" id="preview-deck">
+      <h2 class="reveal">Interactive dashboard preview</h2>
+      <p class="lead reveal">Hover to tilt. Scroll to animate. Everything wired with CSS variables, perspective, and intersection observers.</p>
+      <div class="preview-grid">
+        <div class="card reveal" data-tilt>
+          <h3>Revenue pulse</h3>
+          <p>See live ARR, cohort health, and expansion in one sweep.</p>
+        </div>
+        <div class="card reveal" data-tilt>
+          <h3>Customer map</h3>
+          <p>Zoom across regions with GPU-accelerated tiles.</p>
+        </div>
+        <div class="card reveal" data-tilt>
+          <h3>Workflow heat</h3>
+          <p>Spot bottlenecks with animated gradient overlays.</p>
+        </div>
+        <div class="card reveal" data-tilt>
+          <h3>Audit live</h3>
+          <p>Every action, signed and verifiable in real time.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="cta">
+      <div class="panel reveal">
+        <h3>Ready to feel the future?</h3>
+        <p>Deploy NovaFlow in minutes. Dark theme by default, built for teams that care about the details.</p>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <button class="btn primary">Launch workspace</button>
+          <button class="btn">Talk to product</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Particles
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+    function initParticles() {
+      particles = Array.from({ length: 120 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 0.6,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        o: Math.random() * 0.6 + 0.2,
+      }));
+    }
+    initParticles();
+    function tick() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(125, 211, 252, ${p.o})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(tick);
+    }
+    if (!prefersReduced) tick();
+
+    // IntersectionObserver for reveals
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('is-visible');
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Tilt cards
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      card.addEventListener('pointermove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const rx = ((y / rect.height) - 0.5) * 10;
+        const ry = ((x / rect.width) - 0.5) * -10;
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.transform = '';
+      });
+    });
+
+    // Smooth anchor scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const id = link.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
+      });
+    });
+
+    // Counters
+    function animateCounter(el) {
+      const target = parseFloat(el.dataset.counter);
+      const isInt = Number.isInteger(target);
+      const duration = 1200;
+      const start = performance.now();
+      const startVal = 0;
+      function frame(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = startVal + (target - startVal) * eased;
+        el.textContent = isInt ? Math.round(value).toLocaleString() : value.toFixed(2);
+        if (progress < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.done) {
+          entry.target.dataset.done = '1';
+          animateCounter(entry.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('[data-counter]').forEach(el => counterObserver.observe(el));
+  </script>
+</body>
+</html>

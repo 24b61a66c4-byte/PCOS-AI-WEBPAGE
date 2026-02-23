@@ -5,135 +5,258 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCOS Smart Assistant — Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/healthcare.css">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/gh/darkroomengineering/lenis@latest/bundled/lenis.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="navbar">
-        <div class="nav-container">
-            <div class="logo">🏥 PCOS Smart Assistant</div>
-            <div class="nav-actions">
-                <ul class="nav-menu">
-                    <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
-                </ul>
-                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
-                    <span class="theme-icon"></span>
-                </button>
+<body class="health-dashboard">
+    <!-- Navigation -->
+    <header class="top-nav">
+        <div class="top-nav__left">
+            <a href="landing.html" class="nav__logo">
+                <span class="logo-icon">🏥</span>
+                <span class="logo-text">PCOS AI</span>
+            </a>
+        </div>
+        <div class="top-nav__right">
+            <div class="lang-switch">
+                <select id="languageSelect" aria-label="Select language">
+                    <option value="en">English</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="hi">हिंदी</option>
+                </select>
+            </div>
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+                <span class="theme-icon"></span>
+            </button>
+            <a href="form.html" class="btn btn--primary btn--sm">Add Entry</a>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <!-- Dashboard Header -->
+        <div class="dashboard__header">
+            <div>
+                <h1 class="dashboard__title">Your Health Dashboard</h1>
+                <p class="dashboard__subtitle">Track your wellness journey and receive personalized insights</p>
+            </div>
+            <div class="dashboard__actions">
+                <div class="trust-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                    </svg>
+                    <span>Data stored locally</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <main class="container dashboard">
-        <section class="dashboard-hero reveal">
-            <div class="dashboard-hero-text">
-                <p class="eyebrow">PCOS Smart Assistant</p>
-                <div class="hero-row">
-                    <h1 class="hero-title">Welcome back</h1>
-                    <a href="#" class="assistant-pill">AI Assistant</a>
+        <!-- Stats Row -->
+        <div class="stats-row stagger-children">
+            <div class="stat-item">
+                <div class="stat-item__icon" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9;">
+                    📅
                 </div>
-                <p class="hero-subtitle">A calm, private space to capture your cycle and symptom notes. Add details once, then review insights here.</p>
+                <div class="stat-item__value" id="insight-cycle">—</div>
+                <div class="stat-item__label">Avg Cycle Days</div>
             </div>
-        </section>
+            <div class="stat-item">
+                <div class="stat-item__icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                    🩸
+                </div>
+                <div class="stat-item__value" id="insight-period">—</div>
+                <div class="stat-item__label">Period Days</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-item__icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;">
+                    📊
+                </div>
+                <div class="stat-item__value" id="health-score">—</div>
+                <div class="stat-item__label">Health Score</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-item__icon" style="background: rgba(147, 51, 234, 0.1); color: #9333ea;">
+                    🏥
+                </div>
+                <div class="stat-item__value" id="insight-symptoms">—</div>
+                <div class="stat-item__label">Symptoms Logged</div>
+            </div>
+        </div>
 
-        <section class="today-stack">
-            <div class="stack-card large reveal delay-1">
-                <div class="stack-header">
-                    <h2>Latest Entry</h2>
-                    <span class="stack-meta" id="latest-timestamp">No entries yet</span>
-                </div>
-                <div class="latest-grid">
+        <!-- Main Grid -->
+        <div class="dashboard__grid">
+            <!-- Latest Entry Card -->
+            <div class="healthcare-card insight-card stagger-children">
+                <div class="healthcare-card__header">
+                    <div class="healthcare-card__icon">📝</div>
                     <div>
-                        <p class="label">Last period</p>
-                        <p class="value" id="latest-last-period">—</p>
-                    </div>
-                    <div>
-                        <p class="label">Cycle length</p>
-                        <p class="value" id="latest-cycle">—</p>
-                    </div>
-                    <div>
-                        <p class="label">Period length</p>
-                        <p class="value" id="latest-period">—</p>
-                    </div>
-                    <div>
-                        <p class="label">Symptoms</p>
-                        <p class="value" id="latest-symptoms">—</p>
+                        <h3 class="healthcare-card__title">Latest Entry</h3>
+                        <p class="healthcare-card__subtitle" id="latest-timestamp">No entries yet</p>
                     </div>
                 </div>
-                <p class="muted" id="latest-summary">Add your first details to unlock insights.</p>
+                <div class="healthcare-card__content">
+                    <div class="metric-display">
+                        <div class="metric-display__chart">
+                            <svg viewBox="0 0 36 36" class="circular-progress">
+                                <path class="progress-ring__bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" stroke-width="3"/>
+                                <path class="progress-ring__circle" id="healthScoreRing" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#0ea5e9" stroke-width="3" stroke-dasharray="0, 100"/>
+                            </svg>
+                        </div>
+                        <div class="metric-display__info">
+                            <span class="metric-display__label">Last Period</span>
+                            <span class="metric-display__value" id="latest-last-period">—</span>
+                            <span class="metric-display__status metric-display__status--normal" id="latest-status">Add first entry</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="stack-column">
-                <div class="stack-card reveal delay-2">
-                    <h3>Quick Check</h3>
-                    <p class="muted">Track cycle length, period length, and symptoms in under two minutes.</p>
+            <!-- AI Recommendations Card -->
+            <div class="healthcare-card stagger-children">
+                <div class="healthcare-card__header">
+                    <div class="healthcare-card__icon">🤖</div>
+                    <div>
+                        <h3 class="healthcare-card__title">AI Recommendations</h3>
+                        <p class="healthcare-card__subtitle">Personalized insights</p>
+                    </div>
                 </div>
-                <div class="stack-card reveal delay-3">
-                    <h3>Privacy</h3>
-                    <p class="muted">Your data stays on this device and never leaves your browser.</p>
+                <div class="healthcare-card__content">
+                    <div class="recommendation-list">
+                        <div class="recommendation-item">
+                            <div class="recommendation-item__icon" style="background: rgba(14, 165, 233, 0.1);">🥗</div>
+                            <div class="recommendation-item__content">
+                                <div class="recommendation-item__title">Dietary Suggestions</div>
+                                <div class="recommendation-item__description">Include more whole grains and reduce refined sugars</div>
+                            </div>
+                            <span class="recommendation-item__priority recommendation-item__priority--high">High</span>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="recommendation-item__icon" style="background: rgba(34, 197, 94, 0.1);">🏃</div>
+                            <div class="recommendation-item__content">
+                                <div class="recommendation-item__title">Exercise Goal</div>
+                                <div class="recommendation-item__description">150 minutes of moderate activity weekly</div>
+                            </div>
+                            <span class="recommendation-item__priority recommendation-item__priority--medium">Medium</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <section class="insights-strip reveal delay-2">
-            <div class="insight-pill">
-                <p class="label">Average cycle</p>
-                <p class="value" id="insight-cycle">—</p>
+            <!-- Cycle Tracking Card -->
+            <div class="healthcare-card stagger-children">
+                <div class="healthcare-card__header">
+                    <div class="healthcare-card__icon">📈</div>
+                    <div>
+                        <h3 class="healthcare-card__title">Cycle Trends</h3>
+                        <p class="healthcare-card__subtitle">Your patterns over time</p>
+                    </div>
+                </div>
+                <div class="healthcare-card__content">
+                    <div class="health-metric">
+                        <div class="health-metric__icon">📊</div>
+                        <div class="health-metric__info">
+                            <span class="health-metric__label">Cycle Length</span>
+                            <span class="health-metric__value" id="cycle-value">28 <span class="health-metric__unit">days</span></span>
+                        </div>
+                        <div class="health-metric__trend health-metric__trend--up">↑ 2%</div>
+                    </div>
+                    <div class="progress-bar" style="margin-top: 16px;">
+                        <div class="progress-bar__fill" style="width: 75%;"></div>
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 8px;">Day 21 of cycle - follicular phase</p>
+                </div>
             </div>
-            <div class="insight-pill">
-                <p class="label">Average period</p>
-                <p class="value" id="insight-period">—</p>
+
+            <!-- Quick Actions Card -->
+            <div class="healthcare-card stagger-children">
+                <div class="healthcare-card__header">
+                    <div class="healthcare-card__icon">⚡</div>
+                    <div>
+                        <h3 class="healthcare-card__title">Quick Actions</h3>
+                        <p class="healthcare-card__subtitle">Stay on track</p>
+                    </div>
+                </div>
+                <div class="healthcare-card__content">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <a href="form.html" class="btn btn--primary" style="width: 100%; justify-content: center;">
+                            <span>📝</span> Log Today's Symptoms
+                        </a>
+                        <button class="btn btn--secondary" style="width: 100%; justify-content: center;" onclick="document.getElementById('assistantPanel').classList.add('open')">
+                            <span>💬</span> Chat with AI Assistant
+                        </button>
+                        <button class="btn btn--ghost" style="width: 100%; justify-content: center;">
+                            <span>📋</span> View Full Report
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="insight-pill">
-                <p class="label">Symptoms tracked</p>
-                <p class="value" id="insight-symptoms">—</p>
+        </div>
+
+        <!-- Privacy Note -->
+        <div class="cta-box" style="margin-top: 32px; background: rgba(14, 165, 233, 0.05); border: 1px solid rgba(14, 165, 233, 0.2);">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="font-size: 2rem;">🔒</div>
+                <div>
+                    <h4 style="margin-bottom: 4px;">Your Privacy is Protected</h4>
+                    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-secondary);">All your health data is stored locally on your device. We never transmit or share your personal information.</p>
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 
-    <footer class="footer">
-        <p>&copy; 2026 PCOS Smart Assistant. Empowering health decisions.</p>
-    </footer>
-
-    <div class="action-bar">
-        <a href="form.html" class="btn btn-primary btn-lg cta-pulse">Add Details</a>
+    <!-- Floating Action Button -->
+    <div class="action-bar" style="position: fixed; bottom: 24px; right: 24px; left: auto; flex-direction: row; background: transparent; backdrop-filter: none; padding: 0;">
+        <a href="form.html" class="btn btn--primary btn--lg" style="border-radius: 999px; box-shadow: 0 10px 40px rgba(14, 165, 233, 0.4);">
+            + Add Entry
+        </a>
     </div>
 
+    <!-- AI Assistant Panel -->
     <div class="assistant-panel" id="assistantPanel" aria-hidden="true">
-        <div class="assistant-card">
+        <div class="assistant-card" style="max-width: 600px;">
             <div class="assistant-header">
-                <h2>AI Health Insights</h2>
-                <button class="assistant-close" id="assistantClose" type="button">Close</button>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="chat-message__avatar chat-message__avatar--ai" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #06b6d4); display: flex; align-items: center; justify-content: center;">🤖</div>
+                    <div>
+                        <h2 style="font-size: 1.1rem; margin: 0;">AI Health Assistant</h2>
+                        <p style="font-size: 0.75rem; color: #22c55e; margin: 0;">● Online</p>
+                    </div>
+                </div>
+                <button class="assistant-close" id="assistantClose" type="button">✕</button>
             </div>
-            <div class="assistant-body">
+            <div class="assistant-body" style="height: 400px;">
                 <div class="chat-messages" id="chatMessages">
                     <div class="chat-message assistant-msg">
-                        <p>👋 Hi! I'm your AI health assistant. I can analyze your PCOS data and provide personalized insights.</p>
-                        <p>Ask me about:</p>
-                        <ul>
-                            <li>Your cycle patterns and trends</li>
-                            <li>Symptom analysis</li>
-                            <li>Lifestyle recommendations</li>
-                            <li>What your data suggests</li>
-                        </ul>
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <p>👋 Hello! I'm your AI Health Assistant.</p>
+                            <p>I can help you understand your health data better. Ask me about:</p>
+                            <ul style="margin: 8px 0 0 20px;">
+                                <li>Your cycle patterns</li>
+                                <li>Symptom analysis</li>
+                                <li>Lifestyle recommendations</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="chat-input-container">
                     <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                    <button class="btn btn-secondary" id="uploadBtn" type="button" title="Upload image">📷</button>
-                    <textarea id="chatInput" placeholder="Ask me anything or upload a photo..." rows="2"></textarea>
-                    <button class="btn btn-primary" id="chatSend" type="button">Send</button>
+                    <button class="btn btn--ghost btn--icon" id="uploadBtn" type="button" title="Upload image">📷</button>
+                    <textarea id="chatInput" placeholder="Type your question..." rows="1" style="flex: 1;"></textarea>
+                    <button class="btn btn--primary btn--icon" id="chatSend" type="button">➤</button>
                 </div>
-                <div id="imagePreview" class="image-preview" style="display: none;">
-                    <img id="previewImg" alt="Preview">
-                    <button class="remove-image" id="removeImage" type="button">×</button>
-                </div>
+                <p style="font-size: 0.7rem; color: var(--color-text-muted); margin: 8px 0 0; text-align: center;">
+                    ⚠️ Educational only. Not medical advice. Consult a healthcare provider.
+                </p>
             </div>
         </div>
     </div>
 
-    <script src="config.js"></script>
+    <script src="config-loader.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

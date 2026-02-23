@@ -1,5 +1,3 @@
-ests/e2e.spec.js</path>
-<content E2E test file.>
 /**
  * PCOS Smart Assistant - E2E Tests
  * Playwright tests for end-to-end user flows
@@ -10,8 +8,8 @@ const { test, expect, chromium } = require('@playwright/test');
 test.describe('PCOS Smart Assistant - E2E Tests', () => {
   
   test.beforeEach(async ({ page }) => {
-    // Navigate to the form page
-    await page.goto('file://' + process.cwd() + '/frontend/form.html');
+    // Navigate to the form page using HTTP server
+    await page.goto('http://localhost:8080/frontend/form.html');
   });
 
   test.describe('Form Navigation', () => {
@@ -180,10 +178,13 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       await page.click('#nextBtn');
       
       const lastPeriodInput = page.locator('#last_period');
-      const maxDate = await lastPeriodInput.getAttribute('max');
+      const maxDateRaw = await lastPeriodInput.getAttribute('max');
+      const maxDate = new Date(maxDateRaw || '').getTime();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
       
       // Max date should be today or earlier
-      expect(maxDate).toBeLessThanOrEqual(new Date().toISOString().split('T')[0]);
+      expect(maxDate).toBeLessThanOrEqual(today.getTime());
     });
 
     test('should show error for invalid cycle length', async ({ page }) => {
@@ -216,6 +217,8 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
     
     test('should navigate to step 3', async ({ page }) => {
       await fillStep1(page);
+      await page.click('#nextBtn');
+      await fillStep2(page);
       await page.click('#nextBtn');
       
       await expect(page.locator('.form-step[data-step="3"]')).toHaveClass(/active/);
@@ -443,14 +446,23 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.describe('PCOS Insight Panel', () => {
     
     test('should have insight panel', async ({ page }) => {
+      // Navigate to step 6 (review step) where insight panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
       await expect(page.locator('#pcosInsight')).toBeVisible();
     });
 
     test('should have insight title', async ({ page }) => {
+      // Navigate to step 6 (review step) where insight panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
       await expect(page.locator('#pcosInsightTitle')).toBeVisible();
     });
 
     test('should have disclaimer note', async ({ page }) => {
+      // Navigate to step 6 (review step) where insight panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
       const note = page.locator('#pcosInsightNote');
       await expect(note).toBeVisible();
       await expect(note).toContainText(/educational|medical|consult/i);
@@ -460,14 +472,21 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.describe('Care Suggestions Panel', () => {
     
     test('should have care suggestions panel', async ({ page }) => {
+      // Navigate to step 6 (review step) where care suggestions panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
       await expect(page.locator('#assistantInline')).toBeVisible();
     });
 
     test('should show suggestions based on entries', async ({ page }) => {
-      // Fill some data and check if suggestions appear
+      // Fill some data first
       await page.fill('#age', '25');
       
-      // Wait for draft to save
+      // Navigate to step 6 (review step) where care suggestions panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
+      
+      // Wait for suggestions to render
       await page.waitForTimeout(600);
       
       const suggestions = page.locator('#assistantInlineList .assistant-inline-item');
@@ -502,13 +521,13 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.describe('Dashboard Page', () => {
     
     test('should load dashboard page', async ({ page }) => {
-      await page.goto('file://' + process.cwd() + '/frontend/dashboard.html');
+      await page.goto('http://localhost:8080/frontend/dashboard.html');
       
       await expect(page).toHaveTitle(/PCOS Smart Assistant/);
     });
 
     test('should show no entries message initially', async ({ page }) => {
-      await page.goto('file://' + process.cwd() + '/frontend/dashboard.html');
+      await page.goto('http://localhost:8080/frontend/dashboard.html');
       
       await expect(page.locator('#latest-summary')).toContainText(/no entries|add your first/i);
     });
@@ -517,13 +536,13 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.describe('Results Page', () => {
     
     test('should load results page', async ({ page }) => {
-      await page.goto('file://' + process.cwd() + '/frontend/results.html');
+      await page.goto('http://localhost:8080/frontend/results.html');
       
       await expect(page).toHaveTitle(/Health Report|PCOS/i);
     });
 
     test('should have print button', async ({ page }) => {
-      await page.goto('file://' + process.cwd() + '/frontend/results.html');
+      await page.goto('http://localhost:8080/frontend/results.html');
       
       await expect(page.locator('#printReport')).toBeVisible();
     });

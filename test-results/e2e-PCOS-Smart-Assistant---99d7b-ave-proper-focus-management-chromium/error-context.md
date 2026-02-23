@@ -1,0 +1,194 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]: 🏥 PCOS Smart Assistant
+    - generic [ref=e5]:
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link "Dashboard" [ref=e8] [cursor=pointer]:
+            - /url: dashboard.html
+        - listitem [ref=e9]:
+          - link "Health Journey" [ref=e10] [cursor=pointer]:
+            - /url: form.html
+      - generic [ref=e11]:
+        - generic [ref=e12]: Language
+        - combobox "Language" [ref=e13]:
+          - option "English" [selected]
+          - option "తెలుగు"
+          - option "हिंदी"
+      - button "Toggle theme" [ref=e14] [cursor=pointer]:
+        - generic [ref=e15]: 🌙
+  - main [ref=e16]:
+    - paragraph [ref=e20]: Step 1 of 6
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - text: 👤
+        - generic [ref=e23]: Personal
+      - generic [ref=e24]:
+        - text: 🔄
+        - generic [ref=e25]: Menstrual
+      - generic [ref=e26]:
+        - text: ⚠️
+        - generic [ref=e27]: Symptoms
+      - generic [ref=e28]:
+        - text: 🏃
+        - generic [ref=e29]: Lifestyle
+      - generic [ref=e30]:
+        - text: 🏥
+        - generic [ref=e31]: Clinical
+      - generic [ref=e32]:
+        - text: ✨
+        - generic [ref=e33]: Review
+    - generic [ref=e35]:
+      - generic [ref=e37]:
+        - heading "👤 Personal Information" [level=2] [ref=e38]
+        - paragraph [ref=e39]: Let's start with your basic information
+        - generic [ref=e40]:
+          - generic [ref=e41]: What is your age? *
+          - spinbutton "What is your age? *" [ref=e42]: "25"
+          - alert
+        - generic [ref=e43]:
+          - generic [ref=e44]: What is your weight? (kg)
+          - spinbutton "What is your weight? (kg)" [ref=e45]
+        - generic [ref=e46]:
+          - generic [ref=e47]: What is your height? (cm)
+          - spinbutton "What is your height? (cm)" [ref=e48]
+      - generic [ref=e50]:
+        - heading "🔄 Menstrual Cycle" [level=2] [ref=e51]
+        - paragraph [ref=e52]: Understanding your cycle helps us better assist you
+        - generic [ref=e53]:
+          - generic [ref=e54]: What is your average cycle length? (days) *
+          - spinbutton "What is your average cycle length? (days) *" [ref=e55]
+          - generic [ref=e56]: Most cycles are 21-35 days. Enter your average.
+          - alert
+        - generic [ref=e57]:
+          - generic [ref=e58]: How long is your typical period? (days) *
+          - spinbutton "How long is your typical period? (days) *" [ref=e59]
+          - generic [ref=e60]: Typical range is 2-7 days.
+          - alert
+        - generic [ref=e61]:
+          - generic [ref=e62]: When was your last period? *
+          - textbox "When was your last period? *" [ref=e63]
+          - generic [ref=e64]: Use the start date of your most recent period.
+          - alert
+      - generic [ref=e66]:
+        - heading "⚠️ Current Symptoms" [level=2] [ref=e67]
+        - paragraph [ref=e68]: Select all that apply to you
+        - generic [ref=e69]:
+          - generic [ref=e70] [cursor=pointer]:
+            - checkbox "Irregular cycles" [ref=e71]
+            - text: Irregular cycles
+          - generic [ref=e72] [cursor=pointer]:
+            - checkbox "Weight gain" [ref=e73]
+            - text: Weight gain
+          - generic [ref=e74] [cursor=pointer]:
+            - checkbox "Excess hair growth" [ref=e75]
+            - text: Excess hair growth
+          - generic [ref=e76] [cursor=pointer]:
+            - checkbox "Acne" [ref=e77]
+            - text: Acne
+          - generic [ref=e78] [cursor=pointer]:
+            - checkbox "Hair loss" [ref=e79]
+            - text: Hair loss
+          - generic [ref=e80] [cursor=pointer]:
+            - checkbox "Mood changes" [ref=e81]
+            - text: Mood changes
+          - generic [ref=e82] [cursor=pointer]:
+            - checkbox "Fatigue" [ref=e83]
+            - text: Fatigue
+          - generic [ref=e84] [cursor=pointer]:
+            - checkbox "Pelvic pain" [ref=e85]
+            - text: Pelvic pain
+          - generic [ref=e86] [cursor=pointer]:
+            - checkbox "Infertility concerns" [ref=e87]
+            - text: Infertility concerns
+          - generic [ref=e88] [cursor=pointer]:
+            - checkbox "Skin darkening" [ref=e89]
+            - text: Skin darkening
+      - generic [ref=e91]:
+        - heading "🏃 Lifestyle & Habits" [level=2] [ref=e92]
+        - paragraph [ref=e93]: Help us understand your daily routine
+        - generic [ref=e94]:
+          - generic [ref=e95]: What is your activity level?
+          - combobox "What is your activity level?" [ref=e96]:
+            - option "Select activity level" [selected]
+            - option "Sedentary (little or no exercise)"
+            - option "Lightly active (1-3 days/week)"
+            - option "Moderately active (3-5 days/week)"
+            - option "Very active (6-7 days/week)"
+        - generic [ref=e97]:
+          - generic [ref=e98]: How many hours do you sleep per night?
+          - spinbutton "How many hours do you sleep per night?" [ref=e99]
+          - generic [ref=e100]: Average nightly sleep helps personalize guidance.
+        - generic [ref=e101]:
+          - generic [ref=e102]: How would you rate your stress level?
+          - combobox "How would you rate your stress level?" [ref=e103]:
+            - option "Select stress level" [selected]
+            - option "Low"
+            - option "Moderate"
+            - option "High"
+        - generic [ref=e104]:
+          - generic [ref=e105]: Any specific diet notes?
+          - textbox "Any specific diet notes?" [ref=e106]:
+            - /placeholder: e.g., vegetarian, low-carb, gluten-free
+      - generic [ref=e108]:
+        - heading "🏥 Clinical Information" [level=2] [ref=e109]
+        - paragraph [ref=e110]: Important medical details
+        - generic [ref=e111]:
+          - generic [ref=e112]: What is your city/location?
+          - textbox "What is your city/location?" [ref=e113]:
+            - /placeholder: City name
+        - generic [ref=e114]:
+          - generic [ref=e115]: Have you been diagnosed with PCOS?
+          - combobox "Have you been diagnosed with PCOS?" [ref=e116]:
+            - option "Select status" [selected]
+            - option "Already diagnosed with PCOS"
+            - option "Suspected PCOS"
+            - option "Family history of PCOS"
+            - option "Not diagnosed"
+        - generic [ref=e117]:
+          - generic [ref=e118]: Any current medications?
+          - textbox "Any current medications?" [ref=e119]:
+            - /placeholder: e.g., Metformin, Birth control
+      - generic [ref=e121]:
+        - heading "✨ Review Your Information" [level=2] [ref=e122]
+        - paragraph [ref=e123]: Please review before submitting
+      - generic [ref=e124]:
+        - button "Analyzing..." [disabled]
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - heading "PCOS Insight" [level=3] [ref=e127]
+          - paragraph [ref=e128]: Educational only. This does not diagnose PCOS. For medical advice, consult a clinician.
+        - generic [ref=e129]:
+          - generic [ref=e130]:
+            - generic [ref=e131]: Indicator level
+            - generic [ref=e132]: Moderate indicators
+            - paragraph [ref=e133]: Based on cycle length outside 21-35 days; period length outside 2-7 days.
+          - generic [ref=e134]:
+            - generic [ref=e135]: Possible longer-term impacts
+            - list [ref=e136]:
+              - listitem [ref=e137]: Irregular ovulation and fertility challenges
+              - listitem [ref=e138]: Insulin resistance and blood sugar changes
+              - listitem [ref=e139]: Weight changes and metabolism shifts
+              - listitem [ref=e140]: Cholesterol and cardiovascular risk factors
+              - listitem [ref=e141]: Mood, stress, or sleep disruptions
+              - listitem [ref=e142]: Skin and hair changes
+              - listitem [ref=e143]: Endometrial health changes with infrequent periods
+              - listitem [ref=e144]: Fatigue and energy fluctuations
+    - generic [ref=e145]:
+      - generic [ref=e146]:
+        - heading "Care Suggestions" [level=3] [ref=e147]
+        - paragraph [ref=e148]: Based on your entries. This is general guidance, not medical advice.
+      - generic [ref=e149]:
+        - generic [ref=e150]: Save your primary clinic or OB-GYN phone number in your contacts for quick access.
+        - generic [ref=e151]: If you ever feel severe pain, heavy bleeding, or faintness, seek urgent care using your local emergency number.
+        - generic [ref=e152]: Long or short cycles are worth monitoring; schedule a check-in if this pattern continues.
+        - generic [ref=e153]: Unusually short or long periods can be discussed with a clinician.
+    - paragraph [ref=e155]:
+      - strong [ref=e156]: "Note:"
+      - text: Your information is processed locally on your device. We never store, transmit, or share your data with anyone.
+  - contentinfo [ref=e157]:
+    - paragraph [ref=e158]: © 2026 PCOS Smart Assistant. Your health, your privacy, your journey.
+```
