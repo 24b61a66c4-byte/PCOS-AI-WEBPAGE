@@ -12,6 +12,18 @@ node_modules/
 package-lock.json
 yarn.lock
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+.pytest_cache/
+
 # Build outputs
 dist/
 build/
