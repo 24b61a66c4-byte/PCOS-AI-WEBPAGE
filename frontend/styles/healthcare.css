@@ -22,7 +22,7 @@
   --color-danger: #ef4444;
   --color-info: #3b82f6;
   
-  /* Neutral Colors */
+  /* Neutral Colors - Default to Light Theme */
   --color-bg-primary: #f8fafc;
   --color-bg-secondary: #f1f5f9;
   --color-bg-tertiary: #e2e8f0;
@@ -61,6 +61,96 @@
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
   --transition-slow: 350ms ease;
+}
+
+/* ===========================================
+   Dark Theme Variables (for healthcare.css)
+   Applied when body does NOT have .light-theme
+   =========================================== */
+
+body:not(.light-theme) {
+  /* Dark Theme - Override healthcare.css variables */
+  --color-bg-primary: #070e14;
+  --color-bg-secondary: #0c1620;
+  --color-bg-tertiary: #0f1c29;
+  --color-text-primary: #e8edf5;
+  --color-text-secondary: #99a3b5;
+  --color-text-muted: #64748b;
+  --color-border: #192535;
+}
+
+/* ===========================================
+   Dark Theme Overrides for healthcare.css
+   Elements with hardcoded white backgrounds
+   =========================================== */
+
+body:not(.light-theme) .healthcare-card,
+body:not(.light-theme) .metric-card,
+body:not(.light-theme) .stat-item,
+body:not(.light-theme) .form-input,
+body:not(.light-theme) .chat-container,
+body:not(.light-theme) .metric-display,
+body:not(.light-theme) .recommendation-item,
+body:not(.light-theme) .calendar,
+body:not(.light-theme) .calendar__day,
+body:not(.light-theme) .sidebar,
+body:not(.light-theme) .top-nav,
+body:not(.light-theme) .main-content {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+body:not(.light-theme) .chat-message__bubble,
+body:not(.light-theme) .chat-message--ai .chat-message__bubble {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+body:not(.light-theme) .chat-input {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+body:not(.light-theme) .calendar__day-header {
+  background: var(--color-bg-secondary);
+}
+
+body:not(.light-theme) .calendar__day:hover {
+  background: var(--color-bg-tertiary);
+}
+
+body:not(.light-theme) .top-nav,
+body:not(.light-theme) .sidebar {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border);
+}
+
+body:not(.light-theme) .sidebar__link:hover {
+  background: var(--color-bg-tertiary);
+}
+
+body:not(.light-theme) .btn--secondary {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+body:not(.light-theme) .btn--ghost {
+  color: var(--color-primary);
+}
+
+body:not(.light-theme) .btn--ghost:hover:not(:disabled) {
+  background: rgba(14, 165, 233, 0.15);
+}
+
+body:not(.light-theme) .form-input {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+body:not(.light-theme) .form-input::placeholder {
+  color: var(--color-text-muted);
 }
 
 /* ===========================================
