@@ -1230,3 +1230,72 @@ a:hover {
   height: 200px;
   width: 100%;
 }
+
+/* ===========================================
+   Exclude PCOS form elements from healthcare.css
+   These are handled by styles.css - IMPORTANT for dark theme
+   =========================================== */
+
+body:not(.light-theme) .form-section,
+body:not(.light-theme) .form-steps-shell,
+body:not(.light-theme) .form-slider,
+body:not(.light-theme) .form-step,
+body:not(.light-theme) .form-container,
+body:not(.light-theme) .form-actions,
+body:not(.light-theme) .progress-container,
+body:not(.light-theme) .step-indicators,
+body:not(.light-theme) .step-indicator,
+body:not(.light-theme) .form-message,
+body:not(.light-theme) .single-field,
+body:not(.light-theme) .checkbox-grid,
+body:not(.light-theme) .review-container,
+body:not(.light-theme) .review-section,
+body:not(.light-theme) .insight-panel,
+body:not(.light-theme) .insight-card,
+body:not(.light-theme) .assistant-inline,
+body:not(.light-theme) .assistant-inline-item {
+  background: transparent;
+  color: var(--text);
+}
+
+body:not(.light-theme) .form-section {
+  background: rgba(17, 26, 36, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body:not(.light-theme) .step-indicator {
+  background: rgba(17, 26, 36, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+body:not(.light-theme) .step-indicator.active {
+  color: var(--text);
+  border-color: rgba(56, 189, 248, 0.5);
+}
+
+body:not(.light-theme) .step-indicator.completed {
+  color: var(--text);
+  border-color: rgba(45, 212, 191, 0.5);
+}
+
+body:not(.light-theme) .insight-panel,
+body:not(.light-theme) .assistant-inline {
+  background: rgba(17, 26, 36, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body:not(.light-theme) .insight-card,
+body:not(.light-theme) .assistant-inline-item {
+  background: rgba(15, 23, 34, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body:not(.light-theme) .review-section {
+  background: rgba(15, 23, 34, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body:not(.light-theme) .form-actions {
+  background: rgba(17, 26, 36, 0.9) !important;
+}
