@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseOS — Modern SaaS Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --glass: rgba(255, 255, 255, 0.06);
+      --glass-strong: rgba(255, 255, 255, 0.12);
+      --border: rgba(255, 255, 255, 0.16);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(124, 58, 237, 0.14), transparent 50%),
+                  radial-gradient(1200px 900px at 90% 0%, rgba(14, 165, 233, 0.16), transparent 55%),
+                  #070a12;
+      color: #e5e7eb;
+      overflow-x: hidden;
+    }
+    .light body {
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(124, 58, 237, 0.08), transparent 50%),
+                  radial-gradient(1200px 900px at 90% 0%, rgba(14, 165, 233, 0.1), transparent 55%),
+                  #f8fafc;
+      color: #0f172a;
+    }
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+    .glass-strong { background: var(--glass-strong); }
+    .nav-blur { backdrop-filter: blur(20px); }
+    .btn {
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+      box-shadow: 0 16px 40px rgba(56, 189, 248, 0.25);
+    }
+    .btn:hover { transform: translateY(-2px) scale(1.01); }
+    .tilt-card { transform-style: preserve-3d; transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); }
+    .tilt-card:hover { box-shadow: 0 20px 60px rgba(59, 130, 246, 0.25); }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .loader {
+      position: fixed; inset: 0; background: #070a12; display: grid; place-items: center; z-index: 50;
+    }
+    .loader-dot { width: 12px; height: 12px; margin: 6px; border-radius: 999px; background: #38bdf8; animation: pulse 1s infinite alternate; }
+    .loader-dot:nth-child(2) { animation-delay: 0.15s; background: #a855f7; }
+    .loader-dot:nth-child(3) { animation-delay: 0.3s; background: #22d3ee; }
+    @keyframes pulse { to { transform: scale(1.4); opacity: 0.65; } }
+    /* Particle canvas below content */
+    #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    /* Smooth anchor scroll on Safari */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="relative">
+  <canvas id="particles"></canvas>
+  <!-- Loading overlay -->
+  <div id="loader" class="loader">
+    <div class="flex items-center">
+      <div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div>
+    </div>
+  </div>
+
+  <!-- Sticky Navbar -->
+  <header id="navbar" class="nav-blur fixed top-0 left-0 w-full z-40 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between glass rounded-2xl mt-4">
+      <div class="flex items-center gap-3 font-semibold text-lg">
+        <span class="h-10 w-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-500 grid place-items-center text-gray-900 font-bold">P</span>
+        PulseOS
+      </div>
+      <nav class="hidden md:flex items-center gap-4 text-sm text-gray-200">
+        <a href="#hero" class="hover:text-white">Home</a>
+        <a href="#features" class="hover:text-white">Features</a>
+        <a href="#stats" class="hover:text-white">Stats</a>
+        <a href="#pricing" class="hover:text-white">Pricing</a>
+        <a href="#contact" class="hover:text-white">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button id="themeToggle" class="glass px-3 py-2 rounded-xl text-sm">Toggle</button>
+        <a href="#contact" class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-4 py-2 rounded-xl">Get Access</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10 pt-28" id="hero">
+    <!-- Hero -->
+    <section class="max-w-6xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-10 items-center">
+      <div class="space-y-6 reveal">
+        <p class="uppercase tracking-[0.35em] text-cyan-200 text-xs">Modern SaaS Platform</p>
+        <h1 class="text-4xl md:text-5xl font-bold leading-tight">Operate with a glassmorphic dashboard that feels native.</h1>
+        <p class="text-gray-300 text-lg">PulseOS blends premium UI, buttery motion, and real-time insights. Ship workflows your team actually loves to use.</p>
+        <div class="flex gap-3 flex-wrap">
+          <a class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-5 py-3 rounded-xl" href="#pricing">Start Free Trial</a>
+          <a class="btn glass px-5 py-3 rounded-xl" href="#features">Explore Features</a>
+        </div>
+        <div class="flex items-center gap-4 text-sm text-gray-400">
+          <span class="glass px-3 py-2 rounded-lg">99.99% uptime</span>
+          <span class="glass px-3 py-2 rounded-lg">SOC2-ready</span>
+          <span class="glass px-3 py-2 rounded-lg">Edge-first</span>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="glass rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+          <div class="absolute -top-16 -right-16 w-64 h-64 bg-cyan-500/20 blur-3xl"></div>
+          <div class="absolute -bottom-10 -left-10 w-72 h-72 bg-purple-500/20 blur-3xl"></div>
+          <div class="grid grid-cols-2 gap-4 relative">
+            <div class="tilt-card glass p-4 rounded-2xl">
+              <p class="text-xs text-gray-400">Latency</p>
+              <p class="text-3xl font-bold text-cyan-200">84 ms</p>
+              <div class="mt-3 h-2 rounded-full bg-white/10">
+                <div class="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 w-3/4"></div>
+              </div>
+            </div>
+            <div class="tilt-card glass p-4 rounded-2xl">
+              <p class="text-xs text-gray-400">Sessions</p>
+              <p class="text-3xl font-bold text-purple-200">12.4k</p>
+              <p class="text-xs text-gray-400 mt-2">+18% WoW</p>
+            </div>
+            <div class="col-span-2 tilt-card glass p-4 rounded-2xl flex items-center justify-between">
+              <div>
+                <p class="text-xs text-gray-400">AI Routing</p>
+                <p class="text-xl font-semibold">Stable · Learning</p>
+              </div>
+              <div class="w-32 h-32 rounded-full border border-cyan-300/40 grid place-items-center">
+                <span class="text-cyan-200 font-bold">99.2%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="max-w-6xl mx-auto px-4 py-16 space-y-8">
+      <div class="flex items-center justify-between reveal">
+        <h2 class="text-3xl font-semibold">Designed for momentum</h2>
+        <p class="text-gray-400 max-w-xl">Glass panels, crisp micro-interactions, and fast paths that keep your team in flow.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="tilt-card glass p-5 rounded-2xl reveal">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 mb-3"></div>
+          <h3 class="text-xl font-semibold mb-2">Realtime Ops</h3>
+          <p class="text-gray-400">Latency, throughput, anomalies — live and prioritized.</p>
+        </div>
+        <div class="tilt-card glass p-5 rounded-2xl reveal">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-blue-500 mb-3"></div>
+          <h3 class="text-xl font-semibold mb-2">Adaptive Workflows</h3>
+          <p class="text-gray-400">Role-aware routes with AI suggestions where it counts.</p>
+        </div>
+        <div class="tilt-card glass p-5 rounded-2xl reveal">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 mb-3"></div>
+          <h3 class="text-xl font-semibold mb-2">Auditable by default</h3>
+          <p class="text-gray-400">Events are signed, replayable, and export-ready.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section id="stats" class="max-w-6xl mx-auto px-4 py-16">
+      <div class="grid md:grid-cols-4 gap-4">
+        <div class="glass p-5 rounded-2xl reveal text-center">
+          <div class="text-4xl font-bold text-cyan-200" data-counter="128">0</div>
+          <p class="text-gray-400">Enterprise teams</p>
+        </div>
+        <div class="glass p-5 rounded-2xl reveal text-center">
+          <div class="text-4xl font-bold text-purple-200" data-counter="4.9">0</div>
+          <p class="text-gray-400">CSAT / 5.0</p>
+        </div>
+        <div class="glass p-5 rounded-2xl reveal text-center">
+          <div class="text-4xl font-bold text-emerald-200" data-counter="72">0</div>
+          <p class="text-gray-400">Edge regions</p>
+        </div>
+        <div class="glass p-5 rounded-2xl reveal text-center">
+          <div class="text-4xl font-bold text-cyan-200" data-counter="0.18">0</div>
+          <p class="text-gray-400">Median latency (s)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials slider -->
+    <section class="max-w-6xl mx-auto px-4 py-16 space-y-6" id="testimonials">
+      <div class="flex items-center justify-between reveal">
+        <h2 class="text-3xl font-semibold">Teams that switched say</h2>
+        <div class="flex gap-2">
+          <button id="prevTestimonial" class="glass px-3 py-2 rounded-lg">Prev</button>
+          <button id="nextTestimonial" class="glass px-3 py-2 rounded-lg">Next</button>
+        </div>
+      </div>
+      <div class="relative glass p-6 rounded-3xl reveal">
+        <p id="testimonialText" class="text-xl font-semibold mb-3">“PulseOS cut our incident response time by 40%.”</p>
+        <div class="text-gray-300" id="testimonialMeta">— Alex Chen, VP Eng @ Fluxor</div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="max-w-6xl mx-auto px-4 py-16 space-y-6">
+      <div class="flex items-center justify-between reveal">
+        <h2 class="text-3xl font-semibold">Pricing that scales with you</h2>
+        <div class="flex items-center gap-2 text-sm text-gray-300">
+          <span>Monthly</span>
+          <label class="inline-flex items-center cursor-pointer">
+            <input id="billingToggle" type="checkbox" class="sr-only">
+            <span class="w-12 h-6 glass rounded-full flex items-center px-1 transition-all">
+              <span class="dot w-4 h-4 bg-white rounded-full transition-all"></span>
+            </span>
+          </label>
+          <span>Annual <span class="text-cyan-300">-15%</span></span>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="glass p-6 rounded-2xl reveal">
+          <p class="text-sm text-cyan-200 font-semibold">Starter</p>
+          <p class="text-4xl font-bold" data-plan="29">$29</p>
+          <p class="text-gray-400 mb-4">For focused teams shipping fast.</p>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li>Up to 5 seats</li>
+            <li>Realtime dashboards</li>
+            <li>Email support</li>
+          </ul>
+          <button class="btn mt-6 w-full glass-strong rounded-xl py-3">Choose</button>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-cyan-300/40 reveal">
+          <p class="text-sm text-cyan-200 font-semibold">Growth</p>
+          <p class="text-4xl font-bold" data-plan="79">$79</p>
+          <p class="text-gray-400 mb-4">For product-led teams with scale.</p>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li>Up to 25 seats</li>
+            <li>Edge acceleration</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="btn mt-6 w-full bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 rounded-xl py-3">Choose</button>
+        </div>
+        <div class="glass p-6 rounded-2xl reveal">
+          <p class="text-sm text-cyan-200 font-semibold">Enterprise</p>
+          <p class="text-4xl font-bold" data-plan="199">$199</p>
+          <p class="text-gray-400 mb-4">For global fleets needing control.</p>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li>Unlimited seats</li>
+            <li>Dedicated SRE lane</li>
+            <li>Compliance suite</li>
+          </ul>
+          <button class="btn mt-6 w-full glass-strong rounded-xl py-3">Talk to us</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="max-w-6xl mx-auto px-4 py-16">
+      <div class="glass p-6 rounded-3xl reveal">
+        <h2 class="text-3xl font-semibold mb-3">Let’s talk</h2>
+        <p class="text-gray-400 mb-6">Tell us about your team. We’ll respond within 1 business day.</p>
+        <form id="contactForm" class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm text-gray-300">Name</label>
+            <input name="name" class="mt-1 w-full glass rounded-xl px-3 py-3 outline-none" required />
+          </div>
+          <div>
+            <label class="text-sm text-gray-300">Email</label>
+            <input name="email" type="email" class="mt-1 w-full glass rounded-xl px-3 py-3 outline-none" required />
+          </div>
+          <div class="md:col-span-2">
+            <label class="text-sm text-gray-300">Message</label>
+            <textarea name="message" rows="4" class="mt-1 w-full glass rounded-xl px-3 py-3 outline-none" required></textarea>
+          </div>
+          <div class="md:col-span-2 flex justify-between items-center text-sm text-gray-400">
+            <span id="formStatus"></span>
+            <button class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-5 py-3 rounded-xl" type="submit">Send message</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between text-gray-400 text-sm">
+    <div>© 2026 PulseOS. Crafted for teams that care.</div>
+    <div class="flex gap-3 mt-3 md:mt-0">
+      <a class="hover:text-white" href="#">Twitter</a>
+      <a class="hover:text-white" href="#">LinkedIn</a>
+      <a class="hover:text-white" href="#">GitHub</a>
+    </div>
+  </footer>
+
+  <script>
+    const state = { light: false, testimonials: [
+      { quote: '“PulseOS cut our incident response time by 40%.”', meta: '— Alex Chen, VP Eng @ Fluxor' },
+      { quote: '“The dashboard feels native. Our PMs finally stopped exporting to sheets.”', meta: '— Priya Raman, Head of Product @ Northwind' },
+      { quote: '“Beautiful, fast, compliant out of the box.”', meta: '— Dana Ruiz, CTO @ LumenWave' },
+    ], idx: 0 };
+
+    // Loading overlay
+    window.addEventListener('load', () => {
+      document.getElementById('loader').style.display = 'none';
+    });
+
+    // Theme toggle
+    const root = document.documentElement;
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      state.light = !state.light;
+      document.documentElement.classList.toggle('light', state.light);
+      document.body.classList.toggle('light', state.light);
+    });
+
+    // Navbar shrink on scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY > 20;
+      navbar.classList.toggle('mt-0', scrolled);
+      navbar.classList.toggle('shadow-lg', scrolled);
+    });
+
+    // Intersection observer for reveal + counters
+    const revealEls = document.querySelectorAll('.reveal');
+    const counters = document.querySelectorAll('[data-counter]');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          if (entry.target.dataset.counter && !entry.target.dataset.done) {
+            entry.target.dataset.done = '1';
+            animateCounter(entry.target, parseFloat(entry.target.dataset.counter));
+          }
+        }
+      });
+    }, { threshold: 0.2 });
+    revealEls.forEach(el => io.observe(el));
+    counters.forEach(el => io.observe(el));
+
+    function animateCounter(el, target) {
+      const start = performance.now();
+      const duration = 1200;
+      const isInt = Number.isInteger(target);
+      const step = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = target * eased;
+        el.textContent = isInt ? Math.round(value) : value.toFixed(2);
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    // Tilt cards (parallax)
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('pointermove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const rx = ((y / rect.height) - 0.5) * 10;
+        const ry = ((x / rect.width) - 0.5) * -10;
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.transform = 'perspective(900px) rotateX(0) rotateY(0)';
+      });
+    });
+
+    // Testimonials slider
+    const testimonialText = document.getElementById('testimonialText');
+    const testimonialMeta = document.getElementById('testimonialMeta');
+    function renderTestimonial(idx) {
+      const t = state.testimonials[idx];
+      testimonialText.textContent = t.quote;
+      testimonialMeta.textContent = t.meta;
+    }
+    document.getElementById('prevTestimonial').addEventListener('click', () => {
+      state.idx = (state.idx - 1 + state.testimonials.length) % state.testimonials.length;
+      renderTestimonial(state.idx);
+    });
+    document.getElementById('nextTestimonial').addEventListener('click', () => {
+      state.idx = (state.idx + 1) % state.testimonials.length;
+      renderTestimonial(state.idx);
+    });
+    setInterval(() => {
+      state.idx = (state.idx + 1) % state.testimonials.length;
+      renderTestimonial(state.idx);
+    }, 6000);
+
+    // Pricing toggle
+    const billingToggle = document.getElementById('billingToggle');
+    const plans = document.querySelectorAll('[data-plan]');
+    billingToggle.addEventListener('change', () => {
+      const annual = billingToggle.checked;
+      plans.forEach(p => {
+        const base = parseFloat(p.dataset.plan);
+        const value = annual ? Math.round(base * 12 * 0.85) : base;
+        p.textContent = `$${value}`;
+      });
+    });
+
+    // Contact form validation (lightweight)
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(contactForm);
+      const name = data.get('name').trim();
+      const email = data.get('email').trim();
+      const message = data.get('message').trim();
+      const status = document.getElementById('formStatus');
+      if (!name || !email || !message || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        status.textContent = 'Please fill all fields with a valid email.';
+        status.className = 'text-red-300';
+        return;
+      }
+      status.textContent = 'Sent! We will reply shortly.';
+      status.className = 'text-emerald-300';
+      contactForm.reset();
+    });
+
+    // Particles background (lightweight)
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    const resize = () => { canvas.width = innerWidth; canvas.height = innerHeight; };
+    window.addEventListener('resize', resize);
+    resize();
+    function initParticles() {
+      particles = Array.from({ length: 100 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 0.8,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        o: Math.random() * 0.5 + 0.2,
+      }));
+    }
+    initParticles();
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(56, 189, 248, ${p.o})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>
