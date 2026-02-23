@@ -446,14 +446,23 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.describe('PCOS Insight Panel', () => {
     
     test('should have insight panel', async ({ page }) => {
+      // Navigate to step 6 (review step) where insight panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
       await expect(page.locator('#pcosInsight')).toBeVisible();
     });
 
     test('should have insight title', async ({ page }) => {
+      // Navigate to step 6 (review step) where insight panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
       await expect(page.locator('#pcosInsightTitle')).toBeVisible();
     });
 
     test('should have disclaimer note', async ({ page }) => {
+      // Navigate to step 6 (review step) where insight panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
       const note = page.locator('#pcosInsightNote');
       await expect(note).toBeVisible();
       await expect(note).toContainText(/educational|medical|consult/i);
@@ -463,14 +472,21 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.describe('Care Suggestions Panel', () => {
     
     test('should have care suggestions panel', async ({ page }) => {
+      // Navigate to step 6 (review step) where care suggestions panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
       await expect(page.locator('#assistantInline')).toBeVisible();
     });
 
     test('should show suggestions based on entries', async ({ page }) => {
-      // Fill some data and check if suggestions appear
+      // Fill some data first
       await page.fill('#age', '25');
       
-      // Wait for draft to save
+      // Navigate to step 6 (review step) where care suggestions panel is visible
+      await fillSteps1to5(page);
+      await page.click('#nextBtn');
+      
+      // Wait for suggestions to render
       await page.waitForTimeout(600);
       
       const suggestions = page.locator('#assistantInlineList .assistant-inline-item');
