@@ -1,3 +1,19 @@
+﻿  // Toast notification
+  function showToast(message, duration = 2200) {
+    let toast = document.getElementById('globalToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'globalToast';
+      toast.className = 'toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
+  }
+
+  // Example: show toast after saving personal info (hook into your form logic)
+  window.showSuccessToast = showToast;
 // PCOS Smart Assistant - Multi-Step Form with Smooth Scrolling
 document.addEventListener('DOMContentLoaded', function() {
   const lenis = new Lenis({
@@ -40,26 +56,87 @@ document.addEventListener('DOMContentLoaded', function() {
 
   initTheme();
 
-  // Get API keys from config.js (create from config.example.js)
-  const SUPABASE_URL = window.CONFIG?.SUPABASE_URL || '';
-  const SUPABASE_ANON_KEY = window.CONFIG?.SUPABASE_ANON_KEY || '';
-  const supabaseClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    : null;
 
-  async function pushEntryToSupabase(entry) {
-    if (!supabaseClient) return;
-    try {
-      const { error } = await supabaseClient
-        .from('pcos_entries')
-        .insert([entry]);
-      if (error) {
-        console.warn('Supabase insert failed:', error);
+  // Animate stat numbers (count up effect)
+  function animateNumber(element, endValue, duration = 1200) {
+    if (!element) return;
+    const startValue = parseInt(element.textContent.replace(/\D/g, '')) || 0;
+    const startTime = performance.now();
+    element.classList.add('animated');
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const value = Math.floor(startValue + (endValue - startValue) * progress);
+      element.textContent = value;
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        element.textContent = endValue;
+        setTimeout(() => element.classList.remove('animated'), 800);
       }
-    } catch (err) {
-      console.warn('Supabase insert failed:', err);
+    }
+    requestAnimationFrame(update);
+  }
+
+
+  // Demo data for first-time users
+  const DEMO_DATA_KEY = 'pcos_last_analysis';
+  const DEMO_DATA = {
+    analysis: {
+      risk_score: 42,
+      summary: 'Your risk is moderate. Maintain healthy habits and monitor symptoms.',
+    },
+    report: {
+      key_findings: [
+        'Cycle length is within normal range.',
+        'Symptoms frequency is moderate.',
+        'No critical alerts detected.',
+      ],
+    },
+    entries: [
+      { date: '2026-02-01', symptoms: ['bloating', 'fatigue'], cycle_length: 28 },
+      { date: '2026-01-04', symptoms: ['cramps'], cycle_length: 29 },
+      { date: '2025-12-07', symptoms: ['headache'], cycle_length: 27 },
+    ],
+  };
+
+  function autoLoadDemoData() {
+    if (!localStorage.getItem(DEMO_DATA_KEY)) {
+      localStorage.setItem(DEMO_DATA_KEY, JSON.stringify(DEMO_DATA));
+      // Optionally, trigger a toast or reload dashboard
+      if (window.location.pathname.endsWith('dashboard.html') || window.location.pathname.endsWith('results.html')) {
+        location.reload();
+      }
     }
   }
+
+  autoLoadDemoData();
+
+
+  // Save entry to both localStorage and Supabase
+  async function saveEntry(entry) {
+    // Save to localStorage
+    let analysisRaw = localStorage.getItem('pcos_last_analysis');
+    let analysis = analysisRaw ? JSON.parse(analysisRaw) : { entries: [] };
+    analysis.entries = [entry, ...(analysis.entries || [])];
+    localStorage.setItem('pcos_last_analysis', JSON.stringify(analysis));
+
+    // Save to Supabase if available
+    if (supabaseClient) {
+      try {
+        const { error } = await supabaseClient
+          .from('pcos_entries')
+          .insert([entry]);
+        if (error) {
+          console.warn('Supabase insert failed:', error);
+        }
+      } catch (err) {
+        console.warn('Supabase insert failed:', err);
+      }
+    }
+  }
+
+  // Replace all calls to pushEntryToSupabase(entry) with saveEntry(entry) in your form logic.
 
   async function fetchDatasetStats() {
     if (!supabaseClient) return null;
@@ -550,7 +627,7 @@ Image Analysis Instructions:
 
     const messageDiv = document.createElement('div');
     messageDiv.className = `chat-message ${isUser ? 'user-msg' : 'assistant-msg'}`;
-    
+
     if (imageUrl && isUser) {
       const img = document.createElement('img');
       img.src = imageUrl;
@@ -558,8 +635,16 @@ Image Analysis Instructions:
       img.alt = 'Uploaded image';
       messageDiv.appendChild(img);
     }
-    
-    if (content) {
+
+    if (content && typeof content === 'object' && content.error) {
+      // Render error banner with retry
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'chat-error-banner';
+      errorDiv.innerHTML = `<span>⚠️ ${content.error}</span> <button class="btn btn--sm btn--danger chat-retry-btn">Retry</button>`;
+      messageDiv.appendChild(errorDiv);
+      // Attach retry handler
+      errorDiv.querySelector('.chat-retry-btn').onclick = content.onRetry || null;
+    } else if (content) {
       const textDiv = document.createElement('div');
       textDiv.textContent = content;
       messageDiv.appendChild(textDiv);
@@ -602,12 +687,47 @@ Image Analysis Instructions:
 
       addChatMessage(message || 'Please analyze this image', true, currentImage);
       chatInput.value = '';
-      chatSend.disabled = true;
-      chatSend.textContent = hasImage ? 'Analyzing image...' : 'Thinking...';
-      chatSend.classList.add('is-loading');
 
-      const response = await sendChatMessage(message || 'Please analyze this image for PCOS-related symptoms', currentImage);
-      addChatMessage(response, false);
+      chatSend.disabled = true;
+      chatSend.textContent = '';
+      chatSend.classList.add('is-loading');
+      // Add animated dots loader inside button
+      let loader = chatSend.querySelector('.loader-dots');
+      if (!loader) {
+        loader = document.createElement('span');
+        loader.className = 'loader-dots';
+        loader.innerHTML = '<span></span><span></span><span></span>';
+        chatSend.appendChild(loader);
+      } else {
+        loader.style.display = 'inline-flex';
+      }
+
+
+      let response, isError = false;
+      try {
+        response = await sendChatMessage(message || 'Please analyze this image for PCOS-related symptoms', currentImage);
+      } catch (err) {
+        isError = true;
+        response = err && err.message ? err.message : 'AI service unavailable.';
+      }
+
+      // If error, show error banner with retry and toast
+      if (isError || (typeof response === 'string' && response.startsWith('Sorry, I encountered an error'))) {
+        addChatMessage({
+          error: response,
+          onRetry: () => {
+            // Remove last error message and retry
+            const messagesContainer = document.getElementById('chatMessages');
+            if (messagesContainer && messagesContainer.lastChild) {
+              messagesContainer.removeChild(messagesContainer.lastChild);
+            }
+            handleSend();
+          }
+        }, false);
+        showToast('AI Assistant error: ' + response, 3500);
+      } else {
+        addChatMessage(response, false);
+      }
 
       if (imagePreview) imagePreview.style.display = 'none';
       currentImage = null;
@@ -615,6 +735,9 @@ Image Analysis Instructions:
       chatSend.disabled = false;
       chatSend.textContent = 'Send';
       chatSend.classList.remove('is-loading');
+      // Remove loader dots
+      const loaderElem = chatSend.querySelector('.loader-dots');
+      if (loaderElem) loaderElem.style.display = 'none';
       chatInput.focus();
     };
 
@@ -688,6 +811,8 @@ Image Analysis Instructions:
   }
 
   function initDashboard() {
+    const loader = document.getElementById('dashboardLoader');
+    if (loader) loader.style.display = 'flex';
     const timestampEl = document.getElementById('latest-timestamp');
     const lastPeriodEl = document.getElementById('latest-last-period');
     if (!timestampEl || !lastPeriodEl) return;
@@ -710,6 +835,8 @@ Image Analysis Instructions:
       entries = entriesRaw ? JSON.parse(entriesRaw) : [];
     } catch (err) {
       console.warn('Dashboard load failed:', err);
+    } finally {
+      if (loader) setTimeout(() => { loader.style.display = 'none'; }, 600);
     }
 
     if (lastEntry) {
@@ -807,9 +934,11 @@ Image Analysis Instructions:
 
   function setSubmitting(isSubmitting) {
     if (!submitBtn) return;
+    const loader = document.getElementById('formLoader');
     submitBtn.disabled = isSubmitting;
     submitBtn.classList.toggle('is-loading', isSubmitting);
     submitBtn.textContent = isSubmitting ? 'Saving...' : submitLabel;
+    if (loader) loader.style.display = isSubmitting ? 'flex' : 'none';
   }
 
   function collectDraft() {

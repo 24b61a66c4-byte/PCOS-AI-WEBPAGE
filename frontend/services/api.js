@@ -1,3 +1,6 @@
+﻿
+
+
 /**
  * API Service
  * Centralized API call handling with error management

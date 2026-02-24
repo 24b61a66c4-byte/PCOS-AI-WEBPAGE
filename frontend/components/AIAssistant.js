@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AIAssistant Component
  * Premium AI chat interface for healthcare recommendations
  */
@@ -19,6 +19,7 @@ export class AIAssistant {
     };
     this.messages = [];
     this.isTyping = false;
+    this.lastSend = 0;
   }
 
   render() {
@@ -144,20 +145,37 @@ export class AIAssistant {
   sendMessage() {
     const chatInput = document.getElementById('chatInput');
     const message = chatInput.value.trim();
-    
-    if (!message || this.isTyping) return;
-
+    // Input validation: min length, no empty, no spam
+    if (!message || message.length < 2 || this.isTyping) {
+      this.showError('Please enter a valid question.');
+      return;
+    }
+    // Throttle send
+    if (this.lastSend && Date.now() - this.lastSend < 1200) {
+      this.showError('Please wait before sending again.');
+      return;
+    }
+    this.lastSend = Date.now();
     this.addMessage(message, 'user');
     chatInput.value = '';
     chatInput.style.height = 'auto';
-    
     this.options.onMessage(message);
-    this.simulateAIResponse();
+    try {
+      this.simulateAIResponse();
+    } catch (err) {
+      this.showError('AI failed to respond. Please try again.');
+    }
   }
 
   addMessage(content, role) {
     this.messages.push({ role, content, isTyping: false });
     this.updateMessages();
+    // Accessibility: announce new message
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+      chatMessages.setAttribute('aria-live', 'assertive');
+      setTimeout(() => chatMessages.setAttribute('aria-live', 'polite'), 1200);
+    }
   }
 
   updateMessages() {
@@ -177,24 +195,24 @@ export class AIAssistant {
 
   async simulateAIResponse() {
     this.isTyping = true;
-    
     // Add typing indicator
     this.messages.push({ role: 'assistant', content: '', isTyping: true });
     this.updateMessages();
-
     // Simulate AI thinking delay
     await new Promise(resolve => setTimeout(resolve, 1500));
-
     // Remove typing indicator and add actual response
     this.messages = this.messages.filter(m => !m.isTyping);
-    
     const responses = [
-      "Based on your health profile, I'd recommend focusing on lifestyle modifications. Regular exercise and a balanced diet can significantly help manage PCOS symptoms.",
-      "That's a great question. PCOS affects each person differently, but common symptoms include irregular periods, weight changes, and mood fluctuations.",
-      "I understand your concern. It's important to consult with a healthcare provider for personalized advice. However, maintaining a healthy weight through diet and exercise can help.",
+      'Based on your health profile, I\'d recommend focusing on lifestyle modifications. Regular exercise and a balanced diet can significantly help manage PCOS symptoms.',
+      'That\'s a great question. PCOS affects each person differently, but common symptoms include irregular periods, weight changes, and mood fluctuations.',
+      'I understand your concern. It\'s important to consult with a healthcare provider for personalized advice. However, maintaining a healthy weight through diet and exercise can help.',
     ];
-    
-    const response = responses[Math.floor(Math.random() * responses.length)];
+    let response;
+    try {
+      response = responses[Math.floor(Math.random() * responses.length)];
+    } catch (err) {
+      response = 'Sorry, I am unable to answer right now.';
+    }
     this.addMessage(response, 'assistant');
     this.isTyping = false;
   }
@@ -221,6 +239,9 @@ export class AIAssistant {
   clearMessages() {
     this.messages = [];
     this.updateMessages();
+    // Remove error if present
+    const errorDiv = this.container.querySelector('.ai-error');
+    if (errorDiv) errorDiv.remove();
   }
 
   open() {
@@ -235,6 +256,9 @@ export class AIAssistant {
     if (assistantPanel) {
       assistantPanel.classList.remove('open');
     }
+    // Remove error if present
+    const errorDiv = this.container.querySelector('.ai-error');
+    if (errorDiv) errorDiv.remove();
   }
 
   setTyping(typing) {
@@ -262,6 +286,20 @@ export class AIAssistant {
       this.updateMessages();
     }
     this.isTyping = false;
+  }
+
+  showError(message) {
+    // Show error feedback
+    let errorDiv = this.container.querySelector('.ai-error');
+    if (!errorDiv) {
+      errorDiv = document.createElement('div');
+      errorDiv.className = 'ai-error';
+      errorDiv.setAttribute('role', 'alert');
+      this.container.appendChild(errorDiv);
+    }
+    errorDiv.textContent = message;
+    errorDiv.classList.add('show');
+    setTimeout(() => errorDiv.classList.remove('show'), 2200);
   }
 }
 

@@ -1,4 +1,42 @@
-﻿ @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@16..72,300;16..72,600&display=swap');
+﻿/* PHASE 1 — CRITICAL MOBILE FIXES */
+@media (max-width:400px) {
+  .dashboard__grid { grid-template-columns:1fr; gap:0.5rem; }
+  .healthcare-card, .stat-item, .recommendation-item { min-width:0; width:100%; max-width:100vw; padding:0.7em; box-sizing:border-box; }
+  .progress-stepper { flex-wrap:wrap; gap:0.2rem; }
+  .form-section, .single-field { padding:0.4em; }
+  .chat-input-container, .assistant-panel { width:100vw; max-width:100vw; }
+}
+/* Chat AI Error Banner */
+.chat-error-banner {
+  background: linear-gradient(90deg, #f87171 0%, #fbbf24 100%);
+  color: #fff;
+  padding: 0.85em 1.2em;
+  border-radius: 8px;
+  margin: 0.7em 0 0.7em 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  box-shadow: 0 2px 12px rgba(248,113,113,0.12);
+  animation: messageSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chat-error-banner .chat-retry-btn {
+  background: #fff;
+  color: #f87171;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3em 1em;
+  font-size: 0.95em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-left: auto;
+}
+.chat-error-banner .chat-retry-btn:hover {
+  background: #f87171;
+  color: #fff;
+}
+ @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@16..72,300;16..72,600&display=swap');
 
 :root {
   --primary: #0ea5e9;
@@ -1053,8 +1091,14 @@ textarea::placeholder {
 
 .checkbox-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
+}
+
+@media (max-width: 390px) {
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .checkbox-grid label {
@@ -1152,22 +1196,41 @@ input[type="checkbox"] {
 }
 
 .step-indicators {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
   margin-bottom: 24px;
 }
 
 .step-indicator {
+  flex: 0 0 auto;
+  min-width: 80px;
+  max-width: 120px;
+  padding: 8px 4px;
+  text-align: center;
   background: rgba(17, 26, 36, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.step-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  justify-content: center;
+}
+
+.step-label {
+  font-size: 0.7rem;
 }
 
 .step-indicator.active {

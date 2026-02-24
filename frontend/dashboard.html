@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="health-dashboard">
-    <!-- Navigation -->
+        <!-- Premium Loader Overlay -->
+        <div class="premium-loader" id="dashboardLoader" style="display:none;">
+            <div class="premium-loader-content">
+                <div class="loader-logo">PCOS Smart Assistant</div>
+                <div class="loader-dots"><span></span><span></span><span></span></div>
+                <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+                <div class="loader-text">Loading your dashboard...</div>
+            </div>
+        </div>
+        <!-- Navigation -->
     <header class="top-nav">
         <div class="top-nav__left">
             <a href="landing.html" class="nav__logo">
@@ -51,7 +60,10 @@
                         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
                     </svg>
                     <span>Data stored locally</span>
-                </div>
+                                </div>
+                                <p class="ai-disclaimer" style="margin-top:1.2rem;font-size:0.92rem;color:var(--color-text-muted,#94a3b8);text-align:center;">
+                                    <span style="font-size:1.1em;">⚠️</span> AI suggestions are informational only and not medical advice. Always consult a healthcare provider.
+                                </p>
             </div>
         </div>
 
@@ -90,7 +102,7 @@
         <!-- Main Grid -->
         <div class="dashboard__grid">
             <!-- Latest Entry Card -->
-            <div class="healthcare-card insight-card stagger-children">
+            <div class="healthcare-card insight-card glass stagger-children">
                 <div class="healthcare-card__header">
                     <div class="healthcare-card__icon">📝</div>
                     <div>
@@ -116,7 +128,7 @@
             </div>
 
             <!-- AI Recommendations Card -->
-            <div class="healthcare-card stagger-children">
+            <div class="healthcare-card glass stagger-children">
                 <div class="healthcare-card__header">
                     <div class="healthcare-card__icon">🤖</div>
                     <div>
@@ -129,25 +141,33 @@
                         <div class="recommendation-item">
                             <div class="recommendation-item__icon" style="background: rgba(14, 165, 233, 0.1);">🥗</div>
                             <div class="recommendation-item__content">
-                                <div class="recommendation-item__title">Dietary Suggestions</div>
-                                <div class="recommendation-item__description">Include more whole grains and reduce refined sugars</div>
+                                <div class="recommendation-item__title">Diet Tip</div>
+                                <div class="recommendation-item__description">Eat more fiber-rich foods and healthy fats. Limit processed sugars.</div>
                             </div>
                             <span class="recommendation-item__priority recommendation-item__priority--high">High</span>
                         </div>
                         <div class="recommendation-item">
                             <div class="recommendation-item__icon" style="background: rgba(34, 197, 94, 0.1);">🏃</div>
                             <div class="recommendation-item__content">
-                                <div class="recommendation-item__title">Exercise Goal</div>
-                                <div class="recommendation-item__description">150 minutes of moderate activity weekly</div>
+                                <div class="recommendation-item__title">Exercise Suggestion</div>
+                                <div class="recommendation-item__description">Aim for 30 minutes of moderate activity most days.</div>
                             </div>
                             <span class="recommendation-item__priority recommendation-item__priority--medium">Medium</span>
+                        </div>
+                        <div class="recommendation-item">
+                            <div class="recommendation-item__icon" style="background: rgba(59, 130, 246, 0.1);">😴</div>
+                            <div class="recommendation-item__content">
+                                <div class="recommendation-item__title">Sleep Recommendation</div>
+                                <div class="recommendation-item__description">Aim for 7–9 hours of restful sleep each night.</div>
+                            </div>
+                            <span class="recommendation-item__priority recommendation-item__priority--low">Low</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Cycle Tracking Card -->
-            <div class="healthcare-card stagger-children">
+            <div class="healthcare-card glass stagger-children">
                 <div class="healthcare-card__header">
                     <div class="healthcare-card__icon">📈</div>
                     <div>
@@ -172,7 +192,7 @@
             </div>
 
             <!-- Quick Actions Card -->
-            <div class="healthcare-card stagger-children">
+            <div class="healthcare-card glass stagger-children">
                 <div class="healthcare-card__header">
                     <div class="healthcare-card__icon">⚡</div>
                     <div>
@@ -208,12 +228,26 @@
         </div>
     </main>
 
-    <!-- Floating Action Button -->
-    <div class="action-bar" style="position: fixed; bottom: 24px; right: 24px; left: auto; flex-direction: row; background: transparent; backdrop-filter: none; padding: 0;">
-        <a href="form.html" class="btn btn--primary btn--lg" style="border-radius: 999px; box-shadow: 0 10px 40px rgba(14, 165, 233, 0.4);">
-            + Add Entry
-        </a>
-    </div>
+
+        <!-- Floating AI Button (FAB) -->
+        <button class="floating-ai-btn" id="openAIFab" title="Chat with AI Assistant" aria-label="Open AI Assistant">
+            <span style="font-size:2.1rem;">🤖</span>
+        </button>
+        <script>
+            // Floating AI Button opens assistant panel
+            document.addEventListener('DOMContentLoaded', function() {
+                var fab = document.getElementById('openAIFab');
+                var panel = document.getElementById('assistantPanel');
+                if (fab && panel) {
+                    fab.addEventListener('click', function() {
+                        panel.classList.add('open');
+                        panel.setAttribute('aria-hidden', 'false');
+                        var chatInput = document.getElementById('chatInput');
+                        if (chatInput) chatInput.focus();
+                    });
+                }
+            });
+        </script>
 
     <!-- AI Assistant Panel -->
     <div class="assistant-panel" id="assistantPanel" aria-hidden="true">

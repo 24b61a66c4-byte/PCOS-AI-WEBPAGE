@@ -1,4 +1,4 @@
-/**
+﻿/**
  * PCOS Smart Assistant - E2E Tests
  * Playwright tests for end-to-end user flows
  */

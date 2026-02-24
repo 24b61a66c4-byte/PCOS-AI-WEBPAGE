@@ -1,4 +1,4 @@
-# PCOS Smart Assistant - Test Suite
+﻿# PCOS Smart Assistant - Test Suite
 
 ## Frontend Tests
 - [x] tests/app.test.js - Jest unit tests for JavaScript functions

@@ -1,4 +1,4 @@
-# Supabase Setup (Public Write, Private Read)
+﻿# Supabase Setup (Public Write, Private Read)
 
 ## 1) Create project
 - Create a new Supabase project and wait for it to be ready.

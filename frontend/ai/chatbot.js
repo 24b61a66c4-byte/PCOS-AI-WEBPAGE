@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AI Service Module
  * Handles AI interactions and insights
  */
@@ -214,4 +214,24 @@ export function getAIService(options = {}) {
 }
 
 export { AIService };
-export default { AIService, getAIService };
+    // Personalization: summarize user data for AI context
+    let userSummary = '';
+    try {
+      const analysisRaw = localStorage.getItem('pcos_last_analysis');
+      if (analysisRaw) {
+        const analysis = JSON.parse(analysisRaw);
+        const lastEntry = analysis.entries && analysis.entries.length > 0 ? analysis.entries[0] : null;
+        userSummary = `User Data Summary:\n`;
+        if (lastEntry) {
+          userSummary += `- Last cycle length: ${lastEntry.cycle_length} days\n`;
+          userSummary += `- Last symptoms: ${(lastEntry.symptoms || []).join(', ') || 'none'}\n`;
+          userSummary += `- Last entry date: ${lastEntry.date}\n`;
+        }
+        if (analysis.analysis && typeof analysis.analysis.risk_score === 'number') {
+          userSummary += `- Risk score: ${analysis.analysis.risk_score}/100\n`;
+        }
+      }
+    } catch (e) { /* ignore */ }
+
+    // Add user message to context, with personalization
+    this.context.push({ role: 'user', content: userSummary + '\n' + message });

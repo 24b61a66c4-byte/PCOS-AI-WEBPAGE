@@ -1,10 +1,10 @@
-// Smart Config Loader
+﻿// Smart Config Loader
 // Automatically selects the right config based on environment
 (function() {
   const isLocalhost = window.location.hostname === 'localhost' || 
                      window.location.hostname === '127.0.0.1' ||
                      window.location.hostname === '';
-  
+
   let configPath = 'config.js';
   
   if (!isLocalhost) {

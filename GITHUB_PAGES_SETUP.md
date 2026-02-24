@@ -1,4 +1,4 @@
-# GitHub Pages Deployment Guide
+﻿# GitHub Pages Deployment Guide
 
 Your PCOS Smart Assistant is now set up for automatic GitHub Pages deployment! 🚀
 
