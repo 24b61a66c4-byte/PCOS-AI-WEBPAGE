@@ -1,7 +1,7 @@
-{
+﻿{
   "name": "pcos-smart-assistant",
   "version": "1.0.0",
-  "description": "PCOS Smart Assistant - Test Suite",
+  "description": "PCOS Smart Assistant - Health Tracking Platform",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -9,13 +9,23 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:all": "npm test && npm run test:e2e",
-    "test:all:ps": "npm test; npm run test:e2e"
+    "test:all:ps": "npm test; npm run test:e2e",
+    "lint": "eslint frontend/**/*.js",
+    "lint:fix": "eslint frontend/**/*.js --fix",
+    "build:css": "npx cleancss -o frontend/styles.min.css frontend/styles.css && npx cleancss -o frontend/styles.min.css frontend/styles/healthcare.css",
+    "build:js": "npx terser frontend/app.js -o frontend/app.min.js --compress --mangle",
+    "build": "npm run build:css && npm run build:js",
+    "dev": "npx serve frontend -l 3000",
+    "start": "cd backend && python app.py"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",
+    "clean-css-cli": "^5.6.3",
+    "eslint": "^8.56.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "jsdom": "^23.0.1"
+    "jsdom": "^23.0.1",
+    "terser": "^5.26.0"
   },
   "jest": {
     "testEnvironment": "jsdom",

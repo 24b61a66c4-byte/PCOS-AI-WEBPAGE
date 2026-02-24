@@ -1,4 +1,4 @@
- @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@16..72,300;16..72,600&display=swap');
+﻿ @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@16..72,300;16..72,600&display=swap');
 
 :root {
   --primary: #0ea5e9;
@@ -975,14 +975,14 @@ body.light-theme .assistant-card {
 .form-step {
   width: 100%;
   flex-shrink: 0;
-  opacity: 0.6;
-  transform: scale(0.98);
-  transition: opacity 0.4s var(--transition), transform 0.4s var(--transition);
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .form-step.active {
+  display: block;
   opacity: 1;
-  transform: scale(1);
 }
 
 body.light-theme .form-section {
@@ -1923,8 +1923,6 @@ body.light-theme .step-result-overlay {
 
 /* Slide Transitions */
 .form-slider { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-.form-step { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-.form-step.active { animation: stepEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes stepEnter {
   0% { opacity: 0; transform: translateX(60px) scale(0.95); }
   60% { opacity: 1; transform: translateX(-5px) scale(1); }
