@@ -959,40 +959,61 @@ Image Analysis Instructions:
   }
 
   function updateAIRecommendations(lastEntry, entries) {
-    const recList = document.getElementById('aiRecommendationsList');
-    if (!recList) return;
+    // Get all recommendation elements
+    const rec1Title = document.getElementById('rec1Title');
+    const rec1Desc = document.getElementById('rec1Desc');
+    const rec1Priority = document.getElementById('rec1Priority');
+    const rec2Title = document.getElementById('rec2Title');
+    const rec2Desc = document.getElementById('rec2Desc');
+    const rec2Priority = document.getElementById('rec2Priority');
+    const rec3Title = document.getElementById('rec3Title');
+    const rec3Desc = document.getElementById('rec3Desc');
+    const rec3Priority = document.getElementById('rec3Priority');
 
     if (!lastEntry || entries.length === 0) {
-      recList.innerHTML = `
-        <div class="recommendation-item">
-          <div class="recommendation-item__icon" style="background: rgba(14, 165, 233, 0.1);">💡</div>
-          <div class="recommendation-item__content">
-            <div class="recommendation-item__title">Add Entry</div>
-            <div class="recommendation-item__description">Log your first entry to get personalized recommendations.</div>
-          </div>
-          <span class="recommendation-item__priority">—</span>
-        </div>
-      `;
+      // Show default message when no entries
+      if (rec1Title) rec1Title.textContent = 'Add Entry';
+      if (rec1Desc) rec1Desc.textContent = 'Log your first entry to get personalized recommendations.';
+      if (rec1Priority) {
+        rec1Priority.textContent = '—';
+        rec1Priority.className = 'recommendation-item__priority';
+      }
+      // Hide or reset other recommendations
+      if (rec2Title) rec2Title.textContent = 'Exercise';
+      if (rec2Desc) rec2Desc.textContent = 'Track your activity to get personalized suggestions.';
+      if (rec2Priority) rec2Priority.textContent = '—';
+      if (rec3Title) rec3Title.textContent = 'Sleep';
+      if (rec3Desc) rec3Desc.textContent = 'Log your sleep hours for better insights.';
+      if (rec3Priority) rec3Priority.textContent = '—';
       return;
     }
 
     // Generate personalized recommendations based on user data
     const recommendations = generatePersonalizedRecommendations(lastEntry, entries);
-    
-    // Build HTML for recommendations
-    const priorityClass = { high: 'recommendation-item__priority--high', medium: 'recommendation-item__priority--medium', low: 'recommendation-item__priority--low' };
-    const iconMap = { diet: '🥗', exercise: '🏃', sleep: '😴', symptoms: '🩺', lifestyle: '✨', cycle: '📅' };
-    
-    recList.innerHTML = recommendations.map(rec => `
-      <div class="recommendation-item">
-        <div class="recommendation-item__icon" style="background: ${rec.bgColor};">${rec.icon}</div>
-        <div class="recommendation-item__content">
-          <div class="recommendation-item__title">${rec.title}</div>
-          <div class="recommendation-item__description">${rec.description}</div>
-        </div>
-        <span class="recommendation-item__priority ${priorityClass[rec.priority] || ''}">${rec.priorityLabel}</span>
-      </div>
-    `).join('');
+
+    // Update first recommendation
+    if (recommendations[0] && rec1Title && rec1Desc && rec1Priority) {
+      rec1Title.textContent = recommendations[0].title;
+      rec1Desc.textContent = recommendations[0].description;
+      rec1Priority.textContent = recommendations[0].priorityLabel;
+      rec1Priority.className = 'recommendation-item__priority recommendation-item__priority--' + recommendations[0].priority;
+    }
+
+    // Update second recommendation
+    if (recommendations[1] && rec2Title && rec2Desc && rec2Priority) {
+      rec2Title.textContent = recommendations[1].title;
+      rec2Desc.textContent = recommendations[1].description;
+      rec2Priority.textContent = recommendations[1].priorityLabel;
+      rec2Priority.className = 'recommendation-item__priority recommendation-item__priority--' + recommendations[1].priority;
+    }
+
+    // Update third recommendation
+    if (recommendations[2] && rec3Title && rec3Desc && rec3Priority) {
+      rec3Title.textContent = recommendations[2].title;
+      rec3Desc.textContent = recommendations[2].description;
+      rec3Priority.textContent = recommendations[2].priorityLabel;
+      rec3Priority.className = 'recommendation-item__priority recommendation-item__priority--' + recommendations[2].priority;
+    }
   }
 
   function generatePersonalizedRecommendations(lastEntry, entries) {
