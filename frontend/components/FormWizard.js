@@ -13,8 +13,12 @@ export class FormWizard {
       onComplete: options.onComplete || (() => {}),
       validation: options.validation || {},
     };
-    this.currentStep = this.options.initialStep;
+    // Persist step state
+    const savedStep = localStorage.getItem('formWizardStep');
+    this.currentStep = savedStep ? parseInt(savedStep, 10) : this.options.initialStep;
     this.formData = {};
+    this.submitLock = false;
+    this.lastSubmitTime = 0;
   }
 
   render() {
@@ -160,16 +164,33 @@ export class FormWizard {
     const submitBtn = document.getElementById('submitBtn');
 
     if (prevBtn) {
-      prevBtn.addEventListener('click', () => this.prevStep());
+      prevBtn.addEventListener('click', () => {
+        this.prevStep();
+        localStorage.setItem('formWizardStep', this.currentStep);
+      });
     }
 
     if (nextBtn) {
-      nextBtn.addEventListener('click', () => this.nextStep());
+      nextBtn.addEventListener('click', () => {
+        this.nextStep();
+        localStorage.setItem('formWizardStep', this.currentStep);
+      });
     }
 
     if (submitBtn) {
       submitBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        // Debounce submit
+        if (this.submitLock) return;
+        const now = Date.now();
+        if (now - this.lastSubmitTime < 1200) return;
+        this.lastSubmitTime = now;
+        this.submitLock = true;
+        setTimeout(() => { this.submitLock = false; }, 1200);
+        if (!this.validateCurrentStep(true)) {
+          this.showError('Please correct errors before submitting.');
+          return;
+        }
         this.handleSubmit();
       });
     }
@@ -225,17 +246,19 @@ export class FormWizard {
 
     let isValid = true;
     currentStepData.fields.forEach(field => {
-      if (field.required) {
-        const input = document.querySelector(`[name="${field.name}"]`);
-        if (input && !input.value) {
-          isValid = false;
-          input.classList.add('error-input');
-        } else if (input) {
-          input.classList.remove('error-input');
-        }
+      const input = document.querySelector(`[name="${field.name}"]`);
+      const validator = this.options.validation[field.name];
+      if (field.required && (!input || !input.value)) {
+        isValid = false;
+        if (input) input.classList.add('error-input');
+      } else if (input) {
+        input.classList.remove('error-input');
+      }
+      if (validator && input && !validator(input.value)) {
+        isValid = false;
+        input.classList.add('error-input');
       }
     });
-
     return isValid;
   }
 
@@ -260,9 +283,22 @@ export class FormWizard {
   }
 
   handleSubmit() {
-    if (this.validateCurrentStep()) {
+    if (this.validateCurrentStep(true)) {
       this.options.onComplete(this.formData);
     }
+  }
+
+  showError(message) {
+    // Show error feedback
+    let errorDiv = this.container.querySelector('.form-error');
+    if (!errorDiv) {
+      errorDiv = document.createElement('div');
+      errorDiv.className = 'form-error';
+      this.container.appendChild(errorDiv);
+    }
+    errorDiv.textContent = message;
+    errorDiv.classList.add('show');
+    setTimeout(() => errorDiv.classList.remove('show'), 2200);
   }
 
   getFormData() {
