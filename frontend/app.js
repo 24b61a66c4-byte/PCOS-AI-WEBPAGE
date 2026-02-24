@@ -952,13 +952,17 @@ Image Analysis Instructions:
   function showStep(step) {
     document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
     const activeStep = document.querySelector(`.form-step[data-step="${step}"]`);
+    if (!activeStep) {
+      console.error(`Step ${step} not found`);
+      return;
+    }
     activeStep.classList.add('active');
 
     updateProgress();
 
-    prevBtn.style.display = step === 1 ? 'none' : 'block';
-    nextBtn.style.display = step === totalSteps ? 'none' : 'block';
-    submitBtn.style.display = step === totalSteps ? 'block' : 'none';
+    if (prevBtn) prevBtn.style.display = step === 1 ? 'none' : 'block';
+    if (nextBtn) nextBtn.style.display = step === totalSteps ? 'none' : 'block';
+    if (submitBtn) submitBtn.style.display = step === totalSteps ? 'block' : 'none';
 
     lenis.scrollTo(document.querySelector('.form-section'), {
       offset: -150,
@@ -971,10 +975,8 @@ Image Analysis Instructions:
       const cycleInput = document.getElementById('cycle_length');
       if (cycleInput) {
         cycleInput.focus();
-        return;
       }
-    }
-    if (firstInput) {
+    } else if (firstInput) {
       firstInput.focus();
     }
   }
@@ -985,11 +987,37 @@ Image Analysis Instructions:
 
     if (step === 1) {
       const age = Number(document.getElementById('age').value || NaN);
+      const weightInput = document.getElementById('weight').value;
+      const heightInput = document.getElementById('height').value;
+
+      // Age is required
       if (!Number.isFinite(age) || age < 10 || age > 80) {
         setError('age', 'Enter an age between 10 and 80 years.');
         isValid = false;
       }
       if (isValid) formData.age = age;
+
+      // Weight is optional - only validate if provided
+      if (weightInput && weightInput.trim() !== '') {
+        const weight = Number(weightInput);
+        if (weight < 30 || weight > 300) {
+          setError('weight', 'Enter a valid weight between 30 and 300 kg.');
+          isValid = false;
+        } else if (weight > 0) {
+          formData.weight = weight;
+        }
+      }
+
+      // Height is optional - only validate if provided
+      if (heightInput && heightInput.trim() !== '') {
+        const height = Number(heightInput);
+        if (height < 100 || height > 250) {
+          setError('height', 'Enter a valid height between 100 and 250 cm.');
+          isValid = false;
+        } else if (height > 0) {
+          formData.height = height;
+        }
+      }
     }
 
     if (step === 2) {
@@ -1396,20 +1424,24 @@ Image Analysis Instructions:
     renderPcosInsight();
   }
 
-  nextBtn.addEventListener('click', () => {
-    if (!validateStep(currentStep)) {
-      showMessage('Please fix the errors above', 'error');
-      return;
-    }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      if (!validateStep(currentStep)) {
+        showMessage('Please fix the errors above', 'error');
+        return;
+      }
 
-    // Move directly to the next slide so questions appear one-by-one without blocking modals
-    proceedToNextStep();
-  });
+      // Move directly to the next slide so questions appear one-by-one without blocking modals
+      proceedToNextStep();
+    });
+  }
 
-  prevBtn.addEventListener('click', () => {
-    currentStep--;
-    showStep(currentStep);
-  });
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      currentStep--;
+      showStep(currentStep);
+    });
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
