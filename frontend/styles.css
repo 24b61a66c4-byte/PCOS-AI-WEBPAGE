@@ -1,4 +1,34 @@
-﻿ @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@16..72,300;16..72,600&display=swap');
+﻿/* Chat AI Error Banner */
+.chat-error-banner {
+  background: linear-gradient(90deg, #f87171 0%, #fbbf24 100%);
+  color: #fff;
+  padding: 0.85em 1.2em;
+  border-radius: 8px;
+  margin: 0.7em 0 0.7em 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  box-shadow: 0 2px 12px rgba(248,113,113,0.12);
+  animation: messageSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chat-error-banner .chat-retry-btn {
+  background: #fff;
+  color: #f87171;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3em 1em;
+  font-size: 0.95em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-left: auto;
+}
+.chat-error-banner .chat-retry-btn:hover {
+  background: #f87171;
+  color: #fff;
+}
+ @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@16..72,300;16..72,600&display=swap');
 
 :root {
   --primary: #0ea5e9;

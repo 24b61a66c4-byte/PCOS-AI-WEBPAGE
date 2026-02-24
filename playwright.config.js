@@ -1,4 +1,4 @@
-// Playwright configuration for PCOS Smart Assistant E2E tests
+﻿// Playwright configuration for PCOS Smart Assistant E2E tests
 const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({

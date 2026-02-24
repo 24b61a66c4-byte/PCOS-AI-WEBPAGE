@@ -1,4 +1,4 @@
-# 🚀 Complete Setup Guide - PCOS Smart Assistant
+﻿# 🚀 Complete Setup Guide - PCOS Smart Assistant
 
 This guide will walk you through setting up the PCOS Smart Assistant from scratch on Windows.
 

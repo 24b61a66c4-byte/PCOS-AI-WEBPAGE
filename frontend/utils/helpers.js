@@ -1,3 +1,7 @@
+﻿
+
+
+
 /**
  * Utility Functions
  * Helper functions for common operations

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * FormWizard Component
  * Multi-step health journey form with validation and progress tracking
  */
@@ -75,10 +75,10 @@ export class FormWizard {
   renderFields(fields) {
     return fields.map(field => {
       switch (field.type) {
-        case 'text':
-        case 'number':
-        case 'date':
-          return `
+      case 'text':
+      case 'number':
+      case 'date':
+        return `
             <div class="single-field">
               <label for="${field.id}">${field.label}</label>
               <input 
@@ -94,8 +94,8 @@ export class FormWizard {
               ${field.error ? `<span class="error">${field.error}</span>` : ''}
             </div>
           `;
-        case 'select':
-          return `
+      case 'select':
+        return `
             <div class="single-field">
               <label for="${field.id}">${field.label}</label>
               <select id="${field.id}" name="${field.name}" ${field.required ? 'required' : ''}>
@@ -106,8 +106,8 @@ export class FormWizard {
               </select>
             </div>
           `;
-        case 'checkbox':
-          return `
+      case 'checkbox':
+        return `
             <div class="checkbox-grid">
               ${field.options ? field.options.map(opt => `
                 <label>
@@ -117,16 +117,16 @@ export class FormWizard {
               `).join('') : ''}
             </div>
           `;
-        case 'textarea':
-          return `
+      case 'textarea':
+        return `
             <div class="single-field">
               <label for="${field.id}">${field.label}</label>
               <textarea id="${field.id}" name="${field.name}" rows="4" 
                 placeholder="${field.placeholder || ''}"></textarea>
             </div>
           `;
-        default:
-          return '';
+      default:
+        return '';
       }
     }).join('');
   }

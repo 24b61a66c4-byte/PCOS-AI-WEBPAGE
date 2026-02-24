@@ -1,4 +1,4 @@
-# Page snapshot
+﻿# Page snapshot
 
 ```yaml
 - generic [ref=e1]:

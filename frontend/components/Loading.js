@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Loading Component
  * Premium loading states with smooth animations
  */
@@ -42,16 +42,16 @@ export class Loading {
 
   renderContent() {
     switch (this.options.type) {
-      case 'spinner':
-        return this.renderSpinner();
-      case 'dots':
-        return this.renderDots();
-      case 'progress':
-        return this.renderProgress();
-      case 'skeleton':
-        return this.renderSkeleton();
-      default:
-        return this.renderSpinner();
+    case 'spinner':
+      return this.renderSpinner();
+    case 'dots':
+      return this.renderDots();
+    case 'progress':
+      return this.renderProgress();
+    case 'skeleton':
+      return this.renderSkeleton();
+    default:
+      return this.renderSpinner();
     }
   }
 

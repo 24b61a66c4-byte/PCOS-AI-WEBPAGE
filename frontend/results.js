@@ -1,5 +1,31 @@
+﻿
+
+
+
+
+
+
 // Results Page - Display Health Analysis and Recommendations
 document.addEventListener('DOMContentLoaded', function() {
+    // Premium Loader for Results
+    function showLoader(show = true) {
+      let loader = document.getElementById('resultsLoader');
+      if (!loader) {
+        loader = document.createElement('div');
+        loader.className = 'premium-loader';
+        loader.id = 'resultsLoader';
+        loader.innerHTML = `
+          <div class="premium-loader-content">
+            <div class="loader-logo">Analyzing...</div>
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+            <div class="loader-text">Generating your report</div>
+          </div>
+        `;
+        document.body.appendChild(loader);
+      }
+      loader.style.display = show ? 'flex' : 'none';
+    }
   // Initialize smooth scrolling
   const lenis = new Lenis({
     duration: 1.2,
@@ -32,44 +58,73 @@ document.addEventListener('DOMContentLoaded', function() {
 
   initTheme();
 
-  // Load analysis results
-  loadResults();
+  // Show loader, then load analysis results
+  showLoader(true);
+  setTimeout(() => loadResults(), 400);
 
   function loadResults() {
     const analysisData = localStorage.getItem('pcos_last_analysis');
-    
     if (!analysisData) {
-      applyEmptyState();
+      showLoader(false);
+      // Smart empty state UI
+      const main = document.querySelector('main.container');
+      if (main) {
+        main.innerHTML = `
+          <div class="empty-state" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 0;">
+            <div style="font-size:4rem;">📭</div>
+            <h2 style="margin:1.2rem 0 0.5rem 0; color:var(--color-text-primary,#1e293b);font-weight:700;">No data yet</h2>
+            <p style="color:var(--color-text-muted,#94a3b8);font-size:1.1rem;max-width:340px;text-align:center;">You haven’t entered any health data yet.<br>Start your journey by adding your first entry.</p>
+            <a href="form.html" class="btn btn--primary" style="margin-top:2rem;">Add Personal Info</a>
+          </div>
+        `;
+      }
       return;
     }
 
     try {
       const data = JSON.parse(analysisData);
-      
+      showLoader(false);
       // Display risk assessment
       displayRiskAssessment(data.analysis);
-      
+      // Animate risk score
+      const riskScoreEl = document.getElementById('riskScore');
+      if (riskScoreEl && data.analysis && typeof data.analysis.risk_score === 'number') {
+        riskScoreEl.classList.add('animated');
+        let start = 0;
+        const end = data.analysis.risk_score;
+        const duration = 1200;
+        const startTime = performance.now();
+        function animate(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const value = Math.floor(start + (end - start) * progress);
+          riskScoreEl.textContent = value;
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            riskScoreEl.textContent = end;
+            setTimeout(() => riskScoreEl.classList.remove('animated'), 800);
+          }
+        }
+        requestAnimationFrame(animate);
+      }
       // Display key findings
       displayFindings(data.report.key_findings);
-      
       // Display recommendations
       displayRecommendations(data.analysis.recommendations);
-      
       // Display doctors
       displayDoctors(data.doctors);
-      
       // Display next steps
       displayNextSteps(data.report.next_steps);
-      
       // Display lifestyle tips
       displayLifestyleTips(data.report.lifestyle_tips);
-      
       // Display warning signs
       displayWarnings(data.report.when_to_see_doctor);
-      
     } catch (error) {
+      showLoader(false);
       console.error('Error loading results:', error);
       showErrorMessage();
+    }
     }
   }
 
@@ -158,8 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
           </a>
           <div class="doctor-expertise">
             ${(doctor.expertise || []).map(exp => 
-              `<span class="expertise-tag">${escapeHtml(exp)}</span>`
-            ).join('')}
+    `<span class="expertise-tag">${escapeHtml(exp)}</span>`
+  ).join('')}
           </div>
         </div>
       `).join('');

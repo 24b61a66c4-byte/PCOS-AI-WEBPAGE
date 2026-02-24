@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="navbar">
+        <!-- Premium Loader Overlay -->
+        <div class="premium-loader" id="formLoader" style="display:none;">
+            <div class="premium-loader-content">
+                <div class="loader-logo">Saving Entry...</div>
+                <div class="loader-dots"><span></span><span></span><span></span></div>
+                <div class="loader-progress"><div class="loader-progress-bar"></div></div>
+                <div class="loader-text">Please wait</div>
+            </div>
+        </div>
+        <div class="navbar">
         <div class="nav-container">
             <div class="logo">🏥 PCOS Smart Assistant</div>
             <div class="nav-actions">
@@ -43,13 +52,31 @@
             <p class="progress-text" id="progressText">Step 1 of 6</p>
         </div>
 
-        <div class="step-indicators">
-            <div class="step-indicator active" data-step="1">👤<span>Personal</span></div>
-            <div class="step-indicator" data-step="2">🔄<span>Menstrual</span></div>
-            <div class="step-indicator" data-step="3">⚠️<span>Symptoms</span></div>
-            <div class="step-indicator" data-step="4">🏃<span>Lifestyle</span></div>
-            <div class="step-indicator" data-step="5">🏥<span>Clinical</span></div>
-            <div class="step-indicator" data-step="6">✨<span>Review</span></div>
+        <div class="step-indicators progress-stepper">
+            <div class="step-indicator active" data-step="1">
+                <span class="step-icon">👤</span>
+                <span class="step-label">Personal</span>
+            </div>
+            <div class="step-indicator" data-step="2">
+                <span class="step-icon">🔄</span>
+                <span class="step-label">Menstrual</span>
+            </div>
+            <div class="step-indicator" data-step="3">
+                <span class="step-icon">⚠️</span>
+                <span class="step-label">Symptoms</span>
+            </div>
+            <div class="step-indicator" data-step="4">
+                <span class="step-icon">🏃</span>
+                <span class="step-label">Lifestyle</span>
+            </div>
+            <div class="step-indicator" data-step="5">
+                <span class="step-icon">🏥</span>
+                <span class="step-label">Clinical</span>
+            </div>
+            <div class="step-indicator" data-step="6">
+                <span class="step-icon">✨</span>
+                <span class="step-label">Review</span>
+            </div>
         </div>
 
         <div id="form-message" class="form-message"></div>

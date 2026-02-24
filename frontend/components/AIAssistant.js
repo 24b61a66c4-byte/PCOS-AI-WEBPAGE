@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AIAssistant Component
  * Premium AI chat interface for healthcare recommendations
  */
@@ -189,9 +189,9 @@ export class AIAssistant {
     this.messages = this.messages.filter(m => !m.isTyping);
     
     const responses = [
-      "Based on your health profile, I'd recommend focusing on lifestyle modifications. Regular exercise and a balanced diet can significantly help manage PCOS symptoms.",
-      "That's a great question. PCOS affects each person differently, but common symptoms include irregular periods, weight changes, and mood fluctuations.",
-      "I understand your concern. It's important to consult with a healthcare provider for personalized advice. However, maintaining a healthy weight through diet and exercise can help.",
+      'Based on your health profile, I\'d recommend focusing on lifestyle modifications. Regular exercise and a balanced diet can significantly help manage PCOS symptoms.',
+      'That\'s a great question. PCOS affects each person differently, but common symptoms include irregular periods, weight changes, and mood fluctuations.',
+      'I understand your concern. It\'s important to consult with a healthcare provider for personalized advice. However, maintaining a healthy weight through diet and exercise can help.',
     ];
     
     const response = responses[Math.floor(Math.random() * responses.length)];
