@@ -49,7 +49,7 @@
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            <p class="progress-text" id="progressText">Step 1 of 6</p>
+            <p class="progress-text" id="progressText">Step 1 of 7</p>
         </div>
 
         <div class="step-indicators progress-stepper">
@@ -76,6 +76,10 @@
             <div class="step-indicator" data-step="6">
                 <span class="step-icon">✨</span>
                 <span class="step-label">Review</span>
+            </div>
+            <div class="step-indicator" data-step="7">
+                <span class="step-icon">📋</span>
+                <span class="step-label">Results</span>
             </div>
         </div>
 
@@ -236,40 +240,23 @@
                         <div id="review-container" class="review-container"></div>
                     </div>
                 </div>
+
+                <div class="form-step" data-step="7">
+                    <div class="form-section">
+                        <h2>📋 Your Care Results</h2>
+                        <p class="step-subtitle">Tips, care suggestions, and support numbers based on your information</p>
+
+                        <div id="result-preview" class="review-container"></div>
+                    </div>
+                </div>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">← Previous</button>
                     <button type="button" class="btn btn-primary" id="nextBtn">Next →</button>
                     <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">✨ Save My Data</button>
                 </div>
-
-                <section class="insight-panel" id="pcosInsight" aria-live="polite">
-                    <div class="insight-header">
-                        <h3 id="pcosInsightTitle">PCOS Insight</h3>
-                        <p class="muted" id="pcosInsightNote">Educational only. This does not diagnose PCOS. For medical advice, consult a clinician.</p>
-                    </div>
-                    <div class="insight-grid">
-                        <div class="insight-card">
-                            <span class="insight-label" id="pcosLevelLabel">Indicator level</span>
-                            <span class="insight-value" id="pcosLevel">—</span>
-                            <p class="insight-note" id="pcosReason">Fill in cycle length and symptoms to see insights.</p>
-                        </div>
-                        <div class="insight-card">
-                            <span class="insight-label" id="pcosImpactsLabel">Possible longer-term impacts</span>
-                            <ul class="insight-list" id="pcosImpacts"></ul>
-                        </div>
-                    </div>
-                </section>
             </form>
         </div>
-
-        <section class="assistant-inline" id="assistantInline" aria-live="polite">
-            <div class="assistant-inline-header">
-                <h3>Care Suggestions</h3>
-                <p>Based on your entries. This is general guidance, not medical advice.</p>
-            </div>
-            <div class="assistant-inline-list" id="assistantInlineList"></div>
-        </section>
 
         <div class="form-notes">
             <p><strong>Note:</strong> Your information is processed locally on your device. We never store, transmit, or share your data with anyone.</p>

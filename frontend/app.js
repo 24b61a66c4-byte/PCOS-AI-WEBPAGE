@@ -895,7 +895,7 @@ Image Analysis Instructions:
   const submitLabel = submitBtn ? submitBtn.textContent : 'Submit';
 
   let currentStep = 1;
-  const totalSteps = 6;
+  const totalSteps = 7;
   const formData = {};
   const DRAFT_KEY = 'pcos_draft';
   const DRAFT_DELAY_MS = 500;
@@ -907,7 +907,8 @@ Image Analysis Instructions:
     3: [],
     4: [],
     5: [],
-    6: []
+    6: [],
+    7: []
   };
 
   function setError(name, text) {
@@ -1023,8 +1024,7 @@ Image Analysis Instructions:
     if (draftTimer) clearTimeout(draftTimer);
     draftTimer = setTimeout(() => {
       saveDraft();
-      renderFormSuggestions();
-      renderPcosInsight();
+      generateResultPreview();
     }, DRAFT_DELAY_MS);
   }
 
@@ -1055,8 +1055,7 @@ Image Analysis Instructions:
       }
 
       showMessage('Draft restored from your last session.', 'success', false);
-      renderFormSuggestions();
-      renderPcosInsight();
+      generateResultPreview();
     } catch (err) {
       console.warn('Draft load failed:', err);
     }
@@ -1307,6 +1306,56 @@ Image Analysis Instructions:
     `).join('');
   }
 
+
+
+  function generateResultPreview() {
+    const resultContainer = document.getElementById('result-preview');
+    if (!resultContainer) return;
+
+    const draft = collectDraft();
+    const mergedEntry = { ...draft, ...formData };
+    const suggestions = buildCareSuggestions(mergedEntry);
+    const insight = buildPcosInsight(mergedEntry);
+    const lang = getInsightLanguage();
+    const t = insightI18n[lang] || insightI18n.en;
+
+    const emergencyContacts = [
+      { label: 'Emergency Response (India)', number: '112' },
+      { label: 'Ambulance Service (India)', number: '108' },
+      { label: 'Women Helpline (India)', number: '181' }
+    ];
+
+    resultContainer.innerHTML = `
+      <div class="review-section">
+        <h3>PCOS Insight</h3>
+        <div class="review-item">
+          <span class="review-label">Indicator level</span>
+          <span class="review-value">${t.levels[insight.levelKey] || t.levels.insufficient}</span>
+        </div>
+        <div class="review-item">
+          <span class="review-label">Notes</span>
+          <span class="review-value">${t.headerNote}</span>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <h3>Care Suggestions</h3>
+        <ul class="insight-list">
+          ${suggestions.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="review-section">
+        <h3>Doctor & Help Numbers</h3>
+        ${emergencyContacts.map(contact => `
+          <div class="review-item">
+            <span class="review-label">${contact.label}</span>
+            <span class="review-value">${contact.number}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
   // Step-by-step analysis - show results after each step
   async function analyzeCurrentStep(step, stepData) {
     const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:5000';
@@ -1441,14 +1490,14 @@ Image Analysis Instructions:
       analysis.tips.push('Click Next to review your information');
     } else if (step === 6) {
       analysis.findings.push('All information collected');
-      analysis.tips.push('Click "Save My Data" to get your complete health report with doctor recommendations');
+      analysis.tips.push('Click Next to view your complete care results and support information');
     }
     
     return { success: true, step: step, analysis: analysis };
   }
   
   function getStepName(step) {
-    const names = { 1: 'Personal Information', 2: 'Menstrual Cycle', 3: 'Symptoms', 4: 'Lifestyle', 5: 'Clinical', 6: 'Review' };
+    const names = { 1: 'Personal Information', 2: 'Menstrual Cycle', 3: 'Symptoms', 4: 'Lifestyle', 5: 'Clinical', 6: 'Review', 7: 'Results' };
     return names[step] || 'Step ' + step;
   }
   
@@ -1458,7 +1507,8 @@ Image Analysis Instructions:
       3: 'Next: Symptoms you experience',
       4: 'Next: Your lifestyle habits',
       5: 'Next: Clinical information',
-      6: 'Next: Review your information'
+      6: 'Next: Review your information',
+      7: 'Next: Your care results'
     };
     return previews[step] || '';
   }
@@ -1546,11 +1596,13 @@ Image Analysis Instructions:
 
   function proceedToNextStep() {
     currentStep++;
-    if (currentStep === totalSteps) {
+    if (currentStep === 6) {
       generateReview();
     }
+    if (currentStep === 7) {
+      generateResultPreview();
+    }
     showStep(currentStep);
-    renderPcosInsight();
   }
 
   if (nextBtn) {
@@ -1626,7 +1678,7 @@ Image Analysis Instructions:
               Object.keys(formData).forEach(key => delete formData[key]);
               showStep(currentStep);
               renderFormSuggestions();
-              renderPcosInsight();
+              generateResultPreview();
               setSubmitting(false);
             }, 2000);
           }
@@ -1639,7 +1691,7 @@ Image Analysis Instructions:
             Object.keys(formData).forEach(key => delete formData[key]);
             showStep(currentStep);
             renderFormSuggestions();
-            renderPcosInsight();
+            generateResultPreview();
             setSubmitting(false);
           }, 2000);
         }
@@ -1659,8 +1711,7 @@ Image Analysis Instructions:
 
   loadDraft();
   showStep(1);
-  renderFormSuggestions();
-  renderPcosInsight();
+  generateResultPreview();
 
   // Set max date to today for last_period input to prevent future dates
   const lastPeriodInput = document.getElementById('last_period');
@@ -1674,7 +1725,7 @@ Image Analysis Instructions:
     insightLanguage.value = getInsightLanguage();
     insightLanguage.addEventListener('change', () => {
       localStorage.setItem(INSIGHT_LANG_KEY, insightLanguage.value || 'en');
-      renderPcosInsight();
+      generateResultPreview();
     });
   }
 });
