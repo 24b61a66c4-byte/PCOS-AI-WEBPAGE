@@ -1,4 +1,4 @@
-﻿// frontend/config.js
+// frontend/config.js
 window.CONFIG = {
   OPENROUTER_API_KEY: ' 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',
   SUPABASE_URL: 'https://hrcjgcqzhulmxdyfeymw.supabase.co',  // Optional

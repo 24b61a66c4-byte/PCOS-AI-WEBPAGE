@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AI Service Module
  * Handles AI interactions and insights
  */

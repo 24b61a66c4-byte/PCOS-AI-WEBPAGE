@@ -1,4 +1,4 @@
-﻿# TODO: Step-by-Step AI Analysis Feature Implementation
+# TODO: Step-by-Step AI Analysis Feature Implementation
 
 ## Plan Overview
 After user enters details and clicks "Next", show an analysis result page showing AI-generated insights for that step's data. User can then click "Continue" to proceed to the next step. Keep the final comprehensive results page at the end.

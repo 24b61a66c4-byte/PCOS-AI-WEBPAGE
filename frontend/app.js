@@ -1,4 +1,4 @@
-﻿  // Toast notification
+  // Toast notification
   function showToast(message, duration = 2200) {
     let toast = document.getElementById('globalToast');
     if (!toast) {

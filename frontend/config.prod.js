@@ -1,4 +1,4 @@
-﻿// Production API Configuration for GitHub Pages Deployment
+// Production API Configuration for GitHub Pages Deployment
 // This file is used when the app is deployed to GitHub Pages
 
 window.CONFIG = {

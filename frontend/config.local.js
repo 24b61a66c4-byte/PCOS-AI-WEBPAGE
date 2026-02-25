@@ -1,4 +1,4 @@
-﻿// Local secrets config (not for git). Fill in your real keys below.
+// Local secrets config (not for git). Fill in your real keys below.
 // This file is loaded first by config-loader.js; if missing, the app falls back to config.js or config.prod.js.
 
 window.CONFIG = {

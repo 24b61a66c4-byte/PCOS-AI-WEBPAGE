@@ -1,4 +1,4 @@
-﻿# PCOS AI Smart Website - Healthcare Platform Transformation
+# PCOS AI Smart Website - Healthcare Platform Transformation
 
 ## Completed Tasks
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AIAssistant Component
  * Premium AI chat interface for healthcare recommendations
  */
