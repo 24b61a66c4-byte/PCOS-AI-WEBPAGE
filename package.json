@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "pcos-smart-assistant",
   "version": "1.0.0",
   "description": "PCOS Smart Assistant - Health Tracking Platform",
@@ -10,6 +10,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:all": "npm test && npm run test:e2e",
     "test:all:ps": "npm test; npm run test:e2e",
+    "check:bom": "node scripts/check-no-bom.js",
     "lint": "eslint frontend/**/*.js",
     "lint:fix": "eslint frontend/**/*.js --fix",
     "build:css": "npx cleancss -o frontend/styles.min.css frontend/styles.css && npx cleancss -o frontend/styles.min.css frontend/styles/healthcare.css",
