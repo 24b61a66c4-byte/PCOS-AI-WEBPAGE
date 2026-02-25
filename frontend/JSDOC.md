@@ -1,4 +1,4 @@
-﻿# PCOS Smart Assistant - API Documentation
+# PCOS Smart Assistant - API Documentation
 
 ## Global Functions
 

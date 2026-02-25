@@ -1,4 +1,4 @@
-﻿// API Configuration Template
+// API Configuration Template
 // 
 // SETUP INSTRUCTIONS:
 // 1. Copy this file and rename it to 'config.js' in the same folder

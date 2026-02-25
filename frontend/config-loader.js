@@ -1,4 +1,4 @@
-﻿// Smart Config Loader
+// Smart Config Loader
 // Automatically selects the right config based on environment
 (function() {
   const isLocalhost = window.location.hostname === 'localhost' || 

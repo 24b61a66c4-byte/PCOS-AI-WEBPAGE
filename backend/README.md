@@ -1,4 +1,4 @@
-﻿# PCOS Smart Assistant - Backend API
+# PCOS Smart Assistant - Backend API
 
 ## Features
 - 📊 Analyzes user health data against PCOS dataset

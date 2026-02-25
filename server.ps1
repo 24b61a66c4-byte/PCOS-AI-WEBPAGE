@@ -1,4 +1,4 @@
-﻿$port = 8080
+$port = 8080
 $url = "http://localhost:$port"
 Write-Host "Starting web server at $url" -ForegroundColor Green
 Write-Host "Press Ctrl+C to stop the server" -ForegroundColor Yellow

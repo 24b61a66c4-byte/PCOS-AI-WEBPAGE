@@ -1,4 +1,4 @@
-﻿# Project Completion Tasks - COMPLETED
+# Project Completion Tasks - COMPLETED
 
 ## Task List
 

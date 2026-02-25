@@ -1,4 +1,4 @@
-﻿# 🏥 PCOS Smart Assistant
+# 🏥 PCOS Smart Assistant
 
 A comprehensive health analysis platform for PCOS (Polycystic Ovary Syndrome) with AI-powered insights, risk assessment, and personalized doctor recommendations.
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * HealthCard Component
  * Reusable card for displaying health metrics and insights
  */

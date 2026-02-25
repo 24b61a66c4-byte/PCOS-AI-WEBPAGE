@@ -1,4 +1,4 @@
-﻿# Supabase Dataset Import (Raw CSV)
+# Supabase Dataset Import (Raw CSV)
 
 ## Why a separate table
 - Keeps training/data exploration separate from user submissions.

@@ -1,4 +1,4 @@
-﻿// PCOS Smart Assistant - Results Page Handler
+// PCOS Smart Assistant - Results Page Handler
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize theme
   const savedTheme = localStorage.getItem('pcos_theme') || 'dark';
