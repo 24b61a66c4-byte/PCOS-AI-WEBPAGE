@@ -864,10 +864,10 @@ Image Analysis Instructions:
         : null;
 
       if (insightCycleEl) {
-        insightCycleEl.textContent = avgCycle ? `${avgCycle} days` : '—';
+        insightCycleEl.textContent = avgCycle ? `${avgCycle}` : '—';
       }
       if (insightPeriodEl) {
-        insightPeriodEl.textContent = avgPeriod ? `${avgPeriod} days` : '—';
+        insightPeriodEl.textContent = avgPeriod ? `${avgPeriod}` : '—';
       }
       if (insightSymptomsEl) {
         const symptomCount = lastEntry && Array.isArray(lastEntry.symptoms)
@@ -875,7 +875,263 @@ Image Analysis Instructions:
           : 0;
         insightSymptomsEl.textContent = `${symptomCount}`;
       }
+
+      // Update Cycle Trends section with dynamic data
+      updateCycleTrends(entries, lastEntry);
+      // Update AI Recommendations with personalized suggestions
+      updateAIRecommendations(lastEntry, entries);
+    } else {
+      // Reset to default when no entries
+      updateCycleTrends([], null);
+      updateAIRecommendations(null, []);
     }
+  }
+
+  function updateCycleTrends(entries, lastEntry) {
+    const cycleValueEl = document.getElementById('cycle-value');
+    const periodValueEl = document.getElementById('period-value');
+    const cycleTrendEl = document.getElementById('cycleTrend');
+    const cyclePhaseEl = document.getElementById('cyclePhase');
+
+    if (!entries || entries.length === 0) {
+      if (cycleValueEl) cycleValueEl.innerHTML = '— <span class="health-metric__unit">days</span>';
+      if (periodValueEl) periodValueEl.innerHTML = '— <span class="health-metric__unit">days</span>';
+      if (cycleTrendEl) cycleTrendEl.textContent = '—';
+      if (cyclePhaseEl) cyclePhaseEl.textContent = 'Add entries to see cycle patterns';
+      return;
+    }
+
+    const cycleValues = entries.map(e => Number(e.cycle_length)).filter(n => n > 0);
+    const periodValues = entries.map(e => Number(e.period_length)).filter(n => n > 0);
+    let avgCycle = null;
+    let avgPeriod = null;
+
+    if (cycleValues.length > 0) {
+      avgCycle = Math.round(cycleValues.reduce((a, b) => a + b, 0) / cycleValues.length);
+      if (cycleValueEl) cycleValueEl.innerHTML = `${avgCycle} <span class="health-metric__unit">days</span>`;
+      
+      // Calculate trend
+      if (cycleValues.length >= 2) {
+        const recent = cycleValues[0];
+        const older = cycleValues[cycleValues.length - 1];
+        const diff = ((recent - older) / older * 100).toFixed(0);
+        if (cycleTrendEl) {
+          if (diff > 0) {
+            cycleTrendEl.textContent = `↑ ${Math.abs(diff)}%`;
+            cycleTrendEl.className = 'health-metric__trend health-metric__trend--up';
+          } else if (diff < 0) {
+            cycleTrendEl.textContent = `↓ ${Math.abs(diff)}%`;
+            cycleTrendEl.className = 'health-metric__trend health-metric__trend--down';
+          } else {
+            cycleTrendEl.textContent = '—';
+            cycleTrendEl.className = 'health-metric__trend';
+          }
+        }
+      }
+    }
+
+    if (periodValues.length > 0) {
+      avgPeriod = Math.round(periodValues.reduce((a, b) => a + b, 0) / periodValues.length);
+      if (periodValueEl) periodValueEl.innerHTML = `${avgPeriod} <span class="health-metric__unit">days</span>`;
+    }
+
+    // Calculate current cycle day and phase
+    if (lastEntry && lastEntry.last_period && avgCycle) {
+      try {
+        const lastPeriodDate = new Date(lastEntry.last_period);
+        const today = new Date();
+        const dayDiff = Math.floor((today - lastPeriodDate) / (1000 * 60 * 60 * 24));
+        const currentDay = ((dayDiff % avgCycle) + 1);
+        
+        let phase = '';
+        if (currentDay <= 5) phase = 'Menstruation';
+        else if (currentDay <= 13) phase = 'Follicular';
+        else if (currentDay <= 16) phase = 'Ovulation';
+        else phase = 'Luteal';
+        
+        if (cyclePhaseEl) cyclePhaseEl.textContent = `Day ${currentDay} of cycle - ${phase.toLowerCase()} phase`;
+      } catch (e) {
+        if (cyclePhaseEl) cyclePhaseEl.textContent = 'Add entries to see cycle patterns';
+      }
+    } else if (cyclePhaseEl) {
+      cyclePhaseEl.textContent = 'Add entries to see cycle patterns';
+    }
+  }
+
+  function updateAIRecommendations(lastEntry, entries) {
+    // Get all recommendation elements
+    const rec1Title = document.getElementById('rec1Title');
+    const rec1Desc = document.getElementById('rec1Desc');
+    const rec1Priority = document.getElementById('rec1Priority');
+    const rec2Title = document.getElementById('rec2Title');
+    const rec2Desc = document.getElementById('rec2Desc');
+    const rec2Priority = document.getElementById('rec2Priority');
+    const rec3Title = document.getElementById('rec3Title');
+    const rec3Desc = document.getElementById('rec3Desc');
+    const rec3Priority = document.getElementById('rec3Priority');
+
+    if (!lastEntry || entries.length === 0) {
+      // Show default message when no entries
+      if (rec1Title) rec1Title.textContent = 'Add Entry';
+      if (rec1Desc) rec1Desc.textContent = 'Log your first entry to get personalized recommendations.';
+      if (rec1Priority) {
+        rec1Priority.textContent = '—';
+        rec1Priority.className = 'recommendation-item__priority';
+      }
+      // Hide or reset other recommendations
+      if (rec2Title) rec2Title.textContent = 'Exercise';
+      if (rec2Desc) rec2Desc.textContent = 'Track your activity to get personalized suggestions.';
+      if (rec2Priority) rec2Priority.textContent = '—';
+      if (rec3Title) rec3Title.textContent = 'Sleep';
+      if (rec3Desc) rec3Desc.textContent = 'Log your sleep hours for better insights.';
+      if (rec3Priority) rec3Priority.textContent = '—';
+      return;
+    }
+
+    // Generate personalized recommendations based on user data
+    const recommendations = generatePersonalizedRecommendations(lastEntry, entries);
+
+    // Update first recommendation
+    if (recommendations[0] && rec1Title && rec1Desc && rec1Priority) {
+      rec1Title.textContent = recommendations[0].title;
+      rec1Desc.textContent = recommendations[0].description;
+      rec1Priority.textContent = recommendations[0].priorityLabel;
+      rec1Priority.className = 'recommendation-item__priority recommendation-item__priority--' + recommendations[0].priority;
+    }
+
+    // Update second recommendation
+    if (recommendations[1] && rec2Title && rec2Desc && rec2Priority) {
+      rec2Title.textContent = recommendations[1].title;
+      rec2Desc.textContent = recommendations[1].description;
+      rec2Priority.textContent = recommendations[1].priorityLabel;
+      rec2Priority.className = 'recommendation-item__priority recommendation-item__priority--' + recommendations[1].priority;
+    }
+
+    // Update third recommendation
+    if (recommendations[2] && rec3Title && rec3Desc && rec3Priority) {
+      rec3Title.textContent = recommendations[2].title;
+      rec3Desc.textContent = recommendations[2].description;
+      rec3Priority.textContent = recommendations[2].priorityLabel;
+      rec3Priority.className = 'recommendation-item__priority recommendation-item__priority--' + recommendations[2].priority;
+    }
+  }
+
+  function generatePersonalizedRecommendations(lastEntry, entries) {
+    const recommendations = [];
+    const symptoms = Array.isArray(lastEntry.symptoms) ? lastEntry.symptoms : [];
+    const cycle = Number(lastEntry.cycle_length);
+    const period = Number(lastEntry.period_length);
+    const sleep = Number(lastEntry.sleep);
+    const stress = lastEntry.stress;
+    const activity = lastEntry.activity;
+
+    // Diet recommendation based on symptoms
+    if (symptoms.includes('weight_gain') || symptoms.includes('fatigue')) {
+      recommendations.push({
+        icon: '🥗',
+        title: 'Diet Tip',
+        description: 'Focus on low-glycemic foods. Add more vegetables and lean proteins.',
+        priority: 'high',
+        priorityLabel: 'High',
+        bgColor: 'rgba(14, 165, 233, 0.1)'
+      });
+    } else if (symptoms.includes('acne') || symptoms.includes('hirsutism')) {
+      recommendations.push({
+        icon: '🥗',
+        title: 'Diet Tip',
+        description: 'Reduce dairy and refined carbs. Stay hydrated throughout the day.',
+        priority: 'medium',
+        priorityLabel: 'Medium',
+        bgColor: 'rgba(14, 165, 233, 0.1)'
+      });
+    }
+
+    // Exercise recommendation
+    if (activity === 'sedentary' || !activity) {
+      recommendations.push({
+        icon: '🏃',
+        title: 'Exercise',
+        description: 'Start with 15-min daily walks. Gradually increase to 30 mins.',
+        priority: 'high',
+        priorityLabel: 'High',
+        bgColor: 'rgba(34, 197, 94, 0.1)'
+      });
+    } else if (activity === 'light') {
+      recommendations.push({
+        icon: '🏃',
+        title: 'Exercise',
+        description: 'Add 2-3 strength sessions weekly to improve insulin sensitivity.',
+        priority: 'medium',
+        priorityLabel: 'Medium',
+        bgColor: 'rgba(34, 197, 94, 0.1)'
+      });
+    } else {
+      recommendations.push({
+        icon: '🏃',
+        title: 'Exercise',
+        description: 'Great activity level! Keep consistent with your routine.',
+        priority: 'low',
+        priorityLabel: 'Low',
+        bgColor: 'rgba(34, 197, 94, 0.1)'
+      });
+    }
+
+    // Sleep recommendation
+    if (sleep > 0 && sleep < 6) {
+      recommendations.push({
+        icon: '😴',
+        title: 'Sleep',
+        description: 'Prioritize 7-8 hours. Sleep debt can worsen PCOS symptoms.',
+        priority: 'high',
+        priorityLabel: 'High',
+        bgColor: 'rgba(59, 130, 246, 0.1)'
+      });
+    } else if (sleep >= 6 && sleep < 7) {
+      recommendations.push({
+        icon: '😴',
+        title: 'Sleep',
+        description: 'Try to add 30-60 mins more sleep for better hormone balance.',
+        priority: 'medium',
+        priorityLabel: 'Medium',
+        bgColor: 'rgba(59, 130, 246, 0.1)'
+      });
+    }
+
+    // Cycle-based recommendation
+    if (cycle > 0 && (cycle < 21 || cycle > 35)) {
+      recommendations.push({
+        icon: '📅',
+        title: 'Cycle Tip',
+        description: 'Irregular cycles detected. Consider discussing with your doctor.',
+        priority: 'high',
+        priorityLabel: 'High',
+        bgColor: 'rgba(239, 68, 68, 0.1)'
+      });
+    } else if (symptoms.includes('irregular_cycles')) {
+      recommendations.push({
+        icon: '📅',
+        title: 'Cycle Tip',
+        description: 'Track consistently for 3+ months to identify patterns.',
+        priority: 'medium',
+        priorityLabel: 'Medium',
+        bgColor: 'rgba(239, 68, 68, 0.1)'
+      });
+    }
+
+    // Stress recommendation
+    if (stress === 'high') {
+      recommendations.push({
+        icon: '🧘',
+        title: 'Stress Mgmt',
+        description: 'Try 5-min breathing exercises daily to reduce cortisol levels.',
+        priority: 'high',
+        priorityLabel: 'High',
+        bgColor: 'rgba(147, 51, 234, 0.1)'
+      });
+    }
+
+    // Return max 3 recommendations
+    return recommendations.slice(0, 3);
   }
 
   initDashboard();

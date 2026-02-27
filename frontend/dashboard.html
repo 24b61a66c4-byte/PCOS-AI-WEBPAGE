@@ -43,7 +43,9 @@
             <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
                 <span class="theme-icon"></span>
             </button>
-            <a href="form.html" class="btn btn--primary btn--sm">Add Entry</a>
+                <a href="form.html" class="btn btn--primary btn--sm special-add-entry" id="specialAddEntry">
+                    <span style="font-size:1.2em;vertical-align:middle;">✨</span> <span style="vertical-align:middle;">Add Entry</span>
+                </a>
         </div>
     </header>
 
@@ -137,30 +139,30 @@
                     </div>
                 </div>
                 <div class="healthcare-card__content">
-                    <div class="recommendation-list">
+                    <div class="recommendation-list" id="aiRecommendationsList">
                         <div class="recommendation-item">
                             <div class="recommendation-item__icon" style="background: rgba(14, 165, 233, 0.1);">🥗</div>
                             <div class="recommendation-item__content">
-                                <div class="recommendation-item__title">Diet Tip</div>
-                                <div class="recommendation-item__description">Eat more fiber-rich foods and healthy fats. Limit processed sugars.</div>
+                                <div class="recommendation-item__title" id="rec1Title">Diet Tip</div>
+                                <div class="recommendation-item__description" id="rec1Desc">Eat more fiber-rich foods and healthy fats. Limit processed sugars.</div>
                             </div>
-                            <span class="recommendation-item__priority recommendation-item__priority--high">High</span>
+                            <span class="recommendation-item__priority recommendation-item__priority--high" id="rec1Priority">High</span>
                         </div>
                         <div class="recommendation-item">
                             <div class="recommendation-item__icon" style="background: rgba(34, 197, 94, 0.1);">🏃</div>
                             <div class="recommendation-item__content">
-                                <div class="recommendation-item__title">Exercise Suggestion</div>
-                                <div class="recommendation-item__description">Aim for 30 minutes of moderate activity most days.</div>
+                                <div class="recommendation-item__title" id="rec2Title">Exercise Suggestion</div>
+                                <div class="recommendation-item__description" id="rec2Desc">Aim for 30 minutes of moderate activity most days.</div>
                             </div>
-                            <span class="recommendation-item__priority recommendation-item__priority--medium">Medium</span>
+                            <span class="recommendation-item__priority recommendation-item__priority--medium" id="rec2Priority">Medium</span>
                         </div>
                         <div class="recommendation-item">
                             <div class="recommendation-item__icon" style="background: rgba(59, 130, 246, 0.1);">😴</div>
                             <div class="recommendation-item__content">
-                                <div class="recommendation-item__title">Sleep Recommendation</div>
-                                <div class="recommendation-item__description">Aim for 7–9 hours of restful sleep each night.</div>
+                                <div class="recommendation-item__title" id="rec3Title">Sleep Recommendation</div>
+                                <div class="recommendation-item__description" id="rec3Desc">Aim for 7–9 hours of restful sleep each night.</div>
                             </div>
-                            <span class="recommendation-item__priority recommendation-item__priority--low">Low</span>
+                            <span class="recommendation-item__priority recommendation-item__priority--low" id="rec3Priority">Low</span>
                         </div>
                     </div>
                 </div>
@@ -179,15 +181,19 @@
                     <div class="health-metric">
                         <div class="health-metric__icon">📊</div>
                         <div class="health-metric__info">
-                            <span class="health-metric__label">Cycle Length</span>
-                            <span class="health-metric__value" id="cycle-value">28 <span class="health-metric__unit">days</span></span>
+                            <span class="health-metric__label">Avg Cycle</span>
+                            <span class="health-metric__value" id="cycle-value">— <span class="health-metric__unit">days</span></span>
                         </div>
-                        <div class="health-metric__trend health-metric__trend--up">↑ 2%</div>
+                        <div class="health-metric__trend" id="cycleTrend">—</div>
                     </div>
-                    <div class="progress-bar" style="margin-top: 16px;">
-                        <div class="progress-bar__fill" style="width: 75%;"></div>
+                    <div class="health-metric" style="margin-top: 12px;">
+                        <div class="health-metric__icon">🩸</div>
+                        <div class="health-metric__info">
+                            <span class="health-metric__label">Avg Period</span>
+                            <span class="health-metric__value" id="period-value">— <span class="health-metric__unit">days</span></span>
+                        </div>
                     </div>
-                    <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 8px;">Day 21 of cycle - follicular phase</p>
+                    <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 12px;" id="cyclePhase">Add entries to see cycle patterns</p>
                 </div>
             </div>
 
@@ -292,5 +298,249 @@
 
     <script src="config-loader.js"></script>
     <script src="app.js"></script>
+                <style>
+                    .special-add-entry {
+                        background: linear-gradient(90deg, #fbbf24 0%, #f472b6 100%);
+                        color: #fff !important;
+                        border: none;
+                        box-shadow: 0 2px 12px 0 rgba(251,191,36,0.15), 0 1.5px 8px 0 rgba(244,114,182,0.12);
+                        font-weight: 600;
+                        letter-spacing: 0.01em;
+                        position: relative;
+                        overflow: hidden;
+                        transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s;
+                        z-index: 1;
+                    }
+                    .special-add-entry:hover, .special-add-entry:focus {
+                        transform: scale(1.06) rotate(-1deg);
+                        box-shadow: 0 4px 24px 0 rgba(251,191,36,0.22), 0 3px 16px 0 rgba(244,114,182,0.18);
+                        background: linear-gradient(90deg, #f472b6 0%, #fbbf24 100%);
+                    }
+                    .special-add-entry::after {
+                        content: '';
+                        position: absolute;
+                        left: -40%;
+                        top: 0;
+                        width: 180%;
+                        height: 100%;
+                        background: linear-gradient(120deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 100%);
+                        pointer-events: none;
+                        z-index: 0;
+                        transition: opacity 0.3s;
+                        opacity: 0.7;
+                        animation: shimmer 2.2s infinite linear;
+                    }
+                    @keyframes shimmer {
+                        0% { left: -40%; }
+                        100% { left: 100%; }
+                    }
+                </style>
+        <script>
+            // --- Language Switcher for Dashboard ---
+            const DASH_LANG_KEY = 'dashboard_lang';
+            const dashboardTranslations = {
+                en: {
+                    dashboardTitle: 'Your Health Dashboard',
+                    dashboardSubtitle: 'Track your wellness journey and receive personalized insights',
+                    avgCycle: 'Avg Cycle Days',
+                    periodDays: 'Period Days',
+                    healthScore: 'Health Score',
+                    symptomsLogged: 'Symptoms Logged',
+                    latestEntry: 'Latest Entry',
+                    noEntries: 'No entries yet',
+                    lastPeriod: 'Last Period',
+                    addFirstEntry: 'Add first entry',
+                    aiRecommendations: 'AI Recommendations',
+                    personalizedInsights: 'Personalized insights',
+                    dietTip: 'Diet Tip',
+                    dietDesc: 'Eat more fiber-rich foods and healthy fats. Limit processed sugars.',
+                    exerciseSuggestion: 'Exercise Suggestion',
+                    exerciseDesc: 'Aim for 30 minutes of moderate activity most days.',
+                    sleepRecommendation: 'Sleep Recommendation',
+                    sleepDesc: 'Aim for 7–9 hours of restful sleep each night.',
+                    high: 'High',
+                    medium: 'Medium',
+                    low: 'Low',
+                    cycleTrends: 'Cycle Trends',
+                    patternsOverTime: 'Your patterns over time',
+                    cycleLength: 'Cycle Length',
+                    days: 'days',
+                    quickActions: 'Quick Actions',
+                    stayOnTrack: 'Stay on track',
+                    logSymptoms: 'Log Today\'s Symptoms',
+                    chatAI: 'Chat with AI Assistant',
+                    viewReport: 'View Full Report',
+                    privacyTitle: 'Your Privacy is Protected',
+                    privacyDesc: 'All your health data is stored locally on your device. We never transmit or share your personal information.',
+                    aiDisclaimer: 'AI suggestions are informational only and not medical advice. Always consult a healthcare provider.'
+                },
+                te: {
+                    dashboardTitle: 'మీ ఆరోగ్య డాష్‌బోర్డ్',
+                    dashboardSubtitle: 'మీ ఆరోగ్య ప్రయాణాన్ని ట్రాక్ చేయండి మరియు వ్యక్తిగత సూచనలు పొందండి',
+                    avgCycle: 'సగటు సైకిల్ రోజులు',
+                    periodDays: 'పీరియడ్ రోజులు',
+                    healthScore: 'ఆరోగ్య స్కోర్',
+                    symptomsLogged: 'లక్షణాలు నమోదు అయ్యాయి',
+                    latestEntry: 'తాజా నమోదు',
+                    noEntries: 'ఇంకా నమోదు లేదు',
+                    lastPeriod: 'చివరి పీరియడ్',
+                    addFirstEntry: 'మొదటి నమోదు చేయండి',
+                    aiRecommendations: 'AI సూచనలు',
+                    personalizedInsights: 'వ్యక్తిగత సూచనలు',
+                    dietTip: 'ఆహార సూచన',
+                    dietDesc: 'ఫైబర్ మరియు ఆరోగ్యకరమైన కొవ్వులు ఎక్కువగా తినండి. ప్రాసెస్డ్ షుగర్స్ తగ్గించండి.',
+                    exerciseSuggestion: 'వ్యాయామ సూచన',
+                    exerciseDesc: 'రోజుకు 30 నిమిషాలు మోస్తరు వ్యాయామం చేయండి.',
+                    sleepRecommendation: 'నిద్ర సూచన',
+                    sleepDesc: 'ప్రతి రాత్రి 7–9 గంటలు నిద్రపోండి.',
+                    high: 'అధిక',
+                    medium: 'మధ్య',
+                    low: 'తక్కువ',
+                    cycleTrends: 'సైకిల్ ధోరణులు',
+                    patternsOverTime: 'మీ ధోరణులు',
+                    cycleLength: 'సైకిల్ పొడవు',
+                    days: 'రోజులు',
+                    quickActions: 'త్వరిత చర్యలు',
+                    stayOnTrack: 'పట్టుదలగా ఉండండి',
+                    logSymptoms: 'ఈరోజు లక్షణాలు నమోదు చేయండి',
+                    chatAI: 'AI అసిస్టెంట్‌తో చాట్ చేయండి',
+                    viewReport: 'పూర్తి నివేదిక చూడండి',
+                    privacyTitle: 'మీ గోప్యత రక్షించబడింది',
+                    privacyDesc: 'మీ ఆరోగ్య డేటా మీ పరికరంలో మాత్రమే నిల్వ ఉంటుంది. మేము మీ వ్యక్తిగత సమాచారాన్ని ఎప్పుడూ పంపించము లేదా పంచుకోము.',
+                    aiDisclaimer: 'AI సూచనలు సమాచారం కోసం మాత్రమే. వైద్య సలహా కోసం డాక్టర్‌ను సంప్రదించండి.'
+                },
+                hi: {
+                    dashboardTitle: 'आपका स्वास्थ्य डैशबोर्ड',
+                    dashboardSubtitle: 'अपनी स्वास्थ्य यात्रा को ट्रैक करें और व्यक्तिगत सुझाव प्राप्त करें',
+                    avgCycle: 'औसत साइकिल दिन',
+                    periodDays: 'पीरियड दिन',
+                    healthScore: 'स्वास्थ्य स्कोर',
+                    symptomsLogged: 'लक्षण दर्ज किए गए',
+                    latestEntry: 'नवीनतम प्रविष्टि',
+                    noEntries: 'अभी तक कोई प्रविष्टि नहीं',
+                    lastPeriod: 'अंतिम पीरियड',
+                    addFirstEntry: 'पहली प्रविष्टि जोड़ें',
+                    aiRecommendations: 'AI सिफारिशें',
+                    personalizedInsights: 'व्यक्तिगत सुझाव',
+                    dietTip: 'आहार सुझाव',
+                    dietDesc: 'अधिक फाइबर और स्वस्थ वसा खाएं। प्रोसेस्ड शुगर कम करें।',
+                    exerciseSuggestion: 'व्यायाम सुझाव',
+                    exerciseDesc: 'अधिकांश दिनों में 30 मिनट का मध्यम व्यायाम करें।',
+                    sleepRecommendation: 'नींद सुझाव',
+                    sleepDesc: 'हर रात 7–9 घंटे की नींद लें।',
+                    high: 'उच्च',
+                    medium: 'मध्यम',
+                    low: 'कम',
+                    cycleTrends: 'साइकिल प्रवृत्तियाँ',
+                    patternsOverTime: 'आपकी प्रवृत्तियाँ',
+                    cycleLength: 'साइकिल लंबाई',
+                    days: 'दिन',
+                    quickActions: 'त्वरित क्रियाएँ',
+                    stayOnTrack: 'पथ पर बने रहें',
+                    logSymptoms: 'आज के लक्षण दर्ज करें',
+                    chatAI: 'AI सहायक से चैट करें',
+                    viewReport: 'पूर्ण रिपोर्ट देखें',
+                    privacyTitle: 'आपकी गोपनीयता सुरक्षित है',
+                    privacyDesc: 'आपका स्वास्थ्य डेटा केवल आपके डिवाइस पर संग्रहीत है। हम कभी भी आपकी व्यक्तिगत जानकारी साझा या ट्रांसमिट नहीं करते।',
+                    aiDisclaimer: 'AI सुझाव केवल जानकारी के लिए हैं, चिकित्सा सलाह नहीं। हमेशा डॉक्टर से सलाह लें।'
+                }
+            };
+
+            function setDashboardLanguage(lang) {
+                const t = dashboardTranslations[lang] || dashboardTranslations.en;
+                // Header
+                const title = document.querySelector('.dashboard__title');
+                if (title) title.textContent = t.dashboardTitle;
+                const subtitle = document.querySelector('.dashboard__subtitle');
+                if (subtitle) subtitle.textContent = t.dashboardSubtitle;
+                // Stats
+                const statLabels = document.querySelectorAll('.stat-item__label');
+                if (statLabels.length === 4) {
+                    statLabels[0].textContent = t.avgCycle;
+                    statLabels[1].textContent = t.periodDays;
+                    statLabels[2].textContent = t.healthScore;
+                    statLabels[3].textContent = t.symptomsLogged;
+                }
+                // Latest Entry
+                const latestTitle = document.querySelector('.healthcare-card__title');
+                if (latestTitle) latestTitle.textContent = t.latestEntry;
+                const latestSubtitle = document.getElementById('latest-timestamp');
+                if (latestSubtitle && latestSubtitle.textContent === 'No entries yet') latestSubtitle.textContent = t.noEntries;
+                const lastPeriodLabel = document.querySelector('.metric-display__label');
+                if (lastPeriodLabel) lastPeriodLabel.textContent = t.lastPeriod;
+                const addFirstEntry = document.getElementById('latest-status');
+                if (addFirstEntry && addFirstEntry.textContent === 'Add first entry') addFirstEntry.textContent = t.addFirstEntry;
+                // AI Recommendations
+                const aiTitle = document.querySelectorAll('.healthcare-card__title')[1];
+                if (aiTitle) aiTitle.textContent = t.aiRecommendations;
+                const aiSubtitle = document.querySelectorAll('.healthcare-card__subtitle')[1];
+                if (aiSubtitle) aiSubtitle.textContent = t.personalizedInsights;
+                const recTitles = document.querySelectorAll('.recommendation-item__title');
+                if (recTitles.length === 3) {
+                    recTitles[0].textContent = t.dietTip;
+                    recTitles[1].textContent = t.exerciseSuggestion;
+                    recTitles[2].textContent = t.sleepRecommendation;
+                }
+                const recDescs = document.querySelectorAll('.recommendation-item__description');
+                if (recDescs.length === 3) {
+                    recDescs[0].textContent = t.dietDesc;
+                    recDescs[1].textContent = t.exerciseDesc;
+                    recDescs[2].textContent = t.sleepDesc;
+                }
+                const recPrio = document.querySelectorAll('.recommendation-item__priority');
+                if (recPrio.length === 3) {
+                    recPrio[0].textContent = t.high;
+                    recPrio[1].textContent = t.medium;
+                    recPrio[2].textContent = t.low;
+                }
+                // Cycle Trends
+                const trendsTitle = document.querySelectorAll('.healthcare-card__title')[2];
+                if (trendsTitle) trendsTitle.textContent = t.cycleTrends;
+                const trendsSubtitle = document.querySelectorAll('.healthcare-card__subtitle')[2];
+                if (trendsSubtitle) trendsSubtitle.textContent = t.patternsOverTime;
+                const cycleLabel = document.querySelector('.health-metric__label');
+                if (cycleLabel) cycleLabel.textContent = t.cycleLength;
+                const cycleUnit = document.querySelector('.health-metric__unit');
+                if (cycleUnit) cycleUnit.textContent = t.days;
+                // Quick Actions
+                const quickTitle = document.querySelectorAll('.healthcare-card__title')[3];
+                if (quickTitle) quickTitle.textContent = t.quickActions;
+                const quickSubtitle = document.querySelectorAll('.healthcare-card__subtitle')[3];
+                if (quickSubtitle) quickSubtitle.textContent = t.stayOnTrack;
+                const logBtn = document.querySelector('.btn.btn--primary');
+                if (logBtn) logBtn.innerHTML = `<span>📝</span> ${t.logSymptoms}`;
+                const chatBtn = document.querySelector('.btn.btn--secondary');
+                if (chatBtn) chatBtn.innerHTML = `<span>💬</span> ${t.chatAI}`;
+                const reportBtn = document.querySelector('.btn.btn--ghost');
+                if (reportBtn) reportBtn.innerHTML = `<span>📋</span> ${t.viewReport}`;
+                // Privacy
+                const privacyTitle = document.querySelector('.cta-box h4');
+                if (privacyTitle) privacyTitle.textContent = t.privacyTitle;
+                const privacyDesc = document.querySelector('.cta-box p');
+                if (privacyDesc) privacyDesc.textContent = t.privacyDesc;
+                // Disclaimer
+                const disclaimer = document.querySelector('.ai-disclaimer');
+                if (disclaimer) disclaimer.textContent = t.aiDisclaimer;
+            }
+
+            function getDashboardLanguage() {
+                return localStorage.getItem(DASH_LANG_KEY) || 'en';
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const langSelect = document.getElementById('languageSelect');
+                if (langSelect) {
+                    // Set initial value
+                    langSelect.value = getDashboardLanguage();
+                    setDashboardLanguage(langSelect.value);
+                    langSelect.addEventListener('change', function() {
+                        localStorage.setItem(DASH_LANG_KEY, langSelect.value);
+                        setDashboardLanguage(langSelect.value);
+                    });
+                } else {
+                    setDashboardLanguage(getDashboardLanguage());
+                }
+            });
+        </script>
 </body>
 </html>
