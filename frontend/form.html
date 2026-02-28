@@ -1,9 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Health Journey — PCOS Smart Assistant</title>
+    <script>
+        // Dynamic base path for subdirectory deployments (GitHub Pages, Vercel)
+        (function () {
+            var pathParts = window.location.pathname.split('/').filter(function (p) { return p; });
+            // If we're in a subdirectory (e.g., /PCOS-AI-WEBPAGE/), use it as base
+            if (pathParts.length > 0 && pathParts[0] !== 'frontend') {
+                var base = document.createElement('base');
+                base.href = '/' + pathParts[0] + '/frontend/';
+                document.head.appendChild(base);
+            }
+        })();
+    </script>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles/healthcare.css">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -11,17 +24,20 @@
     <script src="https://cdn.jsdelivr.net/gh/darkroomengineering/lenis@latest/bundled/lenis.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
-        <!-- Premium Loader Overlay -->
-        <div class="premium-loader" id="formLoader" style="display:none;">
-            <div class="premium-loader-content">
-                <div class="loader-logo">Saving Entry...</div>
-                <div class="loader-dots"><span></span><span></span><span></span></div>
-                <div class="loader-progress"><div class="loader-progress-bar"></div></div>
-                <div class="loader-text">Please wait</div>
+    <!-- Premium Loader Overlay -->
+    <div class="premium-loader" id="formLoader" style="display:none;">
+        <div class="premium-loader-content">
+            <div class="loader-logo">Saving Entry...</div>
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-progress">
+                <div class="loader-progress-bar"></div>
             </div>
+            <div class="loader-text">Please wait</div>
         </div>
-        <div class="navbar">
+    </div>
+    <div class="navbar">
         <div class="nav-container">
             <div class="logo">🏥 PCOS Smart Assistant</div>
             <div class="nav-actions">
@@ -85,181 +101,206 @@
             <form id="pcos-form" novalidate>
                 <div class="form-steps-shell">
                     <div class="form-slider" id="formSlider">
-                <div class="form-step active" data-step="1">
-                    <div class="form-section">
-                        <h2>👤 Personal Information</h2>
-                        <p class="step-subtitle">Let's start with your basic information</p>
+                        <div class="form-step active" data-step="1">
+                            <div class="form-section">
+                                <h2>👤 Personal Information</h2>
+                                <p class="step-subtitle">Let's start with your basic information</p>
 
-                        <div class="single-field">
-                            <label for="age">What is your age?</label>
-                            <input type="number" id="age" name="age" min="10" max="80" placeholder="Enter your age" aria-describedby="age-error">
-                            <small class="error" data-for="age" id="age-error" role="alert"></small>
+                                <div class="single-field">
+                                    <label for="age">What is your age?</label>
+                                    <input type="number" id="age" name="age" min="10" max="80"
+                                        placeholder="Enter your age" aria-describedby="age-error">
+                                    <small class="error" data-for="age" id="age-error" role="alert"></small>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="weight">What is your weight? (kg)</label>
+                                    <input type="number" id="weight" name="weight" min="30" max="300"
+                                        placeholder="e.g., 65" step="0.1">
+                                    <small class="error" data-for="weight"></small>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="height">What is your height? (cm)</label>
+                                    <input type="number" id="height" name="height" min="100" max="250"
+                                        placeholder="e.g., 165">
+                                    <small class="error" data-for="height"></small>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="single-field">
-                            <label for="weight">What is your weight? (kg)</label>
-                            <input type="number" id="weight" name="weight" min="30" max="300" placeholder="e.g., 65" step="0.1">
-                            <small class="error" data-for="weight"></small>
+                        <div class="form-step" data-step="2">
+                            <div class="form-section">
+                                <h2>🔄 Menstrual Cycle</h2>
+                                <p class="step-subtitle">Understanding your cycle helps us better assist you</p>
+
+                                <div class="single-field">
+                                    <label for="cycle_length">What is your average cycle length? (days) *</label>
+                                    <input type="number" id="cycle_length" name="cycle_length" min="15" max="120"
+                                        placeholder="e.g., 28-35" required aria-required="true"
+                                        aria-describedby="cycle_length-error">
+                                    <small class="helper">Most cycles are 21-35 days. Enter your average.</small>
+                                    <small class="error" data-for="cycle_length" id="cycle_length-error"
+                                        role="alert"></small>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="period_length">How long is your typical period? (days) *</label>
+                                    <input type="number" id="period_length" name="period_length" min="1" max="30"
+                                        placeholder="e.g., 5" required aria-required="true"
+                                        aria-describedby="period_length-error">
+                                    <small class="helper">Typical range is 2-7 days.</small>
+                                    <small class="error" data-for="period_length" id="period_length-error"
+                                        role="alert"></small>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="last_period">When was your last period? *</label>
+                                    <input type="date" id="last_period" name="last_period" required aria-required="true"
+                                        aria-describedby="last_period-error">
+                                    <small class="helper">Use the start date of your most recent period.</small>
+                                    <small class="error" data-for="last_period" id="last_period-error"
+                                        role="alert"></small>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="single-field">
-                            <label for="height">What is your height? (cm)</label>
-                            <input type="number" id="height" name="height" min="100" max="250" placeholder="e.g., 165">
-                            <small class="error" data-for="height"></small>
+                        <div class="form-step" data-step="3">
+                            <div class="form-section">
+                                <h2>⚠️ Current Symptoms</h2>
+                                <p class="step-subtitle">Select all that apply to you</p>
+
+                                <div class="checkbox-grid symptoms-grid">
+                                    <label><input type="checkbox" name="symptoms" value="irregular_cycles"> Irregular
+                                        cycles</label>
+                                    <label><input type="checkbox" name="symptoms" value="weight_gain"> Weight
+                                        gain</label>
+                                    <label><input type="checkbox" name="symptoms" value="hirsutism"> Excess hair
+                                        growth</label>
+                                    <label><input type="checkbox" name="symptoms" value="acne"> Acne</label>
+                                    <label><input type="checkbox" name="symptoms" value="hair_loss"> Hair loss</label>
+                                    <label><input type="checkbox" name="symptoms" value="mood_changes"> Mood
+                                        changes</label>
+                                    <label><input type="checkbox" name="symptoms" value="fatigue"> Fatigue</label>
+                                    <label><input type="checkbox" name="symptoms" value="pelvic_pain"> Pelvic
+                                        pain</label>
+                                    <label><input type="checkbox" name="symptoms" value="infertility"> Infertility
+                                        concerns</label>
+                                    <label><input type="checkbox" name="symptoms" value="darkening"> Skin
+                                        darkening</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-step" data-step="4">
+                            <div class="form-section">
+                                <h2>🏃 Lifestyle & Habits</h2>
+                                <p class="step-subtitle">Help us understand your daily routine</p>
+
+                                <div class="single-field">
+                                    <label for="activity">What is your activity level?</label>
+                                    <select id="activity" name="activity">
+                                        <option value="">Select activity level</option>
+                                        <option value="sedentary">Sedentary (little or no exercise)</option>
+                                        <option value="light">Lightly active (1-3 days/week)</option>
+                                        <option value="moderate">Moderately active (3-5 days/week)</option>
+                                        <option value="active">Very active (6-7 days/week)</option>
+                                    </select>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="sleep">How many hours do you sleep per night?</label>
+                                    <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5"
+                                        placeholder="e.g., 7 hours">
+                                    <small class="helper">Average nightly sleep helps personalize guidance.</small>
+                                    <small class="error" data-for="sleep"></small>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="stress">How would you rate your stress level?</label>
+                                    <select id="stress" name="stress">
+                                        <option value="">Select stress level</option>
+                                        <option value="low">Low</option>
+                                        <option value="moderate">Moderate</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="diet">Any specific diet notes?</label>
+                                    <textarea id="diet" name="diet" maxlength="300"
+                                        placeholder="e.g., vegetarian, low-carb, gluten-free" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-step" data-step="5">
+                            <div class="form-section">
+                                <h2>🏥 Clinical Information</h2>
+                                <p class="step-subtitle">Important medical details</p>
+
+                                <div class="single-field">
+                                    <label for="city">What is your city/location?</label>
+                                    <input type="text" id="city" name="city" maxlength="100" placeholder="City name">
+                                    <small class="error" data-for="city"></small>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="pcos">Have you been diagnosed with PCOS?</label>
+                                    <select id="pcos" name="pcos">
+                                        <option value="">Select status</option>
+                                        <option value="diagnosed">Already diagnosed with PCOS</option>
+                                        <option value="suspected">Suspected PCOS</option>
+                                        <option value="family_history">Family history of PCOS</option>
+                                        <option value="not_diagnosed">Not diagnosed</option>
+                                    </select>
+                                </div>
+
+                                <div class="single-field">
+                                    <label for="medications">Any current medications?</label>
+                                    <input type="text" id="medications" name="medications" maxlength="200"
+                                        placeholder="e.g., Metformin, Birth control">
+                                    <small class="error" data-for="medications"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-step" data-step="6">
+                            <div class="form-section">
+                                <h2>✨ Review Your Information</h2>
+                                <p class="step-subtitle">Please review before submitting</p>
+
+                                <div id="review-container" class="review-container"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-step" data-step="2">
-                    <div class="form-section">
-                        <h2>🔄 Menstrual Cycle</h2>
-                        <p class="step-subtitle">Understanding your cycle helps us better assist you</p>
-
-                        <div class="single-field">
-                            <label for="cycle_length">What is your average cycle length? (days) *</label>
-                            <input type="number" id="cycle_length" name="cycle_length" min="15" max="120" placeholder="e.g., 28-35" required aria-required="true" aria-describedby="cycle_length-error">
-                            <small class="helper">Most cycles are 21-35 days. Enter your average.</small>
-                            <small class="error" data-for="cycle_length" id="cycle_length-error" role="alert"></small>
-                        </div>
-
-                        <div class="single-field">
-                            <label for="period_length">How long is your typical period? (days) *</label>
-                            <input type="number" id="period_length" name="period_length" min="1" max="30" placeholder="e.g., 5" required aria-required="true" aria-describedby="period_length-error">
-                            <small class="helper">Typical range is 2-7 days.</small>
-                            <small class="error" data-for="period_length" id="period_length-error" role="alert"></small>
-                        </div>
-
-                        <div class="single-field">
-                            <label for="last_period">When was your last period? *</label>
-                            <input type="date" id="last_period" name="last_period" required aria-required="true" aria-describedby="last_period-error">
-                            <small class="helper">Use the start date of your most recent period.</small>
-                            <small class="error" data-for="last_period" id="last_period-error" role="alert"></small>
-                        </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">←
+                            Previous</button>
+                        <button type="button" class="btn btn-primary" id="nextBtn">Next →</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">✨ Save My
+                            Data</button>
                     </div>
-                </div>
 
-                <div class="form-step" data-step="3">
-                    <div class="form-section">
-                        <h2>⚠️ Current Symptoms</h2>
-                        <p class="step-subtitle">Select all that apply to you</p>
-
-                        <div class="checkbox-grid symptoms-grid">
-                            <label><input type="checkbox" name="symptoms" value="irregular_cycles"> Irregular cycles</label>
-                            <label><input type="checkbox" name="symptoms" value="weight_gain"> Weight gain</label>
-                            <label><input type="checkbox" name="symptoms" value="hirsutism"> Excess hair growth</label>
-                            <label><input type="checkbox" name="symptoms" value="acne"> Acne</label>
-                            <label><input type="checkbox" name="symptoms" value="hair_loss"> Hair loss</label>
-                            <label><input type="checkbox" name="symptoms" value="mood_changes"> Mood changes</label>
-                            <label><input type="checkbox" name="symptoms" value="fatigue"> Fatigue</label>
-                            <label><input type="checkbox" name="symptoms" value="pelvic_pain"> Pelvic pain</label>
-                            <label><input type="checkbox" name="symptoms" value="infertility"> Infertility concerns</label>
-                            <label><input type="checkbox" name="symptoms" value="darkening"> Skin darkening</label>
+                    <section class="insight-panel" id="pcosInsight" aria-live="polite">
+                        <div class="insight-header">
+                            <h3 id="pcosInsightTitle">PCOS Insight</h3>
+                            <p class="muted" id="pcosInsightNote">Educational only. This does not diagnose PCOS. For
+                                medical advice, consult a clinician.</p>
                         </div>
-                    </div>
-                </div>
-
-                <div class="form-step" data-step="4">
-                    <div class="form-section">
-                        <h2>🏃 Lifestyle & Habits</h2>
-                        <p class="step-subtitle">Help us understand your daily routine</p>
-
-                        <div class="single-field">
-                            <label for="activity">What is your activity level?</label>
-                            <select id="activity" name="activity">
-                                <option value="">Select activity level</option>
-                                <option value="sedentary">Sedentary (little or no exercise)</option>
-                                <option value="light">Lightly active (1-3 days/week)</option>
-                                <option value="moderate">Moderately active (3-5 days/week)</option>
-                                <option value="active">Very active (6-7 days/week)</option>
-                            </select>
+                        <div class="insight-grid">
+                            <div class="insight-card">
+                                <span class="insight-label" id="pcosLevelLabel">Indicator level</span>
+                                <span class="insight-value" id="pcosLevel">—</span>
+                                <p class="insight-note" id="pcosReason">Fill in cycle length and symptoms to see
+                                    insights.</p>
+                            </div>
+                            <div class="insight-card">
+                                <span class="insight-label" id="pcosImpactsLabel">Possible longer-term impacts</span>
+                                <ul class="insight-list" id="pcosImpacts"></ul>
+                            </div>
                         </div>
-
-                        <div class="single-field">
-                            <label for="sleep">How many hours do you sleep per night?</label>
-                            <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5" placeholder="e.g., 7 hours">
-                            <small class="helper">Average nightly sleep helps personalize guidance.</small>
-                            <small class="error" data-for="sleep"></small>
-                        </div>
-
-                        <div class="single-field">
-                            <label for="stress">How would you rate your stress level?</label>
-                            <select id="stress" name="stress">
-                                <option value="">Select stress level</option>
-                                <option value="low">Low</option>
-                                <option value="moderate">Moderate</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-
-                        <div class="single-field">
-                            <label for="diet">Any specific diet notes?</label>
-                            <textarea id="diet" name="diet" maxlength="300" placeholder="e.g., vegetarian, low-carb, gluten-free" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-step" data-step="5">
-                    <div class="form-section">
-                        <h2>🏥 Clinical Information</h2>
-                        <p class="step-subtitle">Important medical details</p>
-
-                        <div class="single-field">
-                            <label for="city">What is your city/location?</label>
-                            <input type="text" id="city" name="city" maxlength="100" placeholder="City name">
-                            <small class="error" data-for="city"></small>
-                        </div>
-
-                        <div class="single-field">
-                            <label for="pcos">Have you been diagnosed with PCOS?</label>
-                            <select id="pcos" name="pcos">
-                                <option value="">Select status</option>
-                                <option value="diagnosed">Already diagnosed with PCOS</option>
-                                <option value="suspected">Suspected PCOS</option>
-                                <option value="family_history">Family history of PCOS</option>
-                                <option value="not_diagnosed">Not diagnosed</option>
-                            </select>
-                        </div>
-
-                        <div class="single-field">
-                            <label for="medications">Any current medications?</label>
-                            <input type="text" id="medications" name="medications" maxlength="200" placeholder="e.g., Metformin, Birth control">
-                            <small class="error" data-for="medications"></small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-step" data-step="6">
-                    <div class="form-section">
-                        <h2>✨ Review Your Information</h2>
-                        <p class="step-subtitle">Please review before submitting</p>
-
-                        <div id="review-container" class="review-container"></div>
-                    </div>
-                </div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">← Previous</button>
-                    <button type="button" class="btn btn-primary" id="nextBtn">Next →</button>
-                    <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">✨ Save My Data</button>
-                </div>
-
-                <section class="insight-panel" id="pcosInsight" aria-live="polite">
-                    <div class="insight-header">
-                        <h3 id="pcosInsightTitle">PCOS Insight</h3>
-                        <p class="muted" id="pcosInsightNote">Educational only. This does not diagnose PCOS. For medical advice, consult a clinician.</p>
-                    </div>
-                    <div class="insight-grid">
-                        <div class="insight-card">
-                            <span class="insight-label" id="pcosLevelLabel">Indicator level</span>
-                            <span class="insight-value" id="pcosLevel">—</span>
-                            <p class="insight-note" id="pcosReason">Fill in cycle length and symptoms to see insights.</p>
-                        </div>
-                        <div class="insight-card">
-                            <span class="insight-label" id="pcosImpactsLabel">Possible longer-term impacts</span>
-                            <ul class="insight-list" id="pcosImpacts"></ul>
-                        </div>
-                    </div>
-                </section>
+                    </section>
             </form>
         </div>
 
@@ -272,7 +313,8 @@
         </section>
 
         <div class="form-notes">
-            <p><strong>Note:</strong> Your information is processed locally on your device. We never store, transmit, or share your data with anyone.</p>
+            <p><strong>Note:</strong> Your information is processed locally on your device. We never store, transmit, or
+                share your data with anyone.</p>
         </div>
     </main>
 
@@ -283,4 +325,5 @@
     <script src="config-loader.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

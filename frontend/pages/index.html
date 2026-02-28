@@ -1,24 +1,39 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="PCOS Smart Assistant - AI-powered health platform for Polycystic Ovary Syndrome management">
+  <meta name="description"
+    content="PCOS Smart Assistant - AI-powered health platform for Polycystic Ovary Syndrome management">
   <title>PCOS Smart Assistant | AI-Powered Health Platform</title>
-  
+  <script>
+    // Dynamic base path for subdirectory deployments (GitHub Pages, Vercel)
+    (function () {
+      var pathParts = window.location.pathname.split('/').filter(function (p) { return p; });
+      if (pathParts.length > 0 && pathParts[0] !== 'pages') {
+        var base = document.createElement('base');
+        base.href = '/' + pathParts[0] + '/frontend/';
+        document.head.appendChild(base);
+      }
+    })();
+  </script>
   <!-- Favicon -->
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="manifest.json">
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles/healthcare.css">
 </head>
+
 <body>
   <!-- Navigation -->
   <header class="header" id="header">
@@ -28,7 +43,7 @@
           <span class="logo-icon">🏥</span>
           <span class="logo-text">PCOS AI</span>
         </a>
-        
+
         <div class="nav__menu" id="navMenu">
           <ul class="nav__list">
             <li><a href="landing.html" class="nav__link nav__link--active">Home</a></li>
@@ -38,7 +53,7 @@
             <li><a href="#about" class="nav__link">About</a></li>
           </ul>
         </div>
-        
+
         <div class="nav__actions">
           <div class="lang-switch">
             <select id="languageSelect" aria-label="Select language">
@@ -51,7 +66,7 @@
             Get Started
           </button>
         </div>
-        
+
         <button class="nav__toggle" id="navToggle" aria-label="Toggle menu">
           <span></span>
           <span></span>
@@ -68,50 +83,52 @@
       <div class="hero__gradient hero__gradient--2"></div>
       <div class="hero__gradient hero__gradient--3"></div>
     </div>
-    
+
     <div class="hero__content">
       <div class="hero__badge">
         <span class="badge badge--primary">AI-Powered Health Platform</span>
       </div>
-      
+
       <h1 class="hero__title">
         Your Personal<br>
         <span class="hero__title--gradient">PCOS Health Assistant</span>
       </h1>
-      
+
       <p class="hero__description">
-        Take control of your health with AI-powered insights, personalized recommendations, 
+        Take control of your health with AI-powered insights, personalized recommendations,
         and expert guidance—right from your device. Your data stays private, always.
       </p>
-      
+
       <div class="hero__actions">
         <button class="btn btn--primary btn--lg" onclick="location.href='form.html'">
           <span>Start Your Journey</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
+            <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </button>
         <button class="btn btn--secondary btn--lg" onclick="location.href='dashboard.html'">
           View Dashboard
         </button>
       </div>
-      
+
       <div class="hero__trust">
         <div class="trust-badge">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+            <path
+              d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
           </svg>
           <span>HIPAA Compliant & Secure</span>
         </div>
         <div class="trust-badge">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
           </svg>
           <span>Clinically Validated</span>
         </div>
       </div>
     </div>
-    
+
     <div class="hero__visual">
       <div class="hero__card hero__card--main">
         <div class="health-metric">
@@ -123,17 +140,18 @@
           <div class="health-metric__trend health-metric__trend--up">↑ 12%</div>
         </div>
       </div>
-      
+
       <div class="hero__card hero__card--secondary">
         <div class="ai-insight">
           <div class="ai-insight__header">
             <span class="ai-insight__icon">🤖</span>
             <span class="ai-insight__label">AI Insight</span>
           </div>
-          <p class="ai-insight__text">Based on your lifestyle adjustments, your symptoms have improved by 23% this month.</p>
+          <p class="ai-insight__text">Based on your lifestyle adjustments, your symptoms have improved by 23% this
+            month.</p>
         </div>
       </div>
-      
+
       <div class="hero__card hero__card--tertiary">
         <div class="recommendation-mini">
           <span class="recommendation-mini__icon">💪</span>
@@ -153,7 +171,7 @@
           Powerful tools designed specifically for women's health journey
         </p>
       </div>
-      
+
       <div class="features__grid">
         <div class="feature-card">
           <div class="feature-card__icon">🧠</div>
@@ -162,7 +180,7 @@
             Get personalized health insights powered by advanced AI that learns your unique patterns.
           </p>
         </div>
-        
+
         <div class="feature-card">
           <div class="feature-card__icon">📊</div>
           <h3 class="feature-card__title">Symptom Tracking</h3>
@@ -170,7 +188,7 @@
             Track symptoms, cycles, and patterns over time with easy-to-use logging tools.
           </p>
         </div>
-        
+
         <div class="feature-card">
           <div class="feature-card__icon">🥗</div>
           <h3 class="feature-card__title">Lifestyle Guidance</h3>
@@ -178,7 +196,7 @@
             Receive personalized diet, exercise, and lifestyle recommendations.
           </p>
         </div>
-        
+
         <div class="feature-card">
           <div class="feature-card__icon">🔒</div>
           <h3 class="feature-card__title">Privacy First</h3>
@@ -186,7 +204,7 @@
             Your health data stays on your device. We never share or sell your information.
           </p>
         </div>
-        
+
         <div class="feature-card">
           <div class="feature-card__icon">👩‍⚕️</div>
           <h3 class="feature-card__title">Doctor Recommendations</h3>
@@ -194,7 +212,7 @@
             Get matched with specialists in your area who understand PCOS.
           </p>
         </div>
-        
+
         <div class="feature-card">
           <div class="feature-card__icon">📱</div>
           <h3 class="feature-card__title">Multi-Language</h3>
@@ -216,7 +234,7 @@
           Get started in minutes with our intuitive health journey
         </p>
       </div>
-      
+
       <div class="steps">
         <div class="step">
           <div class="step__number">01</div>
@@ -227,9 +245,9 @@
             </p>
           </div>
         </div>
-        
+
         <div class="step__connector"></div>
-        
+
         <div class="step">
           <div class="step__number">02</div>
           <div class="step__content">
@@ -239,9 +257,9 @@
             </p>
           </div>
         </div>
-        
+
         <div class="step__connector"></div>
-        
+
         <div class="step">
           <div class="step__number">03</div>
           <div class="step__content">
@@ -252,7 +270,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="cta-box">
         <h3 class="cta-box__title">Ready to Take Control?</h3>
         <p class="cta-box__description">
@@ -272,7 +290,7 @@
         <span class="section-badge">Testimonials</span>
         <h2 class="section-title">What Our Users Say</h2>
       </div>
-      
+
       <div class="testimonials__grid">
         <div class="testimonial-card">
           <div class="testimonial-card__content">
@@ -286,7 +304,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="testimonial-card">
           <div class="testimonial-card__content">
             <p>"Finally, an app that takes privacy seriously. All my data stays on my phone."</p>
@@ -299,7 +317,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="testimonial-card">
           <div class="testimonial-card__content">
             <p>"The lifestyle recommendations have made a real difference in how I feel daily."</p>
@@ -326,13 +344,14 @@
             <span class="logo-text">PCOS AI</span>
           </a>
           <p class="footer__tagline">
-            AI-powered health platform for women's wellness. Empowering you with personalized insights while keeping your data private.
+            AI-powered health platform for women's wellness. Empowering you with personalized insights while keeping
+            your data private.
           </p>
           <div class="footer__trust">
             <div class="secure-badge">Your data is encrypted & stored locally</div>
           </div>
         </div>
-        
+
         <div class="footer__links">
           <h4>Product</h4>
           <ul>
@@ -341,7 +360,7 @@
             <li><a href="#features">Features</a></li>
           </ul>
         </div>
-        
+
         <div class="footer__links">
           <h4>Resources</h4>
           <ul>
@@ -350,7 +369,7 @@
             <li><a href="#">Terms of Service</a></li>
           </ul>
         </div>
-        
+
         <div class="footer__links">
           <h4>Contact</h4>
           <ul>
@@ -360,7 +379,7 @@
           </ul>
         </div>
       </div>
-      
+
       <div class="footer__bottom">
         <p>&copy; 2024 PCOS Smart Assistant. All rights reserved.</p>
         <p class="footer__disclaimer">
@@ -374,4 +393,5 @@
   <script src="config-loader.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

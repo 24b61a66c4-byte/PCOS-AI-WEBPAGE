@@ -8,12 +8,14 @@
         // Dynamic base path for subdirectory deployments (GitHub Pages, Vercel)
         (function() {
             var pathParts = window.location.pathname.split('/').filter(function(p) { return p; });
-            // If we're in a subdirectory (e.g., /PCOS-AI-WEBPAGE/), use it as base
-            if (pathParts.length > 0 && pathParts[0] !== 'frontend') {
-                var base = document.createElement('base');
-                base.href = '/' + pathParts[0] + '/frontend/';
-                document.head.appendChild(base);
+            var repoSegment = '';
+            if (pathParts.length > 0 && pathParts[0] !== 'frontend' && pathParts[0].indexOf('.') === -1) {
+                repoSegment = '/' + pathParts[0];
             }
+
+            var base = document.createElement('base');
+            base.href = repoSegment + '/frontend/';
+            document.head.appendChild(base);
         })();
     </script>
     <link rel="stylesheet" href="styles.css">

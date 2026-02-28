@@ -529,7 +529,8 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
     test('should show no entries message initially', async ({ page }) => {
       await page.goto('http://localhost:8080/frontend/dashboard.html');
       
-      await expect(page.locator('#latest-summary')).toContainText(/no entries|add your first/i);
+      await expect(page.locator('#latest-timestamp')).toContainText(/no entries yet/i);
+      await expect(page.locator('#latest-status')).toContainText(/add first entry/i);
     });
   });
 

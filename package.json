@@ -1,12 +1,14 @@
-﻿{
+{
   "name": "pcos-smart-assistant",
   "version": "1.0.0",
   "description": "PCOS Smart Assistant - Health Tracking Platform",
   "scripts": {
     "test": "jest",
+    "test:unit": "jest --runInBand",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
+    "test:smoke": "playwright test tests/e2e.spec.js --project=chromium -g \"should load form page successfully|should load dashboard page|should load results page|should have print button\" --workers=1",
     "test:e2e:ui": "playwright test --ui",
     "test:all": "npm test && npm run test:e2e",
     "test:all:ps": "npm test; npm run test:e2e",
@@ -31,6 +33,12 @@
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": [
       "<rootDir>/tests/setup.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/node_modules_old/"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules_old/"
     ],
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"

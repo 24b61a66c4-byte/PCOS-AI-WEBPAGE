@@ -60,6 +60,25 @@ document.addEventListener('DOMContentLoaded', function() {
     return window.CONFIG && typeof window.CONFIG === 'object' ? window.CONFIG : {};
   }
 
+  async function waitForConfigReady(timeoutMs = 2000) {
+    const readyPromise = window.__CONFIG_READY__ && typeof window.__CONFIG_READY__.then === 'function'
+      ? window.__CONFIG_READY__
+      : Promise.resolve(getConfig());
+
+    let timeoutId;
+    const timeoutPromise = new Promise((resolve) => {
+      timeoutId = setTimeout(() => resolve(null), timeoutMs);
+    });
+
+    try {
+      await Promise.race([readyPromise, timeoutPromise]);
+    } catch (error) {
+      console.warn('[Config] Failed while waiting for config readiness:', error);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   function hasValue(value) {
     return typeof value === 'string' && value.trim() !== '';
   }
@@ -215,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function pushEntryToSupabase(entry) {
+    await waitForConfigReady();
     const supabaseClient = getSupabaseClient();
     if (!supabaseClient) return false;
 
@@ -234,6 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function fetchDatasetStats() {
+    await waitForConfigReady();
     const supabaseClient = getSupabaseClient();
     if (!supabaseClient) return null;
     try {
@@ -250,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function fetchLatestEntryFromSupabase() {
+    await waitForConfigReady();
     const supabaseClient = getSupabaseClient();
     if (!supabaseClient) return null;
     try {
@@ -606,6 +628,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function sendChatMessage(userMessage, imageBase64 = null) {
     try {
+      await waitForConfigReady();
       const openRouterApiKey = getOpenRouterApiKey();
       if (!openRouterApiKey) {
         return 'AI assistant is not configured. Add a valid OpenRouter API key in your local config and refresh.';
@@ -1426,6 +1449,7 @@ Image Analysis Instructions:
 
   // Step-by-step analysis - show results after each step
   async function analyzeCurrentStep(step, stepData) {
+    await waitForConfigReady();
     const backendUrl = getBackendUrl();
     try {
       const response = await fetch(`${backendUrl}/api/analyze-step`, {
@@ -1711,6 +1735,7 @@ Image Analysis Instructions:
         pushEntryToSupabase(fullData);
 
         // Call backend API for analysis
+        await waitForConfigReady();
         const backendUrl = getBackendUrl();
         
         try {

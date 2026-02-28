@@ -1,15 +1,28 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Health Report — PCOS Smart Assistant</title>
+    <script>
+        // Dynamic base path for subdirectory deployments (GitHub Pages, Vercel)
+        (function () {
+            var pathParts = window.location.pathname.split('/').filter(function (p) { return p; });
+            if (pathParts.length > 0 && pathParts[0] !== 'frontend') {
+                var base = document.createElement('base');
+                base.href = '/' + pathParts[0] + '/frontend/';
+                document.head.appendChild(base);
+            }
+        })();
+    </script>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles/healthcare.css">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/gh/darkroomengineering/lenis@latest/bundled/lenis.js"></script>
 </head>
+
 <body>
     <div class="navbar">
         <div class="nav-container">
@@ -77,7 +90,7 @@
                 <div class="doctors-grid" id="doctorsGrid">
                     <p>Loading doctor recommendations...</p>
                 </div>
-                
+
                 <div class="helplines-section">
                     <h3>Emergency Helplines</h3>
                     <div class="helplines-grid" id="helplinesGrid"></div>
@@ -125,10 +138,12 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; 2026 PCOS Smart Assistant. This report is for educational purposes only and does not replace professional medical advice.</p>
+        <p>&copy; 2026 PCOS Smart Assistant. This report is for educational purposes only and does not replace
+            professional medical advice.</p>
     </footer>
 
     <script src="config-loader.js"></script>
     <script src="results.js"></script>
 </body>
+
 </html>

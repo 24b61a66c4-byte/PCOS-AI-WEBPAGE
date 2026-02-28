@@ -1,0 +1,15 @@
+title: PCOS Smart Assistant
+description: PCOS AI Web Frontend
+theme: null
+exclude:
+  - backend/
+  - api/
+  - notebooks/
+  - deploy/
+  - node_modules/
+  - node_modules_old/
+  - .venv/
+  - .github/
+  - tests/
+  - test-results/
+  - playwright-report/
