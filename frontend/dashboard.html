@@ -6,15 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCOS Smart Assistant — Dashboard</title>
     <script>
-        // Dynamic base path for subdirectory deployments (GitHub Pages, Vercel)
+        // Dynamic base path for subdirectory deployments (GitHub Pages, Vercel).
         (function () {
             var pathParts = window.location.pathname.split('/').filter(function (p) { return p; });
-            // If we're in a subdirectory (e.g., /PCOS-AI-WEBPAGE/), use it as base
-            if (pathParts.length > 0 && pathParts[0] !== 'frontend') {
-                var base = document.createElement('base');
-                base.href = '/' + pathParts[0] + '/frontend/';
-                document.head.appendChild(base);
-            }
+            if (pathParts.length === 0) return;
+
+            var firstPart = pathParts[0].toLowerCase();
+            var firstPartIsFile = firstPart.indexOf('.') !== -1;
+            if (firstPartIsFile || firstPart === 'frontend' || firstPart === 'pages') return;
+
+            var base = document.createElement('base');
+            base.href = '/' + pathParts[0] + '/frontend/';
+            document.head.appendChild(base);
         })();
     </script>
     <link rel="stylesheet" href="styles.css">
