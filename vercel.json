@@ -1,10 +1,15 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "buildCommand": null,
   "outputDirectory": "frontend",
   "installCommand": null,
   "devCommand": null,
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
     {
       "src": "/",
       "dest": "/index.html"
@@ -17,6 +22,12 @@
       "dest": "/$1"
     }
   ],
+  "functions": {
+    "api/index.py": {
+      "runtime": "python3.11",
+      "maxDuration": 30
+    }
+  },
   "env": {
     "NODE_ENV": "production"
   },
