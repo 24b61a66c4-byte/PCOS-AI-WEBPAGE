@@ -1,13 +1,14 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCOS Smart Assistant — Dashboard</title>
     <script>
         // Dynamic base path for subdirectory deployments (GitHub Pages, Vercel)
-        (function() {
-            var pathParts = window.location.pathname.split('/').filter(function(p) { return p; });
+        (function () {
+            var pathParts = window.location.pathname.split('/').filter(function (p) { return p; });
             // If we're in a subdirectory (e.g., /PCOS-AI-WEBPAGE/), use it as base
             if (pathParts.length > 0 && pathParts[0] !== 'frontend') {
                 var base = document.createElement('base');
@@ -23,19 +24,24 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body class="health-dashboard">
-        <!-- Premium Loader Overlay -->
-        <div class="premium-loader" id="dashboardLoader" style="display:none;">
-            <div class="premium-loader-content">
-                <div class="loader-logo">PCOS Smart Assistant</div>
-                <div class="loader-dots"><span></span><span></span><span></span></div>
-                <div class="loader-progress"><div class="loader-progress-bar"></div></div>
-                <div class="loader-text">Loading your dashboard...</div>
+    <!-- Premium Loader Overlay -->
+    <div class="premium-loader" id="dashboardLoader" style="display:none;">
+        <div class="premium-loader-content">
+            <div class="loader-logo">PCOS Smart Assistant</div>
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+            <div class="loader-progress">
+                <div class="loader-progress-bar"></div>
             </div>
+            <div class="loader-text">Loading your dashboard...</div>
         </div>
-        <!-- Navigation -->
+    </div>
+    <!-- Navigation -->
     <header class="top-nav">
         <div class="top-nav__left">
             <a href="landing.html" class="nav__logo">
@@ -68,13 +74,16 @@
             <div class="dashboard__actions">
                 <div class="trust-badge">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                        <path
+                            d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
                     </svg>
                     <span>Data stored locally</span>
-                                </div>
-                                <p class="ai-disclaimer" style="margin-top:1.2rem;font-size:0.92rem;color:var(--color-text-muted,#94a3b8);text-align:center;">
-                                    <span style="font-size:1.1em;">⚠️</span> AI suggestions are informational only and not medical advice. Always consult a healthcare provider.
-                                </p>
+                </div>
+                <p class="ai-disclaimer"
+                    style="margin-top:1.2rem;font-size:0.92rem;color:var(--color-text-muted,#94a3b8);text-align:center;">
+                    <span style="font-size:1.1em;">⚠️</span> AI suggestions are informational only and not medical
+                    advice. Always consult a healthcare provider.
+                </p>
             </div>
         </div>
 
@@ -125,14 +134,19 @@
                     <div class="metric-display">
                         <div class="metric-display__chart">
                             <svg viewBox="0 0 36 36" class="circular-progress">
-                                <path class="progress-ring__bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" stroke-width="3"/>
-                                <path class="progress-ring__circle" id="healthScoreRing" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#0ea5e9" stroke-width="3" stroke-dasharray="0, 100"/>
+                                <path class="progress-ring__bg"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="#e2e8f0" stroke-width="3" />
+                                <path class="progress-ring__circle" id="healthScoreRing"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="#0ea5e9" stroke-width="3" stroke-dasharray="0, 100" />
                             </svg>
                         </div>
                         <div class="metric-display__info">
                             <span class="metric-display__label">Last Period</span>
                             <span class="metric-display__value" id="latest-last-period">—</span>
-                            <span class="metric-display__status metric-display__status--normal" id="latest-status">Add first entry</span>
+                            <span class="metric-display__status metric-display__status--normal" id="latest-status">Add
+                                first entry</span>
                         </div>
                     </div>
                 </div>
@@ -153,7 +167,8 @@
                             <div class="recommendation-item__icon" style="background: rgba(14, 165, 233, 0.1);">🥗</div>
                             <div class="recommendation-item__content">
                                 <div class="recommendation-item__title">Diet Tip</div>
-                                <div class="recommendation-item__description">Eat more fiber-rich foods and healthy fats. Limit processed sugars.</div>
+                                <div class="recommendation-item__description">Eat more fiber-rich foods and healthy
+                                    fats. Limit processed sugars.</div>
                             </div>
                             <span class="recommendation-item__priority recommendation-item__priority--high">High</span>
                         </div>
@@ -161,15 +176,18 @@
                             <div class="recommendation-item__icon" style="background: rgba(34, 197, 94, 0.1);">🏃</div>
                             <div class="recommendation-item__content">
                                 <div class="recommendation-item__title">Exercise Suggestion</div>
-                                <div class="recommendation-item__description">Aim for 30 minutes of moderate activity most days.</div>
+                                <div class="recommendation-item__description">Aim for 30 minutes of moderate activity
+                                    most days.</div>
                             </div>
-                            <span class="recommendation-item__priority recommendation-item__priority--medium">Medium</span>
+                            <span
+                                class="recommendation-item__priority recommendation-item__priority--medium">Medium</span>
                         </div>
                         <div class="recommendation-item">
                             <div class="recommendation-item__icon" style="background: rgba(59, 130, 246, 0.1);">😴</div>
                             <div class="recommendation-item__content">
                                 <div class="recommendation-item__title">Sleep Recommendation</div>
-                                <div class="recommendation-item__description">Aim for 7–9 hours of restful sleep each night.</div>
+                                <div class="recommendation-item__description">Aim for 7–9 hours of restful sleep each
+                                    night.</div>
                             </div>
                             <span class="recommendation-item__priority recommendation-item__priority--low">Low</span>
                         </div>
@@ -191,14 +209,16 @@
                         <div class="health-metric__icon">📊</div>
                         <div class="health-metric__info">
                             <span class="health-metric__label">Cycle Length</span>
-                            <span class="health-metric__value" id="cycle-value">28 <span class="health-metric__unit">days</span></span>
+                            <span class="health-metric__value" id="cycle-value">28 <span
+                                    class="health-metric__unit">days</span></span>
                         </div>
                         <div class="health-metric__trend health-metric__trend--up">↑ 2%</div>
                     </div>
                     <div class="progress-bar" style="margin-top: 16px;">
                         <div class="progress-bar__fill" style="width: 75%;"></div>
                     </div>
-                    <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 8px;">Day 21 of cycle - follicular phase</p>
+                    <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 8px;">Day 21 of cycle -
+                        follicular phase</p>
                 </div>
             </div>
 
@@ -216,7 +236,8 @@
                         <a href="form.html" class="btn btn--primary" style="width: 100%; justify-content: center;">
                             <span>📝</span> Log Today's Symptoms
                         </a>
-                        <button class="btn btn--secondary" style="width: 100%; justify-content: center;" onclick="document.getElementById('assistantPanel').classList.add('open')">
+                        <button class="btn btn--secondary" style="width: 100%; justify-content: center;"
+                            onclick="document.getElementById('assistantPanel').classList.add('open')">
                             <span>💬</span> Chat with AI Assistant
                         </button>
                         <button class="btn btn--ghost" style="width: 100%; justify-content: center;">
@@ -228,50 +249,57 @@
         </div>
 
         <!-- Privacy Note -->
-        <div class="cta-box" style="margin-top: 32px; background: rgba(14, 165, 233, 0.05); border: 1px solid rgba(14, 165, 233, 0.2);">
+        <div class="cta-box"
+            style="margin-top: 32px; background: rgba(14, 165, 233, 0.05); border: 1px solid rgba(14, 165, 233, 0.2);">
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="font-size: 2rem;">🔒</div>
                 <div>
                     <h4 style="margin-bottom: 4px;">Your Privacy is Protected</h4>
-                    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-secondary);">All your health data is stored locally on your device. We never transmit or share your personal information.</p>
+                    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-secondary);">All your health data
+                        is stored locally on your device. We never transmit or share your personal information.</p>
                 </div>
             </div>
         </div>
     </main>
 
 
-        <!-- Floating AI Button (FAB) -->
-        <button class="floating-ai-btn" id="openAIFab" title="Chat with AI Assistant" aria-label="Open AI Assistant">
-            <span style="font-size:2.1rem;">🤖</span>
-        </button>
-        <script>
-            // Floating AI Button opens assistant panel
-            document.addEventListener('DOMContentLoaded', function() {
-                var fab = document.getElementById('openAIFab');
-                var panel = document.getElementById('assistantPanel');
-                if (fab && panel) {
-                    fab.addEventListener('click', function() {
-                        panel.classList.add('open');
-                        panel.setAttribute('aria-hidden', 'false');
-                        var chatInput = document.getElementById('chatInput');
-                        if (chatInput) chatInput.focus();
-                    });
-                }
-            });
-        </script>
+    <!-- Floating AI Button (FAB) -->
+    <button class="floating-ai-btn" id="openAIFab" title="Chat with AI Assistant" aria-label="Open AI Assistant">
+        <span style="font-size:2.1rem;" aria-hidden="true">🤖</span>
+    </button>
+    <script>
+        // Floating AI Button opens assistant panel
+        document.addEventListener('DOMContentLoaded', function () {
+            var fab = document.getElementById('openAIFab');
+            var panel = document.getElementById('assistantPanel');
+            if (fab && panel) {
+                fab.addEventListener('click', function () {
+                    panel.classList.add('open');
+                    panel.setAttribute('aria-hidden', 'false');
+                    var chatInput = document.getElementById('chatInput');
+                    if (chatInput) chatInput.focus();
+                });
+            }
+        });
+    </script>
 
     <!-- AI Assistant Panel -->
     <div class="assistant-panel" id="assistantPanel" aria-hidden="true">
-        <div class="assistant-card" style="max-width: 600px;">
+        <div class="assistant-card" style="max-width: 600px;" role="dialog" aria-modal="true"
+            aria-labelledby="assistant-title">
             <div class="assistant-header">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="chat-message__avatar chat-message__avatar--ai" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #06b6d4); display: flex; align-items: center; justify-content: center;">🤖</div>
+                    <div class="chat-message__avatar chat-message__avatar--ai"
+                        style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #06b6d4); display: flex; align-items: center; justify-content: center;">
+                        🤖</div>
                     <div>
                         <h2 style="font-size: 1.1rem; margin: 0;">AI Health Assistant</h2>
-                        <p style="font-size: 0.75rem; color: #22c55e; margin: 0;">● Online</p>
+                        <p id="assistant-title" style="font-size: 0.75rem; color: #22c55e; margin: 0;">● Online</p>
                     </div>
                 </div>
                 <button class="assistant-close" id="assistantClose" type="button">✕</button>
+                <button class="assistant-close" id="assistantClose" type="button" aria-label="Close Assistant"
+                    tabindex="0">✕</button>
             </div>
             <div class="assistant-body" style="height: 400px;">
                 <div class="chat-messages" id="chatMessages">
@@ -289,10 +317,14 @@
                     </div>
                 </div>
                 <div class="chat-input-container">
-                    <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                    <button class="btn btn--ghost btn--icon" id="uploadBtn" type="button" title="Upload image">📷</button>
-                    <textarea id="chatInput" placeholder="Type your question..." rows="1" style="flex: 1;"></textarea>
-                    <button class="btn btn--primary btn--icon" id="chatSend" type="button">➤</button>
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;"
+                        aria-label="Upload Image">
+                    <button class="btn btn--ghost btn--icon" id="uploadBtn" type="button" title="Upload image"
+                        aria-label="Upload Image" tabindex="0">📷</button>
+                    <textarea id="chatInput" placeholder="Type your question..." rows="1" style="flex: 1;"
+                        aria-label="Chat Input" tabindex="0"></textarea>
+                    <button class="btn btn--primary btn--icon" id="chatSend" type="button" aria-label="Send Message"
+                        tabindex="0">➤</button>
                 </div>
                 <p style="font-size: 0.7rem; color: var(--color-text-muted); margin: 8px 0 0; text-align: center;">
                     ⚠️ Educational only. Not medical advice. Consult a healthcare provider.
@@ -304,4 +336,5 @@
     <script src="config-loader.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

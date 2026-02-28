@@ -1,5 +1,4 @@
-﻿// Production API Configuration for GitHub Pages Deployment
-// This file is used when the app is deployed to GitHub Pages
+﻿// Production API Configuration for GitHub Pages & Vercel Deployment
 
 window.CONFIG = {
   // OpenRouter API key (required for AI assistant)
@@ -12,19 +11,24 @@ window.CONFIG = {
   // Backend API URL - auto-detect environment
   BACKEND_URL: (function () {
     if (typeof window !== 'undefined') {
-      // In GitHub Pages: https://yourusername.github.io/repo-name
-      // In localhost: http://localhost:5000
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      // Detect deployment environment
+      const hostname = window.location.hostname;
+      const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+      const isVercel = hostname.includes('vercel.app');
+      const isGitHubPages = hostname.includes('github.io');
 
       if (isLocalhost) {
         // Development: use local backend
         return 'http://localhost:5000';
-      } else {
-        // Production: Use deployed backend API
-        // Update this with your actual deployed backend URL
-        // Example: https://pcos-api.herokuapp.com or https://pcos-api.railway.app
-        return 'https://your-app.railway.app'; // Replace with your actual deployed backend URL
+      } else if (isVercel) {
+        // Vercel deployment: use Vercel serverless API
+        return window.location.origin;
+      } else if (isGitHubPages) {
+        // GitHub Pages: use Vercel API (need to configure)
+        return 'https://pcos-zeta.vercel.app';
       }
+      // Default fallback
+      return 'https://pcos-zeta.vercel.app';
     }
     return 'http://localhost:5000';
   })()

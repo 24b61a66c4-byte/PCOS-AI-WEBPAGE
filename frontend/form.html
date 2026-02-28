@@ -99,31 +99,34 @@
 
         <div class="form-container">
             <form id="pcos-form" novalidate>
-                <div class="form-steps-shell">
+                <div class="form-steps-shell" role="form" aria-labelledby="form-title">
                     <div class="form-slider" id="formSlider">
                         <div class="form-step active" data-step="1">
                             <div class="form-section">
                                 <h2>👤 Personal Information</h2>
-                                <p class="step-subtitle">Let's start with your basic information</p>
+                                <p class="step-subtitle" id="form-title">Let's start with your basic information</p>
 
                                 <div class="single-field">
                                     <label for="age">What is your age?</label>
                                     <input type="number" id="age" name="age" min="10" max="80"
-                                        placeholder="Enter your age" aria-describedby="age-error">
+                                        placeholder="Enter your age" aria-describedby="age-error" aria-label="Age"
+                                        tabindex="0">
                                     <small class="error" data-for="age" id="age-error" role="alert"></small>
+                                    <small class="error" data-for="age" id="age-error" role="alert"
+                                        aria-live="assertive"></small>
                                 </div>
 
                                 <div class="single-field">
                                     <label for="weight">What is your weight? (kg)</label>
                                     <input type="number" id="weight" name="weight" min="30" max="300"
-                                        placeholder="e.g., 65" step="0.1">
+                                        placeholder="e.g., 65" step="0.1" aria-label="Weight" tabindex="0">
                                     <small class="error" data-for="weight"></small>
                                 </div>
 
                                 <div class="single-field">
                                     <label for="height">What is your height? (cm)</label>
                                     <input type="number" id="height" name="height" min="100" max="250"
-                                        placeholder="e.g., 165">
+                                        placeholder="e.g., 165" aria-label="Height" tabindex="0">
                                     <small class="error" data-for="height"></small>
                                 </div>
                             </div>
@@ -138,7 +141,7 @@
                                     <label for="cycle_length">What is your average cycle length? (days) *</label>
                                     <input type="number" id="cycle_length" name="cycle_length" min="15" max="120"
                                         placeholder="e.g., 28-35" required aria-required="true"
-                                        aria-describedby="cycle_length-error">
+                                        aria-describedby="cycle_length-error" aria-label="Cycle Length" tabindex="0">
                                     <small class="helper">Most cycles are 21-35 days. Enter your average.</small>
                                     <small class="error" data-for="cycle_length" id="cycle_length-error"
                                         role="alert"></small>
@@ -148,7 +151,7 @@
                                     <label for="period_length">How long is your typical period? (days) *</label>
                                     <input type="number" id="period_length" name="period_length" min="1" max="30"
                                         placeholder="e.g., 5" required aria-required="true"
-                                        aria-describedby="period_length-error">
+                                        aria-describedby="period_length-error" aria-label="Period Length" tabindex="0">
                                     <small class="helper">Typical range is 2-7 days.</small>
                                     <small class="error" data-for="period_length" id="period_length-error"
                                         role="alert"></small>
@@ -157,7 +160,7 @@
                                 <div class="single-field">
                                     <label for="last_period">When was your last period? *</label>
                                     <input type="date" id="last_period" name="last_period" required aria-required="true"
-                                        aria-describedby="last_period-error">
+                                        aria-describedby="last_period-error" aria-label="Last Period" tabindex="0">
                                     <small class="helper">Use the start date of your most recent period.</small>
                                     <small class="error" data-for="last_period" id="last_period-error"
                                         role="alert"></small>
@@ -211,7 +214,7 @@
                                 <div class="single-field">
                                     <label for="sleep">How many hours do you sleep per night?</label>
                                     <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5"
-                                        placeholder="e.g., 7 hours">
+                                        placeholder="e.g., 7 hours" aria-label="Sleep Hours" tabindex="0">
                                     <small class="helper">Average nightly sleep helps personalize guidance.</small>
                                     <small class="error" data-for="sleep"></small>
                                 </div>
@@ -229,7 +232,8 @@
                                 <div class="single-field">
                                     <label for="diet">Any specific diet notes?</label>
                                     <textarea id="diet" name="diet" maxlength="300"
-                                        placeholder="e.g., vegetarian, low-carb, gluten-free" rows="3"></textarea>
+                                        placeholder="e.g., vegetarian, low-carb, gluten-free" rows="3"
+                                        aria-label="Diet Notes" tabindex="0"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -242,6 +246,7 @@
                                 <div class="single-field">
                                     <label for="city">What is your city/location?</label>
                                     <input type="text" id="city" name="city" maxlength="100" placeholder="City name">
+                                    aria-label="City" tabindex="0">
                                     <small class="error" data-for="city"></small>
                                 </div>
 
@@ -259,7 +264,8 @@
                                 <div class="single-field">
                                     <label for="medications">Any current medications?</label>
                                     <input type="text" id="medications" name="medications" maxlength="200"
-                                        placeholder="e.g., Metformin, Birth control">
+                                        placeholder="e.g., Metformin, Birth control" aria-label="Medications"
+                                        tabindex="0">
                                     <small class="error" data-for="medications"></small>
                                 </div>
                             </div>
@@ -275,11 +281,12 @@
                         </div>
                     </div>
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">←
-                            Previous</button>
-                        <button type="button" class="btn btn-primary" id="nextBtn">Next →</button>
-                        <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">✨ Save My
-                            Data</button>
+                        <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;"
+                            aria-label="Previous Step" tabindex="0">← Previous</button>
+                        <button type="button" class="btn btn-primary" id="nextBtn" aria-label="Next Step"
+                            tabindex="0">Next →</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;"
+                            aria-label="Submit Data" tabindex="0">✨ Save My Data</button>
                     </div>
 
                     <section class="insight-panel" id="pcosInsight" aria-live="polite">

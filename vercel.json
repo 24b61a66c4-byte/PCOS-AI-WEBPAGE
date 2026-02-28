@@ -6,6 +6,10 @@
   "devCommand": null,
   "routes": [
     {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
       "handle": "filesystem"
     },
     {
