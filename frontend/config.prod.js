@@ -3,7 +3,7 @@
 
 window.CONFIG = {
   // OpenRouter API key (required for AI assistant)
-  OPENROUTER_API_KEY: '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',
+  OPENROUTER_API_KEY: 'YOUR_OPENROUTER_API_KEY',
 
   // Supabase configuration (uses localStorage + Supabase)
   SUPABASE_URL: 'https://hrcjgcqzhulmxdyfeymw.supabase.co',

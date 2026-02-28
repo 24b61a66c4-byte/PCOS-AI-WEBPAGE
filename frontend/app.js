@@ -16,23 +16,113 @@
   window.showSuccessToast = showToast;
 // PCOS Smart Assistant - Multi-Step Form with Smooth Scrolling
 document.addEventListener('DOMContentLoaded', function() {
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    direction: 'vertical',
-    gestureDirection: 'vertical',
-    smooth: true,
-    mouseMultiplier: 1,
-    smoothTouch: false,
-    touchMultiplier: 2,
-    infinite: false,
-  });
+  // Provide a resilient smooth-scrolling layer so pages don't crash if Lenis is unavailable.
+  function createScroller() {
+    if (typeof window.Lenis === 'function') {
+      const instance = new window.Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        mouseMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+      });
 
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
+      const raf = (time) => {
+        instance.raf(time);
+        requestAnimationFrame(raf);
+      };
+
+      requestAnimationFrame(raf);
+      return {
+        scrollTo(target, options) {
+          instance.scrollTo(target, options);
+        },
+      };
+    }
+
+    console.info('[UI] Lenis not found; using native smooth scroll fallback.');
+    return {
+      scrollTo(target) {
+        if (target && typeof target.scrollIntoView === 'function') {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      },
+    };
   }
-  requestAnimationFrame(raf);
+
+  const lenis = createScroller();
+
+  function getConfig() {
+    return window.CONFIG && typeof window.CONFIG === 'object' ? window.CONFIG : {};
+  }
+
+  function hasValue(value) {
+    return typeof value === 'string' && value.trim() !== '';
+  }
+
+  function isPlaceholder(value) {
+    if (!hasValue(value)) return true;
+    const normalized = value.trim().toLowerCase();
+    return normalized === 'your_openrouter_api_key' ||
+      normalized.startsWith('your-') ||
+      normalized.startsWith('your_') ||
+      normalized.includes('your-openrouter-api-key') ||
+      normalized.includes('your-supabase') ||
+      normalized.includes('replace');
+  }
+
+  function getBackendUrl() {
+    const backendUrl = getConfig().BACKEND_URL;
+    return hasValue(backendUrl) ? backendUrl.trim() : 'http://localhost:5000';
+  }
+
+  function getOpenRouterApiKey() {
+    const apiKey = getConfig().OPENROUTER_API_KEY;
+    if (!hasValue(apiKey) || isPlaceholder(apiKey)) {
+      return '';
+    }
+    return apiKey.trim();
+  }
+
+  let supabaseClientCache = null;
+  let supabaseInitLogged = false;
+
+  function getSupabaseClient() {
+    if (supabaseClientCache) return supabaseClientCache;
+
+    const config = getConfig();
+    const supabaseUrl = config.SUPABASE_URL;
+    const supabaseAnonKey = config.SUPABASE_ANON_KEY;
+    const supabaseSdk = window.supabase;
+
+    if (!supabaseSdk || typeof supabaseSdk.createClient !== 'function') {
+      return null;
+    }
+
+    if (!hasValue(supabaseUrl) || !hasValue(supabaseAnonKey) ||
+      isPlaceholder(supabaseUrl) || isPlaceholder(supabaseAnonKey)) {
+      if (!supabaseInitLogged) {
+        console.info('[Supabase] Configuration missing or placeholder; running local-only.');
+        supabaseInitLogged = true;
+      }
+      return null;
+    }
+
+    try {
+      supabaseClientCache = supabaseSdk.createClient(supabaseUrl, supabaseAnonKey);
+      return supabaseClientCache;
+    } catch (error) {
+      if (!supabaseInitLogged) {
+        console.warn('[Supabase] Initialization failed:', error);
+        supabaseInitLogged = true;
+      }
+      return null;
+    }
+  }
 
   // Theme switching
   const THEME_KEY = 'pcos_theme';
@@ -116,29 +206,35 @@ document.addEventListener('DOMContentLoaded', function() {
   // Save entry to both localStorage and Supabase
   async function saveEntry(entry) {
     // Save to localStorage
-    let analysisRaw = localStorage.getItem('pcos_last_analysis');
-    let analysis = analysisRaw ? JSON.parse(analysisRaw) : { entries: [] };
+    const analysisRaw = localStorage.getItem('pcos_last_analysis');
+    const analysis = analysisRaw ? JSON.parse(analysisRaw) : { entries: [] };
     analysis.entries = [entry, ...(analysis.entries || [])];
     localStorage.setItem('pcos_last_analysis', JSON.stringify(analysis));
 
-    // Save to Supabase if available
-    if (supabaseClient) {
-      try {
-        const { error } = await supabaseClient
-          .from('pcos_entries')
-          .insert([entry]);
-        if (error) {
-          console.warn('Supabase insert failed:', error);
-        }
-      } catch (err) {
-        console.warn('Supabase insert failed:', err);
+    await pushEntryToSupabase(entry);
+  }
+
+  async function pushEntryToSupabase(entry) {
+    const supabaseClient = getSupabaseClient();
+    if (!supabaseClient) return false;
+
+    try {
+      const { error } = await supabaseClient
+        .from('pcos_entries')
+        .insert([entry]);
+      if (error) {
+        console.warn('Supabase insert failed:', error);
+        return false;
       }
+      return true;
+    } catch (err) {
+      console.warn('Supabase insert failed:', err);
+      return false;
     }
   }
 
-  // Replace all calls to pushEntryToSupabase(entry) with saveEntry(entry) in your form logic.
-
   async function fetchDatasetStats() {
+    const supabaseClient = getSupabaseClient();
     if (!supabaseClient) return null;
     try {
       const { data, error } = await supabaseClient.rpc('pcos_dataset_stats');
@@ -154,6 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function fetchLatestEntryFromSupabase() {
+    const supabaseClient = getSupabaseClient();
     if (!supabaseClient) return null;
     try {
       const { data, error } = await supabaseClient
@@ -502,8 +599,6 @@ document.addEventListener('DOMContentLoaded', function() {
     return stored;
   }
 
-  // Get OpenRouter API key from config.js (create from config.example.js)
-  const OPENROUTER_API_KEY = window.CONFIG?.OPENROUTER_API_KEY || '';
   const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
   let chatHistory = [];
@@ -511,6 +606,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function sendChatMessage(userMessage, imageBase64 = null) {
     try {
+      const openRouterApiKey = getOpenRouterApiKey();
+      if (!openRouterApiKey) {
+        return 'AI assistant is not configured. Add a valid OpenRouter API key in your local config and refresh.';
+      }
+
       const entry = (await fetchLatestEntryFromSupabase()) || getLatestEntry();
       const entries = JSON.parse(localStorage.getItem('pcos_entries') || '[]');
       const stats = await fetchDatasetStats();
@@ -574,7 +674,7 @@ Image Analysis Instructions:
       const response = await fetch(OPENROUTER_API_URL, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Authorization': `Bearer ${openRouterApiKey}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': window.location.origin,
         },
@@ -655,8 +755,11 @@ Image Analysis Instructions:
   }
 
   function initAssistant() {
-    const openBtn = document.querySelector('.assistant-pill');
     const panel = document.getElementById('assistantPanel');
+    const openButtons = [
+      document.querySelector('.assistant-pill'),
+      document.getElementById('openAIFab'),
+    ].filter(Boolean);
     const closeBtn = document.getElementById('assistantClose');
     const chatInput = document.getElementById('chatInput');
     const chatSend = document.getElementById('chatSend');
@@ -665,7 +768,7 @@ Image Analysis Instructions:
     const imagePreview = document.getElementById('imagePreview');
     const previewImg = document.getElementById('previewImg');
     const removeImage = document.getElementById('removeImage');
-    if (!openBtn || !panel) return;
+    if (!panel) return;
 
     const openPanel = () => {
       panel.classList.add('open');
@@ -770,9 +873,13 @@ Image Analysis Instructions:
       });
     }
 
-    openBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      openPanel();
+    openButtons.forEach((button) => {
+      button.addEventListener('click', (event) => {
+        if (event && typeof event.preventDefault === 'function') {
+          event.preventDefault();
+        }
+        openPanel();
+      });
     });
 
     if (closeBtn) {
@@ -842,15 +949,25 @@ Image Analysis Instructions:
     if (lastEntry) {
       timestampEl.textContent = `Saved ${formatDate(lastEntry.timestamp)}`;
       lastPeriodEl.textContent = formatDate(lastEntry.last_period);
-      cycleEl.textContent = lastEntry.cycle_length ? `${lastEntry.cycle_length} days` : '—';
-      periodEl.textContent = lastEntry.period_length ? `${lastEntry.period_length} days` : '—';
-      symptomsEl.textContent = Array.isArray(lastEntry.symptoms)
-        ? `${lastEntry.symptoms.length} selected`
-        : '—';
-      summaryEl.textContent = 'Your latest details are ready to review.';
+      if (cycleEl) {
+        cycleEl.textContent = lastEntry.cycle_length ? `${lastEntry.cycle_length} days` : '—';
+      }
+      if (periodEl) {
+        periodEl.textContent = lastEntry.period_length ? `${lastEntry.period_length} days` : '—';
+      }
+      if (symptomsEl) {
+        symptomsEl.textContent = Array.isArray(lastEntry.symptoms)
+          ? `${lastEntry.symptoms.length} selected`
+          : '—';
+      }
+      if (summaryEl) {
+        summaryEl.textContent = 'Your latest details are ready to review.';
+      }
     } else {
       timestampEl.textContent = 'No entries yet';
-      summaryEl.textContent = 'Add your first details to unlock insights.';
+      if (summaryEl) {
+        summaryEl.textContent = 'Add your first details to unlock insights.';
+      }
     }
 
     if (Array.isArray(entries) && entries.length > 0) {
@@ -1309,7 +1426,7 @@ Image Analysis Instructions:
 
   // Step-by-step analysis - show results after each step
   async function analyzeCurrentStep(step, stepData) {
-    const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:5000';
+    const backendUrl = getBackendUrl();
     try {
       const response = await fetch(`${backendUrl}/api/analyze-step`, {
         method: 'POST',
@@ -1594,7 +1711,7 @@ Image Analysis Instructions:
         pushEntryToSupabase(fullData);
 
         // Call backend API for analysis
-        const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:5000';
+        const backendUrl = getBackendUrl();
         
         try {
           const response = await fetch(`${backendUrl}/api/analyze`, {
@@ -1678,4 +1795,3 @@ Image Analysis Instructions:
     });
   }
 });
-

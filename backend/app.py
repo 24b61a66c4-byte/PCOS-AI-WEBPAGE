@@ -3,7 +3,7 @@ PCOS Smart Assistant - Backend API
 Analyzes user data, generates health reports, and recommends doctors
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from supabase._sync.client import create_client
 import os
@@ -17,7 +17,16 @@ from doctor_recommendations import DoctorRecommender
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../frontend", static_url_path="/")
+# Serve form.html and other static files
+@app.route("/form.html")
+def serve_form():
+    return send_from_directory(app.static_folder, "form.html")
+
+# Optionally serve index.html at root
+@app.route("/")
+def serve_index():
+    return send_from_directory(app.static_folder, "index.html")
 CORS(app)
 
 # Supabase setup
