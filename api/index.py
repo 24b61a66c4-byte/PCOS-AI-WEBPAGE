@@ -9,9 +9,16 @@ import json
 import re
 from functools import wraps
 import time
+import os
+import requests
+import logging
 
 # Create Flask app
 app = Flask(__name__)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("pcos-api")
 
 # Security: Configure CORS to only allow specific origins
 # In production, replace with actual allowed origins
@@ -340,6 +347,169 @@ def get_statistics():
         return jsonify(analyzer.get_dataset_statistics())
     except Exception:
         return jsonify({"error": "An error occurred fetching statistics"}), 500
+
+
+@app.route("/api/ai/chat", methods=["POST"])
+@rate_limit
+def ai_chat():
+    """Proxy AI chat requests to configured AI provider from the server.
+
+    Supports: OpenRouter (primary - cheapest), OpenAI, Perplexity. Falls back to local AI if all fail.
+    Expects JSON payload: {model, messages, temperature, max_tokens (optional)}
+    """
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+
+    payload = request.get_json()
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Invalid request body"}), 400
+
+    # Basic validation to avoid misuse
+    if "model" not in payload or "messages" not in payload:
+        return jsonify({"error": "Missing required fields: model, messages"}), 400
+
+    try:
+        # Try OpenRouter first (primary - cheapest)
+        openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        if openrouter_key and openrouter_key != "sk-or-v1-...":
+            try:
+                OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {openrouter_key}",
+                    "HTTP-Referer": "https://pcos-zeta.vercel.app",
+                    "X-Title": "PCOS AI Assistant",
+                }
+                resp = requests.post(OPENROUTER_API_URL, json=payload, headers=headers, timeout=30)
+                if resp.status_code == 200:
+                    try:
+                        return jsonify(resp.json()), 200
+                    except Exception:
+                        pass
+                else:
+                    logger.warning(f"OpenRouter returned {resp.status_code}, trying fallback...")
+            except Exception as e:
+                logger.warning(f"OpenRouter proxy error: {e}, trying OpenAI...")
+
+        # Try OpenAI as fallback
+        openai_key = os.getenv("OPENAI_API_KEY")
+        if openai_key and openai_key != "sk-proj-...":
+            try:
+                OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {openai_key}",
+                }
+                resp = requests.post(OPENAI_API_URL, json=payload, headers=headers, timeout=30)
+                if resp.status_code == 200:
+                    try:
+                        return jsonify(resp.json()), 200
+                    except Exception:
+                        pass
+            except Exception as e:
+                logger.warning(f"OpenAI proxy error: {e}, trying Perplexity...")
+
+        # Try Perplexity as second fallback
+        perplexity_key = os.getenv("PERPLEXITY_API_KEY")
+        if perplexity_key and perplexity_key != "pplx-...":
+            try:
+                PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {perplexity_key}",
+                }
+                resp = requests.post(PERPLEXITY_API_URL, json=payload, headers=headers, timeout=30)
+                if resp.status_code == 200:
+                    try:
+                        return jsonify(resp.json()), 200
+                    except Exception:
+                        pass
+            except Exception as e:
+                logger.warning(f"Perplexity proxy error: {e}")
+
+        # Fallback to local AI if all external APIs fail
+        logger.info("Using local AI fallback (all external APIs unavailable)")
+        return jsonify(generate_local_ai_response(payload)), 200
+
+    except Exception as e:
+        logger.error(f"Unexpected error in ai_chat: {e}")
+        return jsonify({"error": "An error occurred processing your request"}), 500
+
+
+def generate_local_ai_response(payload):
+    """Generate a basic AI response using local rules (fallback when APIs unavailable)"""
+    messages = payload.get("messages", [])
+    if not messages:
+        return {"error": "No messages provided"}
+    
+    last_message = messages[-1].get("content", "").lower()
+    
+    # PCOS-related responses
+    pcos_keywords = ["pcos", "polycystic", "ovary", "ovarian"]
+    if any(kw in last_message for kw in pcos_keywords):
+        return {
+            "id": "local-ai-response",
+            "object": "chat.completion",
+            "created": int(time.time()),
+            "model": payload.get("model", "local-ai"),
+            "choices": [{
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "PCOS (Polycystic Ovary Syndrome) is a hormonal condition affecting women of reproductive age. Key characteristics include irregular menstrual cycles, elevated androgen levels, insulin resistance, and polycystic ovaries. Management typically involves lifestyle changes, hormonal contraceptives, or medications like metformin. Common symptoms include irregular periods, acne, hair loss, and weight gain. I recommend consulting a healthcare provider for proper diagnosis and treatment."
+                },
+                "finish_reason": "stop"
+            }],
+            "usage": {
+                "prompt_tokens": len(last_message.split()),
+                "completion_tokens": 75,
+                "total_tokens": len(last_message.split()) + 75
+            }
+        }
+    
+    # Health/medical questions
+    elif any(word in last_message for word in ["health", "symptom", "treatment", "diagnosis", "doctor"]):
+        return {
+            "id": "local-ai-response",
+            "object": "chat.completion",
+            "created": int(time.time()),
+            "model": payload.get("model", "local-ai"),
+            "choices": [{
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "For health-related questions: Please consult with a qualified healthcare provider or medical professional. They can provide personalized advice based on your medical history and current health status. In emergencies, contact your local emergency services."
+                },
+                "finish_reason": "stop"
+            }],
+            "usage": {
+                "prompt_tokens": len(last_message.split()),
+                "completion_tokens": 35,
+                "total_tokens": len(last_message.split()) + 35
+            }
+        }
+    
+    # Generic response
+    else:
+        return {
+            "id": "local-ai-response",
+            "object": "chat.completion",
+            "created": int(time.time()),
+            "model": payload.get("model", "local-ai"),
+            "choices": [{
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "I'm a local AI assistant. I can help with general questions about PCOS and women's health. For specific medical advice, please consult a healthcare provider. What would you like to know?"
+                },
+                "finish_reason": "stop"
+            }],
+            "usage": {
+                "prompt_tokens": len(last_message.split()),
+                "completion_tokens": 30,
+                "total_tokens": len(last_message.split()) + 30
+            }
+        }
 
 
 def generate_report(user_data, analysis, doctors):
