@@ -1,108 +1,230 @@
 """
 PCOS Smart Assistant - Backend API
+"""
+PCOS Smart Assistant - Backend API
 Analyzes user data, generates health reports, and recommends doctors
 """
 
 from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
-from supabase._sync.client import create_client
+from marshmallow import Schema, fields, ValidationError
 import os
 from dotenv import load_dotenv
 from datetime import datetime
 import json
+import re
+import time
+from functools import wraps
 
-# Import analysis modules
-from analysis_engine import PCOSAnalyzer
-from doctor_recommendations import DoctorRecommender
+# Optional external imports guarded to avoid import-time failures in tests
+try:
+    from supabase._sync.client import create_client
+except Exception:
+    create_client = None
+
+try:
+    from analysis_engine import PCOSAnalyzer
+except Exception:
+    PCOSAnalyzer = None
+
+try:
+    from doctor_recommendations import DoctorRecommender
+except Exception:
+    DoctorRecommender = None
+
+import logging
+from flask_cors import CORS
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("pcos-backend")
 
 load_dotenv()
 
 app = Flask(__name__, static_folder="../frontend", static_url_path="/")
-# Serve form.html and other static files
+
+# Configure CORS
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLOWED_ORIGINS") else [
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8080",
+]
+if os.getenv("VERCEL_URL"):
+    ALLOWED_ORIGINS.append(f"https://{os.getenv('VERCEL_URL')}")
+
+CORS(app, origins=ALLOWED_ORIGINS, supports_credentials=False)
+
+
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers[
+        "Content-Security-Policy"
+    ] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
+
+
+# Rate limiting
+rate_limit_store = {}
+RATE_LIMIT = int(os.getenv("RATE_LIMIT", "60"))
+RATE_LIMIT_WINDOW = 60
+
+def rate_limit(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if os.getenv("SKIP_RATE_LIMIT") == "1":
+            return f(*args, **kwargs)
+
+        ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+        if ip:
+            ip = ip.split(",")[0].strip()
+
+        current_time = time.time()
+        history = [t for t in rate_limit_store.get(ip, []) if current_time - t < RATE_LIMIT_WINDOW]
+        rate_limit_store[ip] = history
+
+        if len(rate_limit_store.get(ip, [])) >= RATE_LIMIT:
+            return (
+                jsonify({"error": "Rate limit exceeded. Please try again later.", "retry_after": RATE_LIMIT_WINDOW}),
+                429,
+            )
+
+        rate_limit_store.setdefault(ip, []).append(current_time)
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def sanitize_input(data):
+    if not isinstance(data, str):
+        return data
+    sanitized = re.sub(r"[<>\"']", "", data)
+    return sanitized.strip()
+
+
+# Serve static pages
 @app.route("/form.html")
 def serve_form():
     return send_from_directory(app.static_folder, "form.html")
 
-# Optionally serve index.html at root
+
 @app.route("/")
 def serve_index():
     return send_from_directory(app.static_folder, "index.html")
-CORS(app)
+
 
 # Supabase setup
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")  # Use service key for backend
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 SKIP_SUPABASE = os.getenv("SKIP_SUPABASE") == "1"
 
-if SKIP_SUPABASE or not SUPABASE_URL or not SUPABASE_KEY:
+if SKIP_SUPABASE or not SUPABASE_URL or not SUPABASE_KEY or create_client is None:
     supabase = None
+    logger.info("Supabase is not configured. Skipping persistence.")
 else:
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception as e:
+        logger.warning(f"Could not initialize Supabase client: {e}")
+        supabase = None
 
-# Initialize analyzers
-analyzer = PCOSAnalyzer(supabase)
-doctor_recommender = DoctorRecommender()
+
+# Initialize analyzers if available
+if PCOSAnalyzer is not None:
+    try:
+        analyzer = PCOSAnalyzer(supabase)
+    except Exception:
+        analyzer = None
+else:
+    analyzer = None
+
+if DoctorRecommender is not None:
+    try:
+        doctor_recommender = DoctorRecommender()
+    except Exception:
+        doctor_recommender = None
+else:
+    doctor_recommender = None
 
 
 @app.route("/health", methods=["GET"])
 def health_check():
-    """Health check endpoint"""
     return jsonify({"status": "healthy", "service": "PCOS Smart Assistant API"}), 200
 
 
 @app.route("/api/analyze-step", methods=["POST"])
+@rate_limit
 def analyze_step():
-    """
-    Analyzes partial user data after each step and returns incremental insights.
-    This provides step-by-step feedback as user progresses through the form.
-    """
     try:
-        data = request.json
+        if not request.is_json:
+            return jsonify({"error": "Content-Type must be application/json"}), 400
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Request body is empty"}), 400
+
         step = data.get("step", 1)
+        if not isinstance(step, int) or step < 1 or step > 10:
+            return jsonify({"error": "Step must be between 1 and 10"}), 400
+
         step_data = data.get("stepData", {})
-        
-        # Perform incremental analysis based on current step
+        if isinstance(step_data, dict):
+            for k, v in step_data.items():
+                if isinstance(v, str):
+                    step_data[k] = sanitize_input(v)
+
+        if analyzer is None:
+            return jsonify({"error": "Analyzer not available"}), 503
+
         analysis_result = analyzer.analyze_step(step, step_data)
-        
-        return jsonify({
-            "success": True,
-            "step": step,
-            "analysis": analysis_result
-        }), 200
-        
+        return jsonify({"success": True, "step": step, "analysis": analysis_result}), 200
+
+    except ValidationError as ve:
+        logger.error(f"Validation error: {ve.messages}")
+        return jsonify({"error": ve.messages}), 400
     except Exception as e:
-        print(f"Error in step analysis: {str(e)}")
+        logger.error(f"Error in step analysis: {e}")
         return jsonify({"error": str(e)}), 500
 
 
+class AnalyzeSchema(Schema):
+    age = fields.Integer(required=True, validate=lambda x: 10 <= x <= 80)
+    cycle_length = fields.Integer(required=True, validate=lambda x: 15 <= x <= 120)
+    period_length = fields.Integer(required=True, validate=lambda x: 1 <= x <= 30)
+    symptoms = fields.List(fields.String(), required=True)
+    city = fields.String()
+    weight = fields.Float()
+    height = fields.Float()
+
+
 @app.route("/api/analyze", methods=["POST"])
+@rate_limit
 def analyze_data():
-    """
-    Accepts user health data and returns comprehensive analysis
-    """
     try:
         data = request.json
+        schema = AnalyzeSchema()
+        validated = schema.load(data)
 
-        # Validate required fields
-        required = ["age", "cycle_length", "period_length", "symptoms"]
-        if not all(field in data for field in required):
-            return jsonify({"error": "Missing required fields"}), 400
+        entry_id = save_entry(validated)
+        if analyzer is None:
+            return jsonify({"error": "Analyzer not available"}), 503
 
-        # Save to Supabase
-        entry_id = save_entry(data)
+        analysis_result = analyzer.analyze(validated)
 
-        # Perform analysis
-        analysis_result = analyzer.analyze(data)
+        doctors = []
+        if doctor_recommender is not None:
+            try:
+                doctors = doctor_recommender.get_recommendations(
+                    city=validated.get("city", ""),
+                    severity=analysis_result.get("risk_level"),
+                    symptoms=validated.get("symptoms", []),
+                )
+            except Exception:
+                doctors = []
 
-        # Get doctor recommendations based on city and severity
-        doctors = doctor_recommender.get_recommendations(
-            city=data.get("city", ""),
-            severity=analysis_result["risk_level"],
-            symptoms=data.get("symptoms", []),
-        )
-
-        # Generate complete report
-        report = generate_report(data, analysis_result, doctors)
+        report = generate_report(validated, analysis_result, doctors)
 
         return (
             jsonify(
@@ -116,10 +238,149 @@ def analyze_data():
             ),
             200,
         )
-
+    except ValidationError as ve:
+        logger.error(f"Validation error: {ve.messages}")
+        return jsonify({"error": ve.messages}), 400
     except Exception as e:
-        print(f"Error in analysis: {str(e)}")
+        logger.error(f"Error in analysis: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/stats", methods=["GET"])
+def get_statistics():
+    try:
+        if analyzer is None:
+            return jsonify({"error": "Analyzer not available"}), 503
+        stats = analyzer.get_dataset_statistics()
+        return jsonify(stats), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+def save_entry(data):
+    try:
+        if supabase is None:
+            logger.info("Supabase not configured; skipping save")
+            return None
+        result = (
+            supabase.table("pcos_entries").insert({**data, "timestamp": datetime.now().isoformat()}).execute()
+        )
+        return result.data[0]["id"] if result.data else None
+    except Exception as e:
+        logger.error(f"Error saving entry: {e}")
+        return None
+
+
+def generate_report(user_data, analysis, doctors):
+    report = {
+        "summary": analysis.get("summary"),
+        "risk_level": analysis.get("risk_level"),
+        "risk_score": analysis.get("risk_score"),
+        "key_findings": [
+            f"Your cycle length ({user_data['cycle_length']} days) is {analysis.get('cycle_status')}",
+            f"Period length ({user_data['period_length']} days) is {analysis.get('period_status')}",
+            f"Risk level: {analysis.get('risk_level', '').upper()}",
+            f"{len(user_data.get('symptoms', []))} symptoms reported",
+        ],
+        "recommendations": analysis.get("recommendations", []),
+        "lifestyle_tips": [
+            "Exercise 30 minutes daily to improve insulin sensitivity",
+            "Maintain a balanced diet low in processed foods",
+            "Get 7-8 hours of quality sleep",
+            "Manage stress through yoga or meditation",
+            "Track your cycle consistently for pattern recognition",
+        ],
+        "when_to_see_doctor": [
+            "If irregular periods persist for more than 3 months",
+            "Experiencing severe pelvic pain",
+            "Difficulty conceiving after 6-12 months of trying",
+            "Sudden weight changes or severe acne",
+            "Heavy bleeding or periods lasting > 7 days",
+        ],
+        "next_steps": [
+            "Consult with recommended gynecologist",
+            "Get hormone level tests (testosterone, LH, FSH)",
+            "Consider ultrasound if PCOS suspected",
+            "Track symptoms for next 2-3 cycles",
+            "Book appointment with nutritionist if needed",
+        ],
+        "comparison_to_dataset": {
+            "your_cycle": user_data["cycle_length"],
+            "dataset_average": analysis.get("dataset_avg_cycle", 28),
+            "percentile": analysis.get("percentile", 50),
+        },
+    }
+
+    return report
+
+
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 5000))
+    is_production = os.getenv("FLASK_ENV") == "production"
+    logger.info(f"Starting PCOS Smart Assistant backend on port {port} (production={is_production})")
+    app.run(host="0.0.0.0", port=port, debug=not is_production)
+    weight = fields.Float()
+    height = fields.Float()
+    # Add other fields as needed
+
+@app.route("/api/analyze", methods=["POST"])
+@rate_limit
+def analyze_data():
+    """
+    Accepts user health data and returns comprehensive analysis
+    """
+    try:
+        # Validate request has JSON
+        if not request.is_json:
+            return jsonify({"error": "Content-Type must be application/json"}), 400
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Request body is empty"}), 400
+        
+        # Sanitize string inputs before validation
+        for field in ['city']:
+            if field in data and isinstance(data[field], str):
+                data[field] = sanitize_input(data[field], field)
+        
+        schema = AnalyzeSchema()
+        validated = schema.load(data)
+
+        # Save to Supabase
+        entry_id = save_entry(validated)
+
+        # Perform analysis
+        analysis_result = analyzer.analyze(validated)
+
+        # Get doctor recommendations based on city and severity
+        doctors = doctor_recommender.get_recommendations(
+            city=validated.get("city", ""),
+            severity=analysis_result["risk_level"],
+            symptoms=validated.get("symptoms", []),
+        )
+
+        # Generate complete report
+        report = generate_report(validated, analysis_result, doctors)
+
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "entry_id": entry_id,
+                    "analysis": analysis_result,
+                    "doctors": doctors,
+                    "report": report,
+                }
+            ),
+            200,
+        )
+    except ValidationError as ve:
+        logger.warning(f"Validation error: {ve.messages}")
+        return jsonify({"error": "Validation failed", "details": ve.messages}), 400
+    except Exception as e:
+        logger.error(f"Error in analysis: {str(e)}")
+        # Don't expose internal error details to client
+        return jsonify({"error": "An error occurred processing your request"}), 500
 
 
 @app.route("/api/stats", methods=["GET"])
@@ -131,14 +392,15 @@ def get_statistics():
         stats = analyzer.get_dataset_statistics()
         return jsonify(stats), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Error getting statistics: {str(e)}")
+        return jsonify({"error": "An error occurred fetching statistics"}), 500
 
 
 def save_entry(data):
     """Save user entry to Supabase"""
     try:
         if supabase is None:
-            print("Supabase is not configured. Skipping entry save.")
+            logger.info("Supabase is not configured. Skipping entry save.")
             return None
         result = (
             supabase.table("pcos_entries")
@@ -147,7 +409,7 @@ def save_entry(data):
         )
         return result.data[0]["id"] if result.data else None
     except Exception as e:
-        print(f"Error saving entry: {e}")
+        logger.error(f"Error saving entry: {str(e)}")
         return None
 
 
@@ -196,7 +458,21 @@ def generate_report(user_data, analysis, doctors):
     return report
 
 
+# Error handlers for security
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"error": "Endpoint not found"}), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    # Don't expose internal error details
+    logger.error(f"Internal server error: {str(error)}")
+    return jsonify({"error": "Internal server error"}), 500
+
+
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     is_production = os.getenv("FLASK_ENV") == "production"
+    logger.info(f"Starting PCOS Smart Assistant backend on port {port} (production={is_production})")
     app.run(host="0.0.0.0", port=port, debug=not is_production)

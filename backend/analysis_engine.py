@@ -9,6 +9,7 @@ from typing import Dict, List, Any
 
 class PCOSAnalyzer:
     def __init__(self, supabase_client):
+        """Initialize PCOSAnalyzer with optional Supabase client."""
         self.supabase = supabase_client
         self.dataset_cache = None
 
@@ -46,11 +47,13 @@ class PCOSAnalyzer:
         return insights
     
     def _get_step_name(self, step: int) -> str:
+        """Return the name of the form step for a given step number."""
         step_names = {1: "Personal Information", 2: "Menstrual Cycle", 3: "Symptoms", 
                       4: "Lifestyle & Habits", 5: "Clinical Information", 6: "Review"}
         return step_names.get(step, "Unknown")
     
     def _get_step_preview(self, step: int) -> str:
+        """Return a preview string for the next form step."""
         step_previews = {
             2: "Next: We'll ask about your menstrual cycle details",
             3: "Next: Select any symptoms you're currently experiencing",
@@ -61,6 +64,7 @@ class PCOSAnalyzer:
         return step_previews.get(step, "")
     
     def _analyze_step1(self, data: Dict, insights: Dict) -> Dict:
+        """Analyze personal information step (age, weight, height)."""
         age = data.get("age")
         if age:
             if 10 <= age <= 80:
@@ -84,6 +88,7 @@ class PCOSAnalyzer:
         return insights
     
     def _analyze_step2(self, data: Dict, insights: Dict) -> Dict:
+        """Analyze menstrual cycle step (cycle length, period length)."""
         cycle_length = data.get("cycle_length")
         period_length = data.get("period_length")
         

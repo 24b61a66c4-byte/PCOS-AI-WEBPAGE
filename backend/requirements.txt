@@ -1,6 +1,10 @@
-flask==3.0.0
+
+flask==3.0.2
 flask-cors==4.0.0
 supabase==2.3.4
-python-dotenv==1.0.0
-numpy==1.26.3
-pandas==2.2.0
+python-dotenv==1.0.1
+numpy==1.26.4
+pandas==2.2.1
+
+# Marshmallow for input validation used in backend/app.py
+marshmallow==3.20.1
