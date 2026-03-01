@@ -1,17 +1,17 @@
 """
 Vercel Python API for PCOS Smart Assistant
-Minimal working version
 """
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 from flask_cors import CORS
+import json
 
 # Create Flask app
 app = Flask(__name__)
 CORS(app)
 
 
-@app.route("/api/health", methods=["GET"])
+@app.route("/api/health")
 def health_check():
     """Health check endpoint"""
     return jsonify({
@@ -49,7 +49,7 @@ def analyze_data():
     })
 
 
-@app.route("/api/stats", methods=["GET"])
+@app.route("/api/stats")
 def get_statistics():
     """Returns statistics"""
     return jsonify({
@@ -59,7 +59,5 @@ def get_statistics():
     })
 
 
-# Vercel handler
-def handler(request):
-    """Vercel serverless handler"""
-    return app(request.environ, lambda status, headers=None: (status, headers))
+# Vercel handler - return WSGI app
+app_wsgi = app.wsgi_app
