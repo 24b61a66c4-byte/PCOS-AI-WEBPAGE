@@ -96,7 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function getBackendUrl() {
     const backendUrl = getConfig().BACKEND_URL;
-    return hasValue(backendUrl) ? backendUrl.trim() : 'http://localhost:5000';
+    if (hasValue(backendUrl)) return backendUrl.trim();
+    
+    // Default: try Vercel production first, fallback to localhost for local development
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    return isLocalhost ? 'http://localhost:5000' : 'https://pcos-zeta.vercel.app';
   }
 
   function getOpenRouterApiKey() {
@@ -745,7 +749,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Call backend API endpoint instead of calling OpenRouter directly
       const backendUrl = getBackendUrl();
-      const apiUrl = backendUrl.endsWith('/') 
+      const apiUrl = backendUrl.endsWith('/')
         ? backendUrl + 'api/ai/chat'
         : backendUrl + '/api/ai/chat';
 
@@ -763,7 +767,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const data = await response.json();
-      
+
       // Handle ChatGPT-format response
       let assistantMessage = '';
       if (data.choices && data.choices[0]?.message?.content) {
