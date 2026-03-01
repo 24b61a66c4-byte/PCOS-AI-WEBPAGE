@@ -229,7 +229,8 @@ def health_check():
     """Health check endpoint"""
     return jsonify({
         "status": "healthy", 
-        "service": "PCOS Smart Assistant API"
+        "service": "PCOS Smart Assistant API",
+        "timestamp": "2026-03-01-update-test"
     })
 
 
