@@ -1,6 +1,13 @@
 """
 Vercel Python API for PCOS Smart Assistant
-Security hardened version - Updated for fresh deployment
+Security hardened version - v2.1.0 (2026-03-01)
+
+API Endpoints:
+- GET  /api/health - Health check
+- POST /api/analyze-step - Analyze single form step
+- POST /api/analyze - Full health analysis
+- GET  /api/stats - Dataset statistics
+- POST /api/ai/chat - Multi-provider AI chat (OpenRouter, OpenAI, Perplexity)
 """
 
 from flask import Flask, jsonify, Response, request
