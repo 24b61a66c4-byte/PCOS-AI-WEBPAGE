@@ -443,57 +443,6 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
     });
   });
 
-  test.describe('PCOS Insight Panel', () => {
-    
-    test('should have insight panel', async ({ page }) => {
-      // Navigate to step 6 (review step) where insight panel is visible
-      await fillSteps1to5(page);
-      await page.click('#nextBtn');
-      await expect(page.locator('#pcosInsight')).toBeVisible();
-    });
-
-    test('should have insight title', async ({ page }) => {
-      // Navigate to step 6 (review step) where insight panel is visible
-      await fillSteps1to5(page);
-      await page.click('#nextBtn');
-      await expect(page.locator('#pcosInsightTitle')).toBeVisible();
-    });
-
-    test('should have disclaimer note', async ({ page }) => {
-      // Navigate to step 6 (review step) where insight panel is visible
-      await fillSteps1to5(page);
-      await page.click('#nextBtn');
-      const note = page.locator('#pcosInsightNote');
-      await expect(note).toBeVisible();
-      await expect(note).toContainText(/educational|medical|consult/i);
-    });
-  });
-
-  test.describe('Care Suggestions Panel', () => {
-    
-    test('should have care suggestions panel', async ({ page }) => {
-      // Navigate to step 6 (review step) where care suggestions panel is visible
-      await fillSteps1to5(page);
-      await page.click('#nextBtn');
-      await expect(page.locator('#assistantInline')).toBeVisible();
-    });
-
-    test('should show suggestions based on entries', async ({ page }) => {
-      // Fill some data first
-      await page.fill('#age', '25');
-      
-      // Navigate to step 6 (review step) where care suggestions panel is visible
-      await fillSteps1to5(page);
-      await page.click('#nextBtn');
-      
-      // Wait for suggestions to render
-      await page.waitForTimeout(600);
-      
-      const suggestions = page.locator('#assistantInlineList .assistant-inline-item');
-      await expect(suggestions.first()).toBeVisible();
-    });
-  });
-
   test.describe('Accessibility', () => {
     
     test('should have proper focus management', async ({ page }) => {
@@ -547,6 +496,52 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       
       await expect(page.locator('#printReport')).toBeVisible();
     });
+
+    test('should show PCOS Insight and Care Suggestions on results page', async ({ page }) => {
+      await seedResultsData(page);
+      await page.goto('http://localhost:8080/frontend/results.html');
+
+      await expect(page.locator('#pcosInsight')).toBeVisible();
+      await expect(page.locator('#pcosInsightTitle')).toBeVisible();
+      await expect(page.locator('#assistantInline')).toBeVisible();
+      await expect(page.locator('#assistantInlineList .assistant-inline-item').first()).toBeVisible();
+    });
+
+    test('should place new sections between risk and key findings', async ({ page }) => {
+      await seedResultsData(page);
+      await page.goto('http://localhost:8080/frontend/results.html');
+
+      const order = await page.evaluate(() => {
+        const riskSection = document.getElementById('riskBadge')?.closest('.report-section');
+        const insightSection = document.getElementById('pcosInsight')?.closest('.report-section');
+        const careSection = document.getElementById('assistantInline')?.closest('.report-section');
+        const findingsSection = document.getElementById('findingsList')?.closest('.report-section');
+
+        const riskBeforeInsight = !!(riskSection && insightSection &&
+          (riskSection.compareDocumentPosition(insightSection) & Node.DOCUMENT_POSITION_FOLLOWING));
+        const insightBeforeCare = !!(insightSection && careSection &&
+          (insightSection.compareDocumentPosition(careSection) & Node.DOCUMENT_POSITION_FOLLOWING));
+        const careBeforeFindings = !!(careSection && findingsSection &&
+          (careSection.compareDocumentPosition(findingsSection) & Node.DOCUMENT_POSITION_FOLLOWING));
+
+        return { riskBeforeInsight, insightBeforeCare, careBeforeFindings };
+      });
+
+      expect(order.riskBeforeInsight).toBe(true);
+      expect(order.insightBeforeCare).toBe(true);
+      expect(order.careBeforeFindings).toBe(true);
+    });
+
+    test('should render fallback results when analysis is missing but entry exists', async ({ page }) => {
+      await seedEntryOnly(page);
+      await page.goto('http://localhost:8080/frontend/results.html');
+
+      await expect(page.locator('.no-data-message')).toHaveCount(0);
+      await expect(page.locator('#pcosInsight')).toBeVisible();
+      await expect(page.locator('#assistantInline')).toBeVisible();
+      await expect(page.locator('#assistantInlineList .assistant-inline-item').first()).toBeVisible();
+      await expect(page.locator('#riskScore')).not.toHaveText('--');
+    });
   });
 });
 
@@ -595,4 +590,65 @@ async function fillSteps1to5(page) {
   await fillSteps1to4(page);
   await page.click('#nextBtn');
   await fillStep5(page);
+}
+
+async function seedResultsData(page) {
+  await page.goto('http://localhost:8080/frontend/form.html');
+  await page.evaluate(() => {
+    localStorage.setItem('pcos_last_entry', JSON.stringify({
+      age: 25,
+      cycle_length: 38,
+      period_length: 8,
+      symptoms: ['acne', 'weight_gain'],
+      sleep: 6,
+      stress: 'moderate',
+      city: 'New York',
+      pcos: 'not_diagnosed',
+      timestamp: new Date().toISOString(),
+    }));
+
+    localStorage.setItem('pcos_last_analysis', JSON.stringify({
+      success: true,
+      analysis: {
+        risk_score: 54,
+        summary: 'Moderate PCOS indicators detected from submitted data.',
+        key_findings: [
+          'Cycle length is outside the common range.',
+          'Reported symptoms match common hormonal patterns.'
+        ],
+        recommendations: [
+          'Track cycles for at least 3 months.',
+          'Consult a gynecologist if irregularity persists.'
+        ]
+      },
+      report: {
+        key_findings: [
+          'Cycle length is outside the common range.',
+          'Reported symptoms match common hormonal patterns.'
+        ],
+        recommendations: [
+          'Track cycles for at least 3 months.',
+          'Consult a gynecologist if irregularity persists.'
+        ]
+      }
+    }));
+  });
+}
+
+async function seedEntryOnly(page) {
+  await page.goto('http://localhost:8080/frontend/form.html');
+  await page.evaluate(() => {
+    localStorage.removeItem('pcos_last_analysis');
+    localStorage.setItem('pcos_last_entry', JSON.stringify({
+      age: 27,
+      cycle_length: 42,
+      period_length: 9,
+      symptoms: ['irregular_cycles', 'acne'],
+      sleep: 5,
+      stress: 'high',
+      city: 'Boston',
+      pcos: 'suspected',
+      timestamp: new Date().toISOString(),
+    }));
+  });
 }

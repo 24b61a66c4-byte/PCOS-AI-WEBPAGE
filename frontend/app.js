@@ -15,7 +15,7 @@ function showToast(message, duration = 2200) {
 // Example: show toast after saving personal info (hook into your form logic)
 window.showSuccessToast = showToast;
 // PCOS Smart Assistant - Multi-Step Form with Smooth Scrolling
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Provide a resilient smooth-scrolling layer so pages don't crash if Lenis is unavailable.
   function createScroller() {
     if (typeof window.Lenis === 'function') {
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Professional Theme System with system preference support
   const THEME_KEY = 'pcos_theme';
-  
+
   function initTheme() {
     const savedTheme = localStorage.getItem(THEME_KEY);
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', newTheme);
     localStorage.setItem(THEME_KEY, newTheme);
-    
+
     // Add animation class to theme toggle button for smooth transition
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
@@ -474,6 +474,88 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
+  function getFallbackRiskFromInsight(levelKey) {
+    if (levelKey === 'high') return { score: 72, level: 'high' };
+    if (levelKey === 'moderate') return { score: 48, level: 'moderate' };
+    if (levelKey === 'low') return { score: 24, level: 'low' };
+    return { score: 16, level: 'low' };
+  }
+
+  function buildFallbackSummary(levelKey) {
+    if (levelKey === 'high') {
+      return 'Your entry shows higher PCOS indicators. Please consider speaking with a clinician for a detailed evaluation.';
+    }
+    if (levelKey === 'moderate') {
+      return 'Your entry shows moderate PCOS indicators. Continue tracking and consider a clinical checkup if symptoms continue.';
+    }
+    if (levelKey === 'low') {
+      return 'Your entry shows lower PCOS indicators right now. Keep healthy routines and continue tracking for trends.';
+    }
+    return 'Not enough data to estimate PCOS indicators. Complete more details and keep tracking consistently.';
+  }
+
+  function buildFallbackFindings(entry, insight) {
+    const findings = [];
+    const cycle = Number(entry.cycle_length);
+    const period = Number(entry.period_length);
+    const symptoms = Array.isArray(entry.symptoms) ? entry.symptoms : [];
+
+    if (Number.isFinite(cycle)) {
+      findings.push(
+        cycle >= 21 && cycle <= 35
+          ? `Cycle length (${cycle} days) is within a common range.`
+          : `Cycle length (${cycle} days) is outside the common 21-35 day range.`
+      );
+    }
+
+    if (Number.isFinite(period)) {
+      findings.push(
+        period >= 2 && period <= 7
+          ? `Period length (${period} days) is within a common range.`
+          : `Period length (${period} days) is outside the common 2-7 day range.`
+      );
+    }
+
+    if (symptoms.length > 0) {
+      findings.push(`${symptoms.length} symptom(s) were selected in your entry.`);
+    } else {
+      findings.push('No symptoms were selected in your entry.');
+    }
+
+    findings.push(`Local indicator level: ${insight.levelKey}.`);
+    return findings;
+  }
+
+  function buildFallbackAnalysisResult(entry) {
+    const safeEntry = entry && typeof entry === 'object' ? entry : {};
+    const insight = buildPcosInsight(safeEntry);
+    const careSuggestions = buildCareSuggestions(safeEntry);
+    const risk = getFallbackRiskFromInsight(insight.levelKey);
+    const keyFindings = buildFallbackFindings(safeEntry, insight);
+    const summary = buildFallbackSummary(insight.levelKey);
+
+    return {
+      success: true,
+      source: 'local_fallback',
+      generated_at: new Date().toISOString(),
+      analysis: {
+        risk_score: risk.score,
+        risk_level: risk.level,
+        summary,
+        key_findings: keyFindings,
+        recommendations: careSuggestions,
+      },
+      report: {
+        summary,
+        risk_level: risk.level,
+        risk_score: risk.score,
+        key_findings: keyFindings,
+        recommendations: careSuggestions,
+      },
+      doctors: [],
+    };
+  }
+
   const INSIGHT_LANG_KEY = 'pcos_insight_lang';
 
   const insightI18n = {
@@ -700,7 +782,7 @@ Image Analysis Instructions:
         { role: 'user', content: userContent }
       ];
 
-      const modelToUse = imageBase64 
+      const modelToUse = imageBase64
         ? 'meta-llama/llama-3.2-11b-vision-instruct:free'
         : 'meta-llama/llama-3.1-8b-instruct:free';
 
@@ -736,7 +818,7 @@ Image Analysis Instructions:
       return assistantMessage;
     } catch (error) {
       console.error('Chat error:', error);
-      
+
       let errorMessage = 'Sorry, I encountered an error. ';
       if (error.message?.includes('API error: 401')) {
         errorMessage += 'Authentication failed. Please check your API key.';
@@ -749,7 +831,7 @@ Image Analysis Instructions:
       } else {
         errorMessage += 'Please check your connection and try again.';
       }
-      
+
       return errorMessage;
     }
   }
@@ -818,7 +900,7 @@ Image Analysis Instructions:
       if (!chatInput || !chatSend) return;
       const message = sanitizeInput(chatInput.value.trim(), 1000);
       const hasImage = currentImage !== null;
-      
+
       if (!message && !hasImage) return;
 
       addChatMessage(message || 'Please analyze this image', true, currentImage);
@@ -1476,7 +1558,7 @@ Image Analysis Instructions:
     // Always return local analysis so modal always shows
     return generateLocalAnalysis(step, stepData);
   }
-  
+
   // Generate local analysis when backend is not available
   function generateLocalAnalysis(step, stepData) {
     const analysis = {
@@ -1486,7 +1568,7 @@ Image Analysis Instructions:
       tips: [],
       next_step_preview: getStepPreview(step + 1)
     };
-    
+
     if (step === 1) {
       const age = Number(stepData.age);
       if (age && age >= 10 && age <= 80) {
@@ -1498,7 +1580,7 @@ Image Analysis Instructions:
       const weight = Number(stepData.weight);
       const height = Number(stepData.height);
       if (weight && height && height > 0) {
-        const bmi = weight / Math.pow(height/100, 2);
+        const bmi = weight / Math.pow(height / 100, 2);
         const bmiCat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
         analysis.findings.push(`BMI: ${bmi.toFixed(1)} (${bmiCat})`);
         if (bmi > 25) {
@@ -1594,15 +1676,15 @@ Image Analysis Instructions:
       analysis.findings.push('All information collected');
       analysis.tips.push('Click "Save My Data" to get your complete health report with doctor recommendations');
     }
-    
+
     return { success: true, step: step, analysis: analysis };
   }
-  
+
   function getStepName(step) {
     const names = { 1: 'Personal Information', 2: 'Menstrual Cycle', 3: 'Symptoms', 4: 'Lifestyle', 5: 'Clinical', 6: 'Review' };
     return names[step] || 'Step ' + step;
   }
-  
+
   function getStepPreview(step) {
     const previews = {
       2: 'Next: Menstrual Cycle details',
@@ -1648,38 +1730,38 @@ Image Analysis Instructions:
         </div>
       `;
       document.body.appendChild(resultModal);
-      
+
       document.getElementById('stepResultClose').addEventListener('click', () => {
         resultModal.classList.remove('active');
       });
-      
+
       document.getElementById('stepResultBack').addEventListener('click', () => {
         resultModal.classList.remove('active');
       });
-      
+
       document.getElementById('stepResultContinue').addEventListener('click', () => {
         resultModal.classList.remove('active');
         proceedToNextStep();
       });
     }
-    
+
     const findingsList = document.getElementById('findingsList');
     const tipsList = document.getElementById('tipsList');
     const nextPreviewText = document.getElementById('nextPreviewText');
     const stepNextPreview = document.getElementById('stepNextPreview');
-    
+
     if (analysis && analysis.analysis) {
       const data = analysis.analysis;
       document.getElementById('stepResultTitle').textContent = `Step ${data.step}: ${data.step_name}`;
-      
-      findingsList.innerHTML = data.findings && data.findings.length > 0 
+
+      findingsList.innerHTML = data.findings && data.findings.length > 0
         ? data.findings.map(f => `<li>${f}</li>`).join('')
         : '<li>No specific findings from this step.</li>';
-      
+
       tipsList.innerHTML = data.tips && data.tips.length > 0
         ? data.tips.map(t => `<li>${t}</li>`).join('')
         : '<li>Continue to the next step for more insights.</li>';
-      
+
       if (data.next_step_preview && currentStep < totalSteps) {
         nextPreviewText.textContent = data.next_step_preview;
         stepNextPreview.style.display = 'block';
@@ -1691,7 +1773,7 @@ Image Analysis Instructions:
       tipsList.innerHTML = '<li>Keep entering your health information for better insights.</li>';
       stepNextPreview.style.display = 'none';
     }
-    
+
     resultModal.classList.add('active');
   }
 
@@ -1705,14 +1787,18 @@ Image Analysis Instructions:
   }
 
   if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
+    nextBtn.addEventListener('click', async () => {
       if (!validateStep(currentStep)) {
         showMessage('Please fix the errors above', 'error');
         return;
       }
 
-      // Move directly to the next slide so questions appear one-by-one without blocking modals
-      proceedToNextStep();
+      // Collect current step data for analysis
+      const stepData = collectDraft();
+
+      // Show step analysis modal with current step's data
+      const analysis = await analyzeCurrentStep(currentStep, stepData);
+      showStepAnalysis(analysis);
     });
   }
 
@@ -1742,12 +1828,15 @@ Image Analysis Instructions:
         localStorage.removeItem(DRAFT_KEY);
 
         // Push to Supabase
-        pushEntryToSupabase(fullData);
+        void pushEntryToSupabase(fullData);
 
         // Call backend API for analysis
         await waitForConfigReady();
         const backendUrl = getBackendUrl();
-        
+
+        let resultToStore = buildFallbackAnalysisResult(fullData);
+        let usedFallback = true;
+
         try {
           const response = await fetch(`${backendUrl}/api/analyze`, {
             method: 'POST',
@@ -1759,43 +1848,28 @@ Image Analysis Instructions:
 
           if (response.ok) {
             const result = await response.json();
-            
-            // Save analysis result
-            localStorage.setItem('pcos_last_analysis', JSON.stringify(result));
-            
-            // Show analysis and redirect to results page
-            showMessage('✨ Analysis complete! Redirecting to your health report...', 'success');
-            
-            setTimeout(() => {
-              window.location.href = 'results.html';
-            }, 2000);
+            if (result && typeof result === 'object') {
+              resultToStore = result;
+              usedFallback = false;
+            }
           } else {
-            // Fallback if backend is not available
-            showMessage('✨ Your health details have been saved securely!', 'success');
-            setTimeout(() => {
-              form.reset();
-              currentStep = 1;
-              Object.keys(formData).forEach(key => delete formData[key]);
-              showStep(currentStep);
-              renderFormSuggestions();
-              renderPcosInsight();
-              setSubmitting(false);
-            }, 2000);
+            console.warn('Analyze API returned non-OK status:', response.status);
           }
         } catch (apiError) {
           console.log('Backend API not available, using fallback:', apiError);
-          showMessage('✨ Your health details have been saved securely!', 'success');
-          setTimeout(() => {
-            form.reset();
-            currentStep = 1;
-            Object.keys(formData).forEach(key => delete formData[key]);
-            showStep(currentStep);
-            renderFormSuggestions();
-            renderPcosInsight();
-            setSubmitting(false);
-          }, 2000);
         }
-        
+
+        localStorage.setItem('pcos_last_analysis', JSON.stringify(resultToStore));
+        showMessage(
+          usedFallback
+            ? '✨ Saved. Backend is unavailable, so we prepared your report using local analysis.'
+            : '✨ Analysis complete! Redirecting to your health report...',
+          'success'
+        );
+
+        setTimeout(() => {
+          window.location.href = 'results.html';
+        }, 1200);
       } catch (err) {
         showMessage('⚠️ Error saving data. Please try again.', 'error');
         console.error('Storage error:', err);

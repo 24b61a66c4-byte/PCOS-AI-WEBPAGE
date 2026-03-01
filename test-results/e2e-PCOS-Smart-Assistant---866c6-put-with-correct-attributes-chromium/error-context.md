@@ -1,0 +1,64 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]: 🏥 PCOS Smart Assistant
+    - generic [ref=e5]:
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link "Dashboard" [ref=e8] [cursor=pointer]:
+            - /url: dashboard.html
+        - listitem [ref=e9]:
+          - link "Health Journey" [ref=e10] [cursor=pointer]:
+            - /url: form.html
+      - generic [ref=e11]:
+        - generic [ref=e12]: Language
+        - combobox "Language" [ref=e13]:
+          - option "English" [selected]
+          - option "తెలుగు"
+          - option "हिंदी"
+      - button "Toggle theme" [ref=e14] [cursor=pointer]
+  - main [ref=e16]:
+    - paragraph [ref=e20]: Step 1 of 6
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - generic [ref=e23]: 👤
+        - generic [ref=e24]: Personal
+      - generic [ref=e25]:
+        - generic [ref=e26]: 🔄
+        - generic [ref=e27]: Menstrual
+      - generic [ref=e28]:
+        - generic [ref=e29]: ⚠️
+        - generic [ref=e30]: Symptoms
+      - generic [ref=e31]:
+        - generic [ref=e32]: 🏃
+        - generic [ref=e33]: Lifestyle
+      - generic [ref=e34]:
+        - generic [ref=e35]: 🏥
+        - generic [ref=e36]: Clinical
+      - generic [ref=e37]:
+        - generic [ref=e38]: ✨
+        - generic [ref=e39]: Review
+    - generic [ref=e40]:
+      - form "Let's start with your basic information" [ref=e42]:
+        - generic [ref=e45]:
+          - heading "👤 Personal Information" [level=2] [ref=e46]
+          - paragraph [ref=e47]: Let's start with your basic information
+          - generic [ref=e48]:
+            - generic [ref=e49]: What is your age?
+            - spinbutton "Age" [active] [ref=e50]
+            - alert
+          - generic [ref=e51]:
+            - generic [ref=e52]: What is your weight? (kg)
+            - spinbutton "Weight" [ref=e53]
+          - generic [ref=e54]:
+            - generic [ref=e55]: What is your height? (cm)
+            - spinbutton "Height" [ref=e56]
+        - button "Next Step" [ref=e58] [cursor=pointer]: Next →
+      - paragraph [ref=e60]:
+        - strong [ref=e61]: "Note:"
+        - text: Your information is processed locally on your device. We never store, transmit, or share your data with anyone.
+  - contentinfo [ref=e62]:
+    - paragraph [ref=e63]: © 2026 PCOS Smart Assistant. Your health, your privacy, your journey.
+```
