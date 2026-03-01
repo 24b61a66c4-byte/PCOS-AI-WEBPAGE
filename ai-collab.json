@@ -496,6 +496,22 @@
             "priority": "low",
             "completed_by": "Codex 5.3",
             "result": "Live checks done for GitHub Pages and Vercel. Core page URLs respond 200 and render without page JS errors. Follow-up patch for Vercel base-path logic is deployed and verified live; duplicate .html/frontend asset 404s are resolved on dashboard/form/results."
+        },
+        {
+            "id": "next-6",
+            "title": "API Keys Configuration & Setup",
+            "description": "Configure OpenRouter, Supabase, and other API keys for production deployment",
+            "status": "completed",
+            "priority": "high",
+            "completed_by": "GitHub Copilot",
+            "result": "✅ All API keys centralized in agent-secrets.local.json (gitignored). Backend .env updated with correct variable names (fixed OPENROUTE_API_KEY typo → OPENROUTER_API_KEY). Created DEPLOYMENT_KEYS_SETUP.md with Vercel environment variable instructions. Keys configured: OPENROUTER_API_KEY (AI chat), SUPABASE_URL/SERVICE_KEY (database), OPENAI_API_KEY, PERPLEXITY_API_KEY. Next: Set Vercel environment variables manually via dashboard."
         }
-    ]
+    ],
+    "api_keys_status": {
+        "local_configuration": "✅ Complete",
+        "backend_env": "✅ Complete (typo fixed)",
+        "vercel_env_vars": "⏳ Manual setup needed (see DEPLOYMENT_KEYS_SETUP.md)",
+        "security": "✅ Gitignored, no keys in repo",
+        "note": "All agents: Reference agent-secrets.local.json for keys. Never paste raw API keys in chat."
+    }
 }
