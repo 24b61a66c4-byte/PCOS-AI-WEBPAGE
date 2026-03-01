@@ -1,12 +1,14 @@
 ﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PulseOS — Modern SaaS Experience</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -16,57 +18,129 @@
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
-    * { box-sizing: border-box; }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
       background: radial-gradient(1200px 800px at 10% 10%, rgba(124, 58, 237, 0.14), transparent 50%),
-                  radial-gradient(1200px 900px at 90% 0%, rgba(14, 165, 233, 0.16), transparent 55%),
-                  #070a12;
+        radial-gradient(1200px 900px at 90% 0%, rgba(14, 165, 233, 0.16), transparent 55%),
+        #070a12;
       color: #e5e7eb;
       overflow-x: hidden;
     }
+
     [data-theme="light"] body {
       background: radial-gradient(1200px 800px at 10% 10%, rgba(124, 58, 237, 0.08), transparent 50%),
-                  radial-gradient(1200px 900px at 90% 0%, rgba(14, 165, 233, 0.1), transparent 55%),
-                  #f8fafc;
+        radial-gradient(1200px 900px at 90% 0%, rgba(14, 165, 233, 0.1), transparent 55%),
+        #f8fafc;
       color: #0f172a;
     }
+
     .glass {
       background: var(--glass);
       border: 1px solid var(--border);
       backdrop-filter: blur(16px);
       box-shadow: var(--shadow);
     }
-    .glass-strong { background: var(--glass-strong); }
-    .nav-blur { backdrop-filter: blur(20px); }
+
+    .glass-strong {
+      background: var(--glass-strong);
+    }
+
+    .nav-blur {
+      backdrop-filter: blur(20px);
+    }
+
     .btn {
       transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
       box-shadow: 0 16px 40px rgba(56, 189, 248, 0.25);
     }
-    .btn:hover { transform: translateY(-2px) scale(1.01); }
-    .tilt-card { transform-style: preserve-3d; transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); }
-    .tilt-card:hover { box-shadow: 0 20px 60px rgba(59, 130, 246, 0.25); }
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .loader {
-      position: fixed; inset: 0; background: #070a12; display: grid; place-items: center; z-index: 50;
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.01);
     }
-    .loader-dot { width: 12px; height: 12px; margin: 6px; border-radius: 999px; background: #38bdf8; animation: pulse 1s infinite alternate; }
-    .loader-dot:nth-child(2) { animation-delay: 0.15s; background: #a855f7; }
-    .loader-dot:nth-child(3) { animation-delay: 0.3s; background: #22d3ee; }
-    @keyframes pulse { to { transform: scale(1.4); opacity: 0.65; } }
+
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+
+    .tilt-card:hover {
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.25);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .loader {
+      position: fixed;
+      inset: 0;
+      background: #070a12;
+      display: grid;
+      place-items: center;
+      z-index: 50;
+    }
+
+    .loader-dot {
+      width: 12px;
+      height: 12px;
+      margin: 6px;
+      border-radius: 999px;
+      background: #38bdf8;
+      animation: pulse 1s infinite alternate;
+    }
+
+    .loader-dot:nth-child(2) {
+      animation-delay: 0.15s;
+      background: #a855f7;
+    }
+
+    .loader-dot:nth-child(3) {
+      animation-delay: 0.3s;
+      background: #22d3ee;
+    }
+
+    @keyframes pulse {
+      to {
+        transform: scale(1.4);
+        opacity: 0.65;
+      }
+    }
+
     /* Particle canvas below content */
-    #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
     /* Smooth anchor scroll on Safari */
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
   </style>
 </head>
+
 <body class="relative">
   <canvas id="particles"></canvas>
   <!-- Loading overlay -->
   <div id="loader" class="loader">
     <div class="flex items-center">
-      <div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div>
+      <div class="loader-dot"></div>
+      <div class="loader-dot"></div>
+      <div class="loader-dot"></div>
     </div>
   </div>
 
@@ -74,7 +148,8 @@
   <header id="navbar" class="nav-blur fixed top-0 left-0 w-full z-40 transition-all duration-300">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between glass rounded-2xl mt-4">
       <div class="flex items-center gap-3 font-semibold text-lg">
-        <span class="h-10 w-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-500 grid place-items-center text-gray-900 font-bold">P</span>
+        <span
+          class="h-10 w-10 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-500 grid place-items-center text-gray-900 font-bold">P</span>
         PulseOS
       </div>
       <nav class="hidden md:flex items-center gap-4 text-sm text-gray-200">
@@ -86,7 +161,9 @@
       </nav>
       <div class="flex items-center gap-3">
         <button id="themeToggle" class="glass px-3 py-2 rounded-xl text-sm">Toggle</button>
-        <a href="#contact" class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-4 py-2 rounded-xl">Get Access</a>
+        <a href="#contact"
+          class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-4 py-2 rounded-xl">Get
+          Access</a>
       </div>
     </div>
   </header>
@@ -96,10 +173,13 @@
     <section class="max-w-6xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-10 items-center">
       <div class="space-y-6 reveal">
         <p class="uppercase tracking-[0.35em] text-cyan-200 text-xs">Modern SaaS Platform</p>
-        <h1 class="text-4xl md:text-5xl font-bold leading-tight">Operate with a glassmorphic dashboard that feels native.</h1>
-        <p class="text-gray-300 text-lg">PulseOS blends premium UI, buttery motion, and real-time insights. Ship workflows your team actually loves to use.</p>
+        <h1 class="text-4xl md:text-5xl font-bold leading-tight">Operate with a glassmorphic dashboard that feels
+          native.</h1>
+        <p class="text-gray-300 text-lg">PulseOS blends premium UI, buttery motion, and real-time insights. Ship
+          workflows your team actually loves to use.</p>
         <div class="flex gap-3 flex-wrap">
-          <a class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-5 py-3 rounded-xl" href="#pricing">Start Free Trial</a>
+          <a class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-5 py-3 rounded-xl"
+            href="#pricing">Start Free Trial</a>
           <a class="btn glass px-5 py-3 rounded-xl" href="#features">Explore Features</a>
         </div>
         <div class="flex items-center gap-4 text-sm text-gray-400">
@@ -143,7 +223,8 @@
     <section id="features" class="max-w-6xl mx-auto px-4 py-16 space-y-8">
       <div class="flex items-center justify-between reveal">
         <h2 class="text-3xl font-semibold">Designed for momentum</h2>
-        <p class="text-gray-400 max-w-xl">Glass panels, crisp micro-interactions, and fast paths that keep your team in flow.</p>
+        <p class="text-gray-400 max-w-xl">Glass panels, crisp micro-interactions, and fast paths that keep your team in
+          flow.</p>
       </div>
       <div class="grid md:grid-cols-3 gap-6">
         <div class="tilt-card glass p-5 rounded-2xl reveal">
@@ -237,7 +318,8 @@
             <li>Edge acceleration</li>
             <li>Priority support</li>
           </ul>
-          <button class="btn mt-6 w-full bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 rounded-xl py-3">Choose</button>
+          <button
+            class="btn mt-6 w-full bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 rounded-xl py-3">Choose</button>
         </div>
         <div class="glass p-6 rounded-2xl reveal">
           <p class="text-sm text-cyan-200 font-semibold">Enterprise</p>
@@ -269,18 +351,22 @@
           </div>
           <div class="md:col-span-2">
             <label class="text-sm text-gray-300">Message</label>
-            <textarea name="message" rows="4" class="mt-1 w-full glass rounded-xl px-3 py-3 outline-none" required></textarea>
+            <textarea name="message" rows="4" class="mt-1 w-full glass rounded-xl px-3 py-3 outline-none"
+              required></textarea>
           </div>
           <div class="md:col-span-2 flex justify-between items-center text-sm text-gray-400">
             <span id="formStatus"></span>
-            <button class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-5 py-3 rounded-xl" type="submit">Send message</button>
+            <button
+              class="btn bg-gradient-to-r from-cyan-400 to-purple-500 text-gray-900 font-semibold px-5 py-3 rounded-xl"
+              type="submit">Send message</button>
           </div>
         </form>
       </div>
     </section>
   </main>
 
-  <footer class="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between text-gray-400 text-sm">
+  <footer
+    class="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between text-gray-400 text-sm">
     <div>© 2026 PulseOS. Crafted for teams that care.</div>
     <div class="flex gap-3 mt-3 md:mt-0">
       <a class="hover:text-white" href="#">Twitter</a>
@@ -290,11 +376,13 @@
   </footer>
 
   <script>
-    const state = { testimonials: [
-      { quote: '"PulseOS cut our incident response time by 40%."', meta: '— Alex Chen, VP Eng @ Fluxor' },
-      { quote: '"The dashboard feels native. Our PMs finally stopped exporting to sheets."', meta: '— Priya Raman, Head of Product @ Northwind' },
-      { quote: '"Beautiful, fast, compliant out of the box."', meta: '— Dana Ruiz, CTO @ LumenWave' },
-    ], idx: 0 };
+    const state = {
+      testimonials: [
+        { quote: '"PulseOS cut our incident response time by 40%."', meta: '— Alex Chen, VP Eng @ Fluxor' },
+        { quote: '"The dashboard feels native. Our PMs finally stopped exporting to sheets."', meta: '— Priya Raman, Head of Product @ Northwind' },
+        { quote: '"Beautiful, fast, compliant out of the box."', meta: '— Dana Ruiz, CTO @ LumenWave' },
+      ], idx: 0
+    };
 
     // Theme Management
     const THEME_KEY = 'pcos_theme';
@@ -465,4 +553,5 @@
     loop();
   </script>
 </body>
+
 </html>
