@@ -385,7 +385,7 @@ def get_statistics():
 
 @app.route("/api/ai/chat", methods=["POST"])
 def ai_chat():
-    """AI chat endpoint - returns PCOS-specific responses"""
+    """AI chat endpoint - Multi-provider fallback chain: OpenRouter → OpenAI → Perplexity → Local AI"""
     if not request.is_json:
         return jsonify({"error": "Content-Type must be application/json"}), 400
 
@@ -393,11 +393,127 @@ def ai_chat():
     if not isinstance(payload, dict):
         return jsonify({"error": "Invalid request body"}), 400
 
-    # Return local AI response (with environment variables as fallback to external APIs)
+    # Try providers in order: OpenRouter → OpenAI → Perplexity → Local AI
+    
+    # 1. Try OpenRouter (primary)
+    openrouter_key = os.getenv("OPENROUTER_API_KEY")
+    if openrouter_key:
+        result = call_openrouter(payload, openrouter_key)
+        if result:
+            return jsonify(result), 200
+    
+    # 2. Try OpenAI (first fallback)
+    openai_key = os.getenv("OPENAI_API_KEY")
+    if openai_key:
+        result = call_openai(payload, openai_key)
+        if result:
+            return jsonify(result), 200
+    
+    # 3. Try Perplexity (second fallback)
+    perplexity_key = os.getenv("PERPLEXITY_API_KEY")
+    if perplexity_key:
+        result = call_perplexity(payload, perplexity_key)
+        if result:
+            return jsonify(result), 200
+    
+    # 4. Fallback to local AI (always available, never fails)
     return jsonify(generate_local_ai_response(payload)), 200
 
 
-def generate_local_ai_response(payload):
+
+
+def call_openrouter(payload, api_key):
+    """Call OpenRouter API with fallback on failure"""
+    try:
+        messages = payload.get("messages", [])
+        if not messages:
+            return None
+        
+        response = requests.post(
+            "https://api.openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://pcos-zeta.vercel.app"
+            },
+            json={
+                "model": "meta-llama/llama-3.1-8b-instruct:free",
+                "messages": messages,
+                "temperature": 0.7,
+                "max_tokens": 600
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            return response.json()
+        return None
+    except Exception as e:
+        print(f"OpenRouter failed: {e}")
+        return None
+
+
+def call_openai(payload, api_key):
+    """Call OpenAI API with fallback on failure"""
+    try:
+        messages = payload.get("messages", [])
+        if not messages:
+            return None
+        
+        response = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "gpt-3.5-turbo",
+                "messages": messages,
+                "temperature": 0.7,
+                "max_tokens": 600
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            return response.json()
+        return None
+    except Exception as e:
+        print(f"OpenAI failed: {e}")
+        return None
+
+
+def call_perplexity(payload, api_key):
+    """Call Perplexity API with fallback on failure"""
+    try:
+        messages = payload.get("messages", [])
+        if not messages:
+            return None
+        
+        response = requests.post(
+            "https://api.perplexity.ai/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "pplx-7b-online",
+                "messages": messages,
+                "temperature": 0.7,
+                "max_tokens": 600
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            return response.json()
+        return None
+    except Exception as e:
+        print(f"Perplexity failed: {e}")
+        return None
+
+
+
     """Generate a basic AI response using local rules (fallback when APIs unavailable)"""
     messages = payload.get("messages", [])
     if not messages:
