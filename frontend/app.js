@@ -1793,10 +1793,8 @@ Image Analysis Instructions:
         return;
       }
 
-      // Collect current step data for analysis
+      // Collect current step data and show analysis modal
       const stepData = collectDraft();
-
-      // Show step analysis modal with current step's data
       const analysis = await analyzeCurrentStep(currentStep, stepData);
       showStepAnalysis(analysis);
     });
