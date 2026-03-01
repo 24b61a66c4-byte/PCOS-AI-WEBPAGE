@@ -513,7 +513,7 @@ def call_perplexity(payload, api_key):
         return None
 
 
-
+def generate_local_ai_response(payload):
     """Generate a basic AI response using local rules (fallback when APIs unavailable)"""
     messages = payload.get("messages", [])
     if not messages:
