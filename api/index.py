@@ -548,5 +548,6 @@ def internal_error(error):
     return jsonify({"error": "Internal server error"}), 500
 
 
-# Vercel handler - return WSGI app
-app_wsgi = app.wsgi_app
+# Vercel handler - export Flask app directly
+# Vercel will use this `app` variable as the WSGI application
+# Do not rename or remove this line - required for Vercel serverless
