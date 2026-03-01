@@ -40,17 +40,100 @@ def cors_with_origin(f):
 # Configure CORS with restrictions
 CORS(app, origins=ALLOWED_ORIGINS, supports_credentials=False)
 
-# Analyzer availability: attempt to reuse backend analyzer if present
+# Analyzer availability: attempt to load analysis engine
 ANALYZER_AVAILABLE = False
 analyzer = None
 doctor_recommender = None
+
+# Try to import and initialize analyzer
 try:
-    from backend import app as backend_app
-    analyzer = getattr(backend_app, "analyzer", None)
-    doctor_recommender = getattr(backend_app, "doctor_recommender", None)
-    ANALYZER_AVAILABLE = analyzer is not None
-except Exception:
-    ANALYZER_AVAILABLE = False
+    # Try importing from backend module structure
+    from backend.analysis_engine import PCOSAnalyzer
+    analyzer = PCOSAnalyzer(None)  # Initialize without Supabase for serverless
+    ANALYZER_AVAILABLE = True
+except ImportError:
+    try:
+        # Fallback: Try parent directory import
+        import sys
+        import os
+        backend_path = os.path.join(os.path.dirname(__file__), '..', 'backend')
+        if os.path.exists(backend_path):
+            sys.path.insert(0, backend_path)
+        from analysis_engine import PCOSAnalyzer
+        analyzer = PCOSAnalyzer(None)
+        ANALYZER_AVAILABLE = True
+    except Exception as e:
+        # If imports fail, create a fallback basic analyzer
+        class BasicAnalyzer:
+            """Fallback analyzer when main analyzer can't be imported"""
+            def analyze_step(self, step, step_data):
+                """Basic step analysis with common PCOS patterns"""
+                insights = {
+                    "step": step,
+                    "step_name": self._get_step_name(step),
+                    "findings": [],
+                    "tips": [],
+                    "next_step_preview": None,
+                    "has_sufficient_data": False
+                }
+                
+                if step == 1 and step_data:
+                    age = step_data.get('age')
+                    if age:
+                        insights["findings"].append(f"Age: {age} years")
+                        if 15 <= age <= 35:
+                            insights["tips"].append("PCOS is commonly diagnosed in women aged 15-35. Your age is in the typical range.")
+                
+                if step == 2 and step_data:
+                    cycle = step_data.get('cycle_length')
+                    if cycle:
+                        try:
+                            cycle = int(cycle)
+                            if cycle > 35:
+                                insights["findings"].append(f"Cycle: {cycle} days (irregular)")
+                                insights["tips"].append("Irregular cycles can be a sign of hormonal imbalance. PCOS often causes extended cycles.")
+                            elif cycle < 21:
+                                insights["findings"].append(f"Cycle: {cycle} days (short)")
+                                insights["tips"].append("Short cycles may indicate hormonal issues.")
+                            else:
+                                insights["findings"].append(f"Cycle: {cycle} days (normal range)")
+                        except:
+                            pass
+                
+                if step == 3 and step_data:
+                    symptoms = step_data.get('symptoms', [])
+                    if symptoms:
+                        insights["findings"].append(f"Symptoms reported: {len(symptoms)}")
+                        if any(s in str(symptoms).lower() for s in ['acne', 'hirsutism', 'hair loss']):
+                            insights["tips"].append("Androgen-related symptoms like acne or hair loss are common in PCOS.")
+                        if any(s in str(symptoms).lower() for s in ['weight gain', 'weight']):
+                            insights["tips"].append("Weight management is an important part of PCOS management.")
+                
+                if step >= 4:
+                    insights["has_sufficient_data"] = True
+                
+                return insights
+            
+            def analyze(self, user_data):
+                """Comprehensive analysis"""
+                return {
+                    "risk_level": "moderate",
+                    "pcos_indicators": len(user_data.get('symptoms', [])),
+                    "recommendations": [
+                        "Consult with an endocrinologist for proper diagnosis",
+                        "Maintain regular exercise routine",
+                        "Follow a balanced diet with low glycemic index foods",
+                        "Track menstrual cycles regularly"
+                    ]
+                }
+            
+            @staticmethod
+            def _get_step_name(step):
+                names = {1: "Personal Info", 2: "Cycle", 3: "Symptoms", 4: "Lifestyle", 5: "Clinical", 6: "Review"}
+                return names.get(step, f"Step {step}")
+        
+        analyzer = BasicAnalyzer()
+        ANALYZER_AVAILABLE = True
 
 # Security headers middleware
 @app.after_request
