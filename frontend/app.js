@@ -730,11 +730,16 @@ document.addEventListener('DOMContentLoaded', function () {
         stats: stats,
       };
 
+      // Build messages in ChatGPT format for backend
+      const messages = [
+        ...chatHistory,
+        { role: 'user', content: userMessage }
+      ];
+
       // Build request payload for backend
       const payload = {
-        message: userMessage,
+        messages: messages,
         image: imageBase64 || null,
-        chat_history: chatHistory,
         context: contextData
       };
 
@@ -758,9 +763,18 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const data = await response.json();
-      const assistantMessage = data.message || data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.';
+      
+      // Handle ChatGPT-format response
+      let assistantMessage = '';
+      if (data.choices && data.choices[0]?.message?.content) {
+        assistantMessage = data.choices[0].message.content;
+      } else if (data.message) {
+        assistantMessage = data.message;
+      } else {
+        assistantMessage = 'Sorry, I could not generate a response.';
+      }
 
-      chatHistory.push({ role: 'user', content: userMessage || 'Image uploaded' });
+      chatHistory.push({ role: 'user', content: userMessage });
       chatHistory.push({ role: 'assistant', content: assistantMessage });
 
       if (chatHistory.length > 10) {
