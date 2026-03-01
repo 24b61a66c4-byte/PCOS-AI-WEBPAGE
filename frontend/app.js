@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function getBackendUrl() {
     const backendUrl = getConfig().BACKEND_URL;
     if (hasValue(backendUrl)) return backendUrl.trim();
-    
+
     // Default: try Vercel production first, fallback to localhost for local development
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     return isLocalhost ? 'http://localhost:5000' : 'https://pcos-zeta.vercel.app';

@@ -20,466 +20,7 @@
       document.head.appendChild(base);
     })();
   </script>
-  <style>
-    :root {
-      --bg: #06080f;
-      --panel: rgba(255, 255, 255, 0.04);
-      --panel-strong: rgba(255, 255, 255, 0.08);
-      --text: #e8ecf5;
-      --muted: #9aa5c0;
-      --primary: #7dd3fc;
-      --primary-strong: #38bdf8;
-      --accent: #a78bfa;
-      --accent-2: #22d3ee;
-      --border: rgba(255, 255, 255, 0.12);
-      --shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
-      --radius: 18px;
-      --blur: 18px;
-      --transition: cubic-bezier(0.22, 1, 0.36, 1);
-      color-scheme: dark;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-      line-height: 1.6;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    /* Layout */
-    .page {
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-      background:
-        radial-gradient(900px 900px at 15% 10%, rgba(124, 58, 237, 0.18), transparent 60%),
-        radial-gradient(1200px 900px at 80% 0%, rgba(34, 211, 238, 0.16), transparent 55%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%),
-        var(--bg);
-    }
-
-    .particle-layer {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .blob {
-      position: absolute;
-      filter: blur(120px);
-      opacity: 0.6;
-      mix-blend-mode: screen;
-    }
-
-    .blob-1 {
-      width: 520px;
-      height: 520px;
-      background: #38bdf8;
-      top: -120px;
-      left: -80px;
-    }
-
-    .blob-2 {
-      width: 560px;
-      height: 560px;
-      background: #a855f7;
-      top: -160px;
-      right: -140px;
-    }
-
-    .blob-3 {
-      width: 460px;
-      height: 460px;
-      background: #22d3ee;
-      bottom: -120px;
-      left: 10%;
-    }
-
-    /* Nav */
-    .nav {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(var(--blur));
-      background: rgba(6, 8, 15, 0.65);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-    }
-
-    .brand svg {
-      width: 28px;
-      height: 28px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 18px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      font-weight: 600;
-      padding: 8px 12px;
-      border-radius: 12px;
-      transition: color 0.2s ease, background 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .pill {
-      padding: 12px 18px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: var(--text);
-      font-weight: 700;
-      box-shadow: var(--shadow);
-      transition: transform 0.25s var(--transition), box-shadow 0.25s var(--transition);
-    }
-
-    .pill:hover {
-      transform: translateY(-2px) scale(1.01);
-      box-shadow: 0 18px 40px rgba(56, 189, 248, 0.25);
-    }
-
-    /* Hero */
-    .hero {
-      position: relative;
-      padding: 120px 24px 80px;
-      max-width: 1200px;
-      margin: 0 auto;
-      z-index: 1;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 32px;
-      align-items: center;
-    }
-
-    .eyebrow {
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--primary);
-      font-weight: 700;
-      margin-bottom: 12px;
-      font-size: 0.85rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.6rem, 5vw, 3.6rem);
-      margin: 0 0 18px;
-      letter-spacing: -0.4px;
-    }
-
-    .hero p.lead {
-      color: var(--muted);
-      font-size: 1.1rem;
-      margin: 0 0 22px;
-      max-width: 640px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 18px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: linear-gradient(135deg, rgba(125, 211, 252, 0.2), rgba(167, 139, 250, 0.2));
-      color: var(--text);
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.25s var(--transition), box-shadow 0.25s var(--transition), border-color 0.25s;
-    }
-
-    .btn.primary {
-      background: linear-gradient(135deg, #38bdf8, #a78bfa);
-      border-color: rgba(255, 255, 255, 0.2);
-      color: #05060c;
-      box-shadow: 0 18px 40px rgba(56, 189, 248, 0.35);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px) scale(1.01);
-    }
-
-    .hero-badges {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .badge {
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-weight: 600;
-      backdrop-filter: blur(10px);
-    }
-
-    /* Dashboard preview */
-    .preview-panel {
-      position: relative;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(var(--blur));
-      overflow: hidden;
-    }
-
-    .preview-glow {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(800px 520px at 20% 0%, rgba(56, 189, 248, 0.15), transparent 60%), radial-gradient(520px 320px at 80% 10%, rgba(167, 139, 250, 0.18), transparent 65%);
-      pointer-events: none;
-      opacity: 0.9;
-    }
-
-    .preview-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .card {
-      background: var(--panel-strong);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: transform 0.4s var(--transition), box-shadow 0.4s var(--transition);
-      transform-style: preserve-3d;
-    }
-
-    .card:hover {
-      transform: perspective(900px) rotateX(8deg) rotateY(-8deg) translateY(-4px);
-      box-shadow: 0 26px 60px rgba(0, 0, 0, 0.45), 0 18px 50px rgba(56, 189, 248, 0.25);
-    }
-
-    .card h3 {
-      margin: 0 0 6px;
-      font-size: 1.05rem;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    /* Stats */
-    .stats {
-      padding: 80px 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .stat {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(var(--blur));
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(167, 139, 250, 0.12));
-      opacity: 0.6;
-      pointer-events: none;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    /* Sections */
-    .section {
-      padding: 90px 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    .section h2 {
-      font-size: clamp(2rem, 4vw, 2.6rem);
-      margin: 0 0 12px;
-    }
-
-    .section p.lead {
-      margin: 0 0 28px;
-      color: var(--muted);
-      max-width: 720px;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
-    }
-
-    .feature {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feature svg {
-      width: 28px;
-      height: 28px;
-      margin-bottom: 10px;
-    }
-
-    .feature h3 {
-      margin: 6px 0;
-    }
-
-    .feature p {
-      color: var(--muted);
-      margin: 0;
-    }
-
-    .feature::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(280px 180px at 20% 10%, rgba(56, 189, 248, 0.18), transparent 60%);
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    /* CTA */
-    .cta {
-      text-align: center;
-      padding: 80px 24px 120px;
-    }
-
-    .cta .panel {
-      display: inline-block;
-      padding: 26px 32px;
-      border-radius: 18px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(var(--blur));
-      min-width: min(720px, 100%);
-    }
-
-    .cta h3 {
-      margin: 0 0 10px;
-      font-size: 2rem;
-    }
-
-    .cta p {
-      margin: 0 0 18px;
-      color: var(--muted);
-    }
-
-    /* Animations */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
-    }
-
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav-inner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .nav-links {
-        flex-wrap: wrap;
-      }
-
-      .preview-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -499,11 +40,14 @@
                 <stop offset="1" stop-color="#a78bfa" />
               </linearGradient>
             </defs>
-            <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#g1)" opacity="0.25" />
-            <path d="M20 36c0-6 4-12 12-12s12 6 12 12" stroke="url(#g1)" stroke-width="4" stroke-linecap="round" />
-            <path d="M16 44c4 4 10 6 16 6s12-2 16-6" stroke="url(#g1)" stroke-width="4" stroke-linecap="round" />
+            <circle cx="32" cy="32" r="26" fill="url(#g1)" opacity="0.25" />
+            <path d="M20 32c0-6.6 5.4-12 12-12s12 5.4 12 12" stroke="url(#g1)" stroke-width="3"
+              stroke-linecap="round" />
+            <circle cx="26" cy="28" r="2" fill="#7dd3fc" />
+            <circle cx="38" cy="28" r="2" fill="#7dd3fc" />
+            <path d="M20 42h24" stroke="url(#g1)" stroke-width="3" stroke-linecap="round" />
           </svg>
-          NovaFlow
+          PCOS Smart Assistant
         </div>
         <div class="nav-links">
           <a href="#features">Features</a>
@@ -535,14 +79,14 @@
           <div class="preview-glow"></div>
           <div class="preview-grid">
             <div class="card" data-tilt>
-              <h3>Realtime KPIs</h3>
-              <p>Latency, throughput, adoption — all in one pane.</p>
-              <div class="stat-value" style="margin-top:12px;">42.6k</div>
-              <div class="stat-label">events / min</div>
+              <h3>Cycle overview</h3>
+              <p>Track cycle length, flow intensity, and symptoms in real-time.</p>
+              <div class="stat-value" style="margin-top:12px;">28</div>
+              <div class="stat-label">average cycle days</div>
             </div>
             <div class="card" data-tilt>
-              <h3>AI Routing</h3>
-              <p>Smart load balancing that learns from traffic patterns.</p>
+              <h3>AI insights</h3>
+              <p>Get personalized health recommendations based on your patterns.</p>
               <svg width="120" height="60" viewBox="0 0 120 60" fill="none" aria-hidden="true">
                 <path d="M8 46C20 26 40 12 60 12s40 14 52 34" stroke="url(#g1)" stroke-width="3"
                   stroke-linecap="round" />
@@ -552,18 +96,18 @@
               </svg>
             </div>
             <div class="card" data-tilt>
-              <h3>Ops Timeline</h3>
-              <p>Deploy previews, rollbacks, incidents — perfectly traced.</p>
+              <h3>Symptom trends</h3>
+              <p>Monitor mood swings, acne flares, and energy levels over time.</p>
               <div style="display:flex; gap:8px; margin-top:10px;">
-                <span class="badge" style="background:rgba(56,189,248,0.12); color:var(--text);">Deploy</span>
-                <span class="badge" style="background:rgba(167,139,250,0.12); color:var(--text);">QA</span>
+                <span class="badge" style="background:rgba(56,189,248,0.12); color:var(--text);">Mood</span>
+                <span class="badge" style="background:rgba(167,139,250,0.12); color:var(--text);">Skin</span>
               </div>
             </div>
             <div class="card" data-tilt>
-              <h3>Risk Radar</h3>
-              <p>Detect anomalies before customers ever feel them.</p>
-              <div class="stat-value" style="color:#22d3ee;">+18%</div>
-              <div class="stat-label">stability vs last week</div>
+              <h3>Health score</h3>
+              <p>Track your overall PCOS management progress over time.</p>
+              <div class="stat-value" style="color:#22d3ee;">85%</div>
+              <div class="stat-label">wellness score</div>
             </div>
           </div>
         </div>
@@ -571,9 +115,9 @@
     </header>
 
     <section class="section" id="features">
-      <h2 class="reveal">Built for the next decade</h2>
-      <p class="lead reveal">Glassmorphic layers, precision motion, and hardened security — all in a single platform.
-        Inspired by Linear, Stripe, Vercel, and Apple-level polish.</p>
+      <h2 class="reveal">Everything you need for PCOS management</h2>
+      <p class="lead reveal">Track your symptoms, understand your cycle patterns, and get AI-powered insights tailored
+        to your PCOS journey. Privacy-first design keeps your health data secure.</p>
       <div class="features">
         <div class="feature reveal">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -583,8 +127,8 @@
               <animate attributeName="stroke-dasharray" values="0 60;60 0" dur="2s" repeatCount="indefinite" />
             </path>
           </svg>
-          <h3>Trusted by design</h3>
-          <p>End-to-end encryption, audit trails, and role-aware access baked in.</p>
+          <h3>Privacy-first tracking</h3>
+          <p>Your health data stays on your device. No cloud storage, no data selling, complete privacy.</p>
         </div>
         <div class="feature reveal">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -594,8 +138,8 @@
                 to="360 24 24" dur="6s" repeatCount="indefinite" />
             </path>
           </svg>
-          <h3>Framer-grade motion</h3>
-          <p>Smooth easing, layered depth, and micro-interactions that feel native.</p>
+          <h3>Cycle pattern analysis</h3>
+          <p>Track menstrual cycles, identify patterns, and predict upcoming periods with smart algorithms.</p>
         </div>
         <div class="feature reveal">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -608,62 +152,62 @@
                 values="M20 30c2 2 6 2 8 0;M20 30c2 -2 6 -2 8 0;M20 30c2 2 6 2 8 0" />
             </path>
           </svg>
-          <h3>Human onboarding</h3>
-          <p>Guided flows and adaptive walkthroughs that meet users where they are.</p>
+          <h3>AI health assistant</h3>
+          <p>24/7 chatbot answers your PCOS questions and provides personalized health recommendations.</p>
         </div>
       </div>
     </section>
 
     <section class="stats" id="stats">
       <div class="stat reveal">
-        <div class="stat-value" data-counter="128">0</div>
-        <div class="stat-label">Enterprises shipped</div>
+        <div class="stat-value">1 in 10</div>
+        <div class="stat-label">Women affected by PCOS</div>
       </div>
       <div class="stat reveal">
-        <div class="stat-value" data-counter="4.8">0</div>
-        <div class="stat-label">CSAT / 5.0</div>
+        <div class="stat-value">100%</div>
+        <div class="stat-label">Data privacy guaranteed</div>
       </div>
       <div class="stat reveal">
-        <div class="stat-value" data-counter="72">0</div>
-        <div class="stat-label">Regions on edge</div>
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">AI assistant available</div>
       </div>
       <div class="stat reveal">
-        <div class="stat-value" data-counter="0.18">0</div>
-        <div class="stat-label">Median latency (s)</div>
+        <div class="stat-value">Free</div>
+        <div class="stat-label">Always & forever</div>
       </div>
     </section>
 
     <section class="section" id="preview-deck">
-      <h2 class="reveal">Interactive dashboard preview</h2>
-      <p class="lead reveal">Hover to tilt. Scroll to animate. Everything wired with CSS variables, perspective, and
-        intersection observers.</p>
+      <h2 class="reveal">Track your health journey</h2>
+      <p class="lead reveal">Comprehensive PCOS management tools in a beautiful, easy-to-use dashboard. Your data, your
+        insights, your control.</p>
       <div class="preview-grid">
         <div class="card reveal" data-tilt>
-          <h3>Revenue pulse</h3>
-          <p>See live ARR, cohort health, and expansion in one sweep.</p>
+          <h3>Symptom tracker</h3>
+          <p>Log daily symptoms like acne, mood changes, and weight fluctuations with ease.</p>
         </div>
         <div class="card reveal" data-tilt>
-          <h3>Customer map</h3>
-          <p>Zoom across regions with GPU-accelerated tiles.</p>
+          <h3>Cycle calendar</h3>
+          <p>Visualize your menstrual patterns and predict upcoming periods accurately.</p>
         </div>
         <div class="card reveal" data-tilt>
-          <h3>Workflow heat</h3>
-          <p>Spot bottlenecks with animated gradient overlays.</p>
+          <h3>Health analytics</h3>
+          <p>View trends and correlations between symptoms, lifestyle, and cycle phases.</p>
         </div>
         <div class="card reveal" data-tilt>
-          <h3>Audit live</h3>
-          <p>Every action, signed and verifiable in real time.</p>
+          <h3>Smart recommendations</h3>
+          <p>Get personalized diet, exercise, and lifestyle suggestions based on your data.</p>
         </div>
       </div>
     </section>
 
     <section class="cta" id="cta">
       <div class="panel reveal">
-        <h3>Ready to feel the future?</h3>
-        <p>Deploy NovaFlow in minutes. Dark theme by default, built for teams that care about the details.</p>
+        <h3>Ready to take control of your PCOS?</h3>
+        <p>Start tracking today. No signup required, completely free, and your data never leaves your device.</p>
         <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-          <button class="btn primary">Launch workspace</button>
-          <button class="btn">Talk to product</button>
+          <a href="form.html" class="btn primary">Start tracking now</a>
+          <a href="dashboard.html" class="btn">View demo dashboard</a>
         </div>
       </div>
     </section>
