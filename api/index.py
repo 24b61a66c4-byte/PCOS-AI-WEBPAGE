@@ -358,6 +358,12 @@ def ai_chat():
     return jsonify({"message": "AI Chat endpoint working"}), 200
 
 
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    """Alternative chat endpoint for testing"""
+    return jsonify({"status": "chat endpoint"}), 200
+
+
 def generate_local_ai_response(payload):
     """Generate a basic AI response using local rules (fallback when APIs unavailable)"""
     messages = payload.get("messages", [])
