@@ -36,6 +36,13 @@
                     <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
                     <li><a href="results.html" class="nav-link active">My Report</a></li>
                 </ul>
+                <div class="lang-switch">
+                    <select id="languageSelect" aria-label="Select language">
+                        <option value="en">English</option>
+                        <option value="te">తెలుగు</option>
+                        <option value="hi">हिंदी</option>
+                    </select>
+                </div>
                 <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
                     <span class="theme-icon"></span>
                 </button>
@@ -179,8 +186,25 @@
             professional medical advice.</p>
     </footer>
 
+    <script src="translations.js"></script>
     <script src="config-loader.js"></script>
     <script src="results.js"></script>
+    <script>
+        // Initialize translations on results page
+        document.addEventListener('DOMContentLoaded', function () {
+            const languageSelect = document.getElementById('languageSelect');
+            if (languageSelect) {
+                const savedLang = localStorage.getItem('pcos_language') || 'en';
+                languageSelect.value = savedLang;
+                window.i18n.setLang(savedLang);
+
+                languageSelect.addEventListener('change', function () {
+                    window.i18n.setLang(this.value);
+                    location.reload();
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

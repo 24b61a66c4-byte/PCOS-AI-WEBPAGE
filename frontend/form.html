@@ -113,8 +113,7 @@
                                     <label for="age">What is your age?</label>
                                     <input type="number" id="age" name="age" min="10" max="80"
                                         placeholder="Enter your age" aria-describedby="age-error" aria-label="Age"
-                                        aria-required="true"
-                                        tabindex="0">
+                                        aria-required="true" tabindex="0">
                                     <small class="error" data-for="age" id="age-error" role="alert"
                                         aria-live="assertive"></small>
                                 </div>
@@ -304,8 +303,25 @@
         <p>&copy; 2026 PCOS Smart Assistant. Your health, your privacy, your journey.</p>
     </footer>
 
+    <script src="translations.js"></script>
     <script src="config-loader.js"></script>
     <script src="app.js"></script>
+    <script>
+        // Initialize translations on form page
+        document.addEventListener('DOMContentLoaded', function () {
+            const languageSelect = document.getElementById('insightLanguage');
+            if (languageSelect) {
+                const savedLang = localStorage.getItem('pcos_language') || 'en';
+                languageSelect.value = savedLang;
+                window.i18n.setLang(savedLang);
+
+                languageSelect.addEventListener('change', function () {
+                    window.i18n.setLang(this.value);
+                    location.reload();
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -34,7 +34,7 @@
 
 <body class="health-dashboard">
     <!-- Premium Loader Overlay -->
-    <div class="premium-loader" id="dashboardLoader" style="display:none;">
+    <div class="premium-loader" id="dashboardLoader">
         <div class="premium-loader-content">
             <div class="loader-logo">PCOS Smart Assistant</div>
             <div class="loader-dots"><span></span><span></span><span></span></div>
@@ -71,8 +71,9 @@
         <!-- Dashboard Header -->
         <div class="dashboard__header">
             <div>
-                <h1 class="dashboard__title">Your Health Dashboard</h1>
-                <p class="dashboard__subtitle">Track your wellness journey and receive personalized insights</p>
+                <h1 class="dashboard__title" data-i18n="dashboard.title">Your Health Dashboard</h1>
+                <p class="dashboard__subtitle" data-i18n="dashboard.subtitle">Track your wellness journey and receive
+                    personalized insights</p>
             </div>
             <div class="dashboard__actions">
                 <div class="trust-badge">
@@ -80,7 +81,7 @@
                         <path
                             d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
                     </svg>
-                    <span>Data stored locally</span>
+                    <span data-i18n="dashboard.dataStoredLocally">Data stored locally</span>
                 </div>
                 <p class="ai-disclaimer"
                     style="margin-top:1.2rem;font-size:0.92rem;color:var(--color-text-muted,#94a3b8);text-align:center;">
@@ -97,28 +98,28 @@
                     📅
                 </div>
                 <div class="stat-item__value" id="insight-cycle">—</div>
-                <div class="stat-item__label">Avg Cycle Days</div>
+                <div class="stat-item__label" data-i18n="dashboard.avgCycleDays">Avg Cycle Days</div>
             </div>
             <div class="stat-item">
                 <div class="stat-item__icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
                     🩸
                 </div>
                 <div class="stat-item__value" id="insight-period">—</div>
-                <div class="stat-item__label">Period Days</div>
+                <div class="stat-item__label" data-i18n="dashboard.periodDays">Period Days</div>
             </div>
             <div class="stat-item">
                 <div class="stat-item__icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;">
                     📊
                 </div>
                 <div class="stat-item__value" id="health-score">—</div>
-                <div class="stat-item__label">Health Score</div>
+                <div class="stat-item__label" data-i18n="dashboard.healthScore">Health Score</div>
             </div>
             <div class="stat-item">
                 <div class="stat-item__icon" style="background: rgba(147, 51, 234, 0.1); color: #9333ea;">
                     🏥
                 </div>
                 <div class="stat-item__value" id="insight-symptoms">—</div>
-                <div class="stat-item__label">Symptoms Logged</div>
+                <div class="stat-item__label" data-i18n="dashboard.symptomsLogged">Symptoms Logged</div>
             </div>
         </div>
 
@@ -336,8 +337,25 @@
         </div>
     </div>
 
+    <script src="translations.js"></script>
     <script src="config-loader.js"></script>
     <script src="app.js"></script>
+    <script>
+        // Initialize translations on dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            const languageSelect = document.getElementById('languageSelect');
+            if (languageSelect) {
+                const savedLang = localStorage.getItem('pcos_language') || 'en';
+                languageSelect.value = savedLang;
+                window.i18n.setLang(savedLang);
+
+                languageSelect.addEventListener('change', function () {
+                    window.i18n.setLang(this.value);
+                    location.reload();
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
