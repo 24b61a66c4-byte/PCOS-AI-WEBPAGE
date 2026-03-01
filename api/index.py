@@ -1,6 +1,6 @@
 """
 Vercel Python API for PCOS Smart Assistant
-Security hardened version
+Security hardened version - Updated for fresh deployment
 """
 
 from flask import Flask, jsonify, Response, request
