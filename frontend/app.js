@@ -1,19 +1,19 @@
-﻿  // Toast notification
-  function showToast(message, duration = 2200) {
-    let toast = document.getElementById('globalToast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'globalToast';
-      toast.className = 'toast';
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), duration);
+﻿// Toast notification
+function showToast(message, duration = 2200) {
+  let toast = document.getElementById('globalToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'globalToast';
+    toast.className = 'toast';
+    document.body.appendChild(toast);
   }
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), duration);
+}
 
-  // Example: show toast after saving personal info (hook into your form logic)
-  window.showSuccessToast = showToast;
+// Example: show toast after saving personal info (hook into your form logic)
+window.showSuccessToast = showToast;
 // PCOS Smart Assistant - Multi-Step Form with Smooth Scrolling
 document.addEventListener('DOMContentLoaded', function() {
   // Provide a resilient smooth-scrolling layer so pages don't crash if Lenis is unavailable.
