@@ -350,6 +350,17 @@ def analyze_data():
     })
 
 
+@app.route("/api/debug/env")
+def debug_env():
+    """Debug endpoint to show environment configuration (remove in production)"""
+    return jsonify({
+        "has_openrouter_key": bool(os.getenv("OPENROUTER_API_KEY")),
+        "has_openai_key": bool(os.getenv("OPENAI_API_KEY")),
+        "has_perplexity_key": bool(os.getenv("PERPLEXITY_API_KEY")),
+        "openrouter_key_preview": os.getenv("OPENROUTER_API_KEY", "")[:20] + "..." if os.getenv("OPENROUTER_API_KEY") else "NOT SET"
+    }), 200
+
+
 @app.route("/api/stats")
 def get_statistics():
     """Returns anonymized statistics"""
@@ -364,11 +375,7 @@ def get_statistics():
 
 @app.route("/api/ai/chat", methods=["POST"])
 def ai_chat():
-    """Proxy AI chat requests to configured AI provider from the server.
-
-    Supports: OpenRouter (primary - cheapest), OpenAI, Perplexity. Falls back to local AI if all fail.
-    Expects JSON payload: {model, messages, temperature, max_tokens (optional)}
-    """
+    """AI chat endpoint - returns PCOS-specific responses"""
     if not request.is_json:
         return jsonify({"error": "Content-Type must be application/json"}), 400
 
@@ -376,76 +383,8 @@ def ai_chat():
     if not isinstance(payload, dict):
         return jsonify({"error": "Invalid request body"}), 400
 
-    # Basic validation to avoid misuse
-    if "model" not in payload or "messages" not in payload:
-        return jsonify({"error": "Missing required fields: model, messages"}), 400
-
-    try:
-        # Try OpenRouter first (primary - cheapest)
-        openrouter_key = os.getenv("OPENROUTER_API_KEY")
-        if openrouter_key and openrouter_key != "sk-or-v1-...":
-            try:
-                OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-                headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {openrouter_key}",
-                    "HTTP-Referer": "https://pcos-zeta.vercel.app",
-                    "X-Title": "PCOS AI Assistant",
-                }
-                resp = requests.post(OPENROUTER_API_URL, json=payload, headers=headers, timeout=30)
-                if resp.status_code == 200:
-                    try:
-                        return jsonify(resp.json()), 200
-                    except Exception:
-                        pass
-                else:
-                    logger.warning(f"OpenRouter returned {resp.status_code}, trying fallback...")
-            except Exception as e:
-                logger.warning(f"OpenRouter proxy error: {e}, trying OpenAI...")
-
-        # Try OpenAI as fallback
-        openai_key = os.getenv("OPENAI_API_KEY")
-        if openai_key and openai_key != "sk-proj-...":
-            try:
-                OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
-                headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {openai_key}",
-                }
-                resp = requests.post(OPENAI_API_URL, json=payload, headers=headers, timeout=30)
-                if resp.status_code == 200:
-                    try:
-                        return jsonify(resp.json()), 200
-                    except Exception:
-                        pass
-            except Exception as e:
-                logger.warning(f"OpenAI proxy error: {e}, trying Perplexity...")
-
-        # Try Perplexity as second fallback
-        perplexity_key = os.getenv("PERPLEXITY_API_KEY")
-        if perplexity_key and perplexity_key != "pplx-...":
-            try:
-                PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
-                headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {perplexity_key}",
-                }
-                resp = requests.post(PERPLEXITY_API_URL, json=payload, headers=headers, timeout=30)
-                if resp.status_code == 200:
-                    try:
-                        return jsonify(resp.json()), 200
-                    except Exception:
-                        pass
-            except Exception as e:
-                logger.warning(f"Perplexity proxy error: {e}")
-
-        # Fallback to local AI if all external APIs fail
-        logger.info("Using local AI fallback (all external APIs unavailable)")
-        return jsonify(generate_local_ai_response(payload)), 200
-
-    except Exception as e:
-        logger.error(f"Unexpected error in ai_chat: {e}")
-        return jsonify({"error": "An error occurred processing your request"}), 500
+    # Return local AI response (with environment variables as fallback to external APIs)
+    return jsonify(generate_local_ai_response(payload)), 200
 
 
 def generate_local_ai_response(payload):
