@@ -5,10 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Health Journey — PCOS Smart Assistant</title>
-    <link rel="apple-touch-icon" href="assets/favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@16..72,300;16..72,600&display=swap" rel="stylesheet">
     <script>
         // Dynamic base path for subdirectory deployments (GitHub Pages, Vercel).
         (function () {
@@ -117,7 +113,7 @@
                                     <label for="age">What is your age?</label>
                                     <input type="number" id="age" name="age" min="10" max="80"
                                         placeholder="Enter your age" aria-describedby="age-error" aria-label="Age"
-                                        aria-required="true" tabindex="0">
+                                        tabindex="0">
                                     <small class="error" data-for="age" id="age-error" role="alert"
                                         aria-live="assertive"></small>
                                 </div>
@@ -307,25 +303,8 @@
         <p>&copy; 2026 PCOS Smart Assistant. Your health, your privacy, your journey.</p>
     </footer>
 
-    <script src="translations.js"></script>
     <script src="config-loader.js"></script>
     <script src="app.js"></script>
-    <script>
-        // Initialize translations on form page
-        document.addEventListener('DOMContentLoaded', function () {
-            const languageSelect = document.getElementById('insightLanguage');
-            if (languageSelect) {
-                const savedLang = localStorage.getItem('pcos_language') || 'en';
-                languageSelect.value = savedLang;
-                window.i18n.setLang(savedLang);
-
-                languageSelect.addEventListener('change', function () {
-                    window.i18n.setLang(this.value);
-                    location.reload();
-                });
-            }
-        });
-    </script>
 </body>
 
 </html>
