@@ -14,24 +14,24 @@
    =========================================== */
 :root {
   /* ===== COLOR SYSTEM ===== */
-  /* Primary - Professional Medical Blue */
-  --color-primary: #2563eb;
-  --color-primary-light: #60a5fa;
-  --color-primary-dark: #1d4ed8;
+  /* Primary - Bright Medical Cyan */
+  --color-primary: #06b6d4;
+  --color-primary-light: #22d3ee;
+  --color-primary-dark: #0891b2;
 
-  /* Secondary - Health Green */
-  --color-secondary: #059669;
-  --color-secondary-light: #10b981;
+  /* Secondary - Fresh Green */
+  --color-secondary: #10b981;
+  --color-secondary-light: #34d399;
 
   /* Accent */
-  --color-accent: #0891b2;
+  --color-accent: #3b82f6;
   --color-accent-warm: #f59e0b;
 
   /* Semantic Colors */
-  --color-success: #16a34a;
-  --color-warning: #ea580c;
-  --color-danger: #dc2626;
-  --color-info: #2563eb;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #06b6d4;
 
   /* Light Theme Backgrounds */
   --bg-primary: #f8fafc;
@@ -65,11 +65,11 @@
   --space-2xl: 3rem;
 
   /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 20px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
   --radius-full: 9999px;
 
   /* Typography */
@@ -157,9 +157,9 @@ body::before {
   pointer-events: none;
   z-index: -1;
   background:
-    radial-gradient(ellipse 1000px 800px at 15% -10%, rgba(37, 99, 235, 0.05), transparent 50%),
-    radial-gradient(ellipse 800px 600px at 80% -5%, rgba(5, 150, 105, 0.04), transparent 50%),
-    radial-gradient(ellipse 1000px 800px at 50% 15%, rgba(245, 158, 11, 0.03), transparent 50%);
+    radial-gradient(ellipse 1000px 800px at 15% -10%, rgba(6, 182, 212, 0.12), transparent 50%),
+    radial-gradient(ellipse 800px 600px at 80% -5%, rgba(16, 185, 129, 0.1), transparent 50%),
+    radial-gradient(ellipse 1000px 800px at 50% 15%, rgba(59, 130, 246, 0.08), transparent 50%);
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -426,12 +426,12 @@ main {
 .btn--primary {
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: white;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
 }
 
 .btn--primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg), var(--shadow-primary);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
 }
 
 .btn--secondary {
@@ -451,7 +451,7 @@ main {
 }
 
 .btn--ghost:hover:not(:disabled) {
-  background: rgba(14, 165, 233, 0.1);
+  background: rgba(6, 182, 212, 0.1);
 }
 
 .btn--danger {
@@ -486,19 +486,22 @@ main {
 .report-card,
 .insight-card,
 .recommendation-item {
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: var(--radius-xl);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   transition: all var(--transition-base);
 }
 
 .card:hover,
 .healthcare-card:hover,
 .report-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.3);
 }
 
 .healthcare-card__header {
@@ -518,7 +521,7 @@ main {
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(16, 185, 129, 0.15));
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(16, 185, 129, 0.2));
   flex-shrink: 0;
 }
 
@@ -541,6 +544,25 @@ main {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Dark theme for all cards */
+[data-theme="dark"] .card,
+body:not(.light-theme) .card,
+[data-theme="dark"] .healthcare-card,
+body:not(.light-theme) .healthcare-card,
+[data-theme="dark"] .stat-item,
+body:not(.light-theme) .stat-item,
+[data-theme="dark"] .report-card,
+body:not(.light-theme) .report-card,
+[data-theme="dark"] .insight-card,
+body:not(.light-theme) .insight-card,
+[data-theme="dark"] .recommendation-item,
+body:not(.light-theme) .recommendation-item {
+  background: rgba(12, 22, 32, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] .card.glass,
@@ -633,18 +655,22 @@ body:not(.light-theme) .healthcare-card.glass {
   max-width: 700px;
   margin: 0 auto;
   padding: var(--space-xl);
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: var(--radius-2xl);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .form-section {
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: var(--radius-xl);
   padding: var(--space-xl);
   margin-bottom: var(--space-lg);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .form-section h2 {
