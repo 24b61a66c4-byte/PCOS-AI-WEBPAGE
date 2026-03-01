@@ -350,6 +350,15 @@ def analyze_data():
     })
 
 
+@app.route("/api/v2/assistant")
+def assistant():
+    """Simple AI assistant endpoint - version 2 force rebuild"""
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+    payload = request.get_json()
+    return jsonify(generate_local_ai_response(payload)), 200
+
+
 @app.route("/api/debug/env")
 def debug_env():
     """Debug endpoint to show environment configuration (remove in production)"""
