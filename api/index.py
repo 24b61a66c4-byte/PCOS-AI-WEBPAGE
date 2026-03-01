@@ -357,7 +357,6 @@ def get_statistics():
 
 
 @app.route("/api/ai/chat", methods=["POST"])
-@rate_limit
 def ai_chat():
     """Proxy AI chat requests to configured AI provider from the server.
 
