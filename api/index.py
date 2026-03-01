@@ -233,6 +233,12 @@ def health_check():
     })
 
 
+@app.route("/test-route-2026-03-01")
+def test_route():
+    """Test route to verify Vercel is serving updated code"""
+    return jsonify({"test": "ok"}), 200
+
+
 @app.route("/api/analyze-step", methods=["POST"])
 @rate_limit
 def analyze_step():
