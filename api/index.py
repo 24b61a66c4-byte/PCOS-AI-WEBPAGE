@@ -221,8 +221,9 @@ def validate_numeric_range(value, min_val, max_val, field_name):
 def health_check():
     """Health check endpoint"""
     return jsonify({
-        "status": "healthy", 
-        "service": "PCOS Smart Assistant API"
+        "status": "healthy",
+        "service": "PCOS Smart Assistant API",
+        "deployment": "test-12345"
     })
 
 
