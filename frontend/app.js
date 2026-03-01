@@ -14,8 +14,18 @@ function showToast(message, duration = 2200) {
 
 // Example: show toast after saving personal info (hook into your form logic)
 window.showSuccessToast = showToast;
+
+// Initialize translations immediately
+// Use requestAnimationFrame to ensure DOM is fully painted
+requestAnimationFrame(() => {
+  if (window.i18n && typeof window.i18n.applyTranslations === 'function') {
+    window.i18n.applyTranslations();
+  }
+});
+
 // PCOS Smart Assistant - Multi-Step Form with Smooth Scrolling
 document.addEventListener('DOMContentLoaded', function () {
+
   // Provide a resilient smooth-scrolling layer so pages don't crash if Lenis is unavailable.
   function createScroller() {
     if (typeof window.Lenis === 'function') {
@@ -1895,10 +1905,46 @@ Image Analysis Instructions:
 
   const insightLanguage = document.getElementById('insightLanguage');
   if (insightLanguage) {
-    insightLanguage.value = getInsightLanguage();
-    insightLanguage.addEventListener('change', () => {
-      localStorage.setItem(INSIGHT_LANG_KEY, insightLanguage.value || 'en');
-      renderPcosInsight();
+    // Set initial value from TranslationManager if available
+    if (window.i18n) {
+      insightLanguage.value = window.i18n.getLang();
+    } else {
+      insightLanguage.value = getInsightLanguage();
+    }
+
+    insightLanguage.addEventListener('change', (e) => {
+      const selectedLang = e.target.value;
+      // Save language preference
+      localStorage.setItem(INSIGHT_LANG_KEY, selectedLang || 'en');
+      // Use TranslationManager if available
+      if (window.i18n) {
+        window.i18n.setLang(selectedLang);
+        renderPcosInsight(); // Update the insight section
+      } else {
+        renderPcosInsight();
+      }
+    });
+  }
+
+  // Handle language change on dashboard
+  const languageSelect = document.getElementById('languageSelect');
+  if (languageSelect) {
+    // Set initial value from TranslationManager
+    if (window.i18n) {
+      languageSelect.value = window.i18n.getLang();
+    } else {
+      languageSelect.value = getInsightLanguage();
+    }
+
+    languageSelect.addEventListener('change', (e) => {
+      const selectedLang = e.target.value;
+      if (window.i18n) {
+        window.i18n.setLang(selectedLang);
+        location.reload();
+      } else {
+        localStorage.setItem(INSIGHT_LANG_KEY, selectedLang || 'en');
+        location.reload();
+      }
     });
   }
 });

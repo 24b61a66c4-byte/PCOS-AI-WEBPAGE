@@ -1,13 +1,7 @@
 // Smart Config Loader
 // Loads config with environment-aware fallback sequence and exposes readiness promise.
-(function() {
-  const isLocalhost = window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1' ||
-    window.location.hostname === '';
-
-  const candidates = isLocalhost
-    ? ['config.local.js', 'config.js']
-    : ['config.prod.js', 'config.js'];
+(function () {
+  const candidates = ['config.prod.js', 'config.js'];
 
   let resolveConfigReady;
   window.__CONFIG_READY__ = new Promise((resolve) => {

@@ -106,8 +106,9 @@
                     <div class="form-slider" id="formSlider">
                         <div class="form-step active" data-step="1">
                             <div class="form-section">
-                                <h2>👤 Personal Information</h2>
-                                <p class="step-subtitle" id="form-title">Let's start with your basic information</p>
+                                <h2 data-i18n="form.personalInfo">👤 Personal Information</h2>
+                                <p class="step-subtitle" id="form-title" data-i18n="form.startWithBasic">Let's start
+                                    with your basic information</p>
 
                                 <div class="single-field">
                                     <label for="age">What is your age?</label>
@@ -136,34 +137,43 @@
 
                         <div class="form-step" data-step="2">
                             <div class="form-section">
-                                <h2>🔄 Menstrual Cycle</h2>
-                                <p class="step-subtitle">Understanding your cycle helps us better assist you</p>
+                                <h2 data-i18n="form.menstrualCycle">🔄 Menstrual Cycle</h2>
+                                <p class="step-subtitle" data-i18n="form.understandCycle">Understanding your cycle helps
+                                    us better assist you</p>
 
                                 <div class="single-field">
-                                    <label for="cycle_length">What is your average cycle length? (days) *</label>
+                                    <label for="cycle_length" data-i18n="form.avgCycleLength">What is your average cycle
+                                        length? (days) *</label>
                                     <input type="number" id="cycle_length" name="cycle_length" min="15" max="120"
-                                        placeholder="e.g., 28-35" required aria-required="true"
-                                        aria-describedby="cycle_length-error" aria-label="Cycle Length" tabindex="0">
-                                    <small class="helper">Most cycles are 21-35 days. Enter your average.</small>
+                                        data-i18n-placeholder="form.avgCycleHelp" placeholder="e.g., 28-35" required
+                                        aria-required="true" aria-describedby="cycle_length-error"
+                                        aria-label="Cycle Length" tabindex="0">
+                                    <small class="helper" data-i18n="form.avgCycleHelp">Most cycles are 21-35 days.
+                                        Enter your average.</small>
                                     <small class="error" data-for="cycle_length" id="cycle_length-error"
                                         role="alert"></small>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="period_length">How long is your typical period? (days) *</label>
+                                    <label for="period_length" data-i18n="form.periodLength">How long is your typical
+                                        period? (days) *</label>
                                     <input type="number" id="period_length" name="period_length" min="1" max="30"
-                                        placeholder="e.g., 5" required aria-required="true"
-                                        aria-describedby="period_length-error" aria-label="Period Length" tabindex="0">
-                                    <small class="helper">Typical range is 2-7 days.</small>
+                                        data-i18n-placeholder="form.periodLengthHelp" placeholder="e.g., 5" required
+                                        aria-required="true" aria-describedby="period_length-error"
+                                        aria-label="Period Length" tabindex="0">
+                                    <small class="helper" data-i18n="form.periodLengthHelp">Typical range is 2-7
+                                        days.</small>
                                     <small class="error" data-for="period_length" id="period_length-error"
                                         role="alert"></small>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="last_period">When was your last period? *</label>
+                                    <label for="last_period" data-i18n="form.lastPeriod">When was your last period?
+                                        *</label>
                                     <input type="date" id="last_period" name="last_period" required aria-required="true"
                                         aria-describedby="last_period-error" aria-label="Last Period" tabindex="0">
-                                    <small class="helper">Use the start date of your most recent period.</small>
+                                    <small class="helper" data-i18n="form.lastPeriodHelp">Use the start date of your
+                                        most recent period.</small>
                                     <small class="error" data-for="last_period" id="last_period-error"
                                         role="alert"></small>
                                 </div>
@@ -303,6 +313,7 @@
         <p>&copy; 2026 PCOS Smart Assistant. Your health, your privacy, your journey.</p>
     </footer>
 
+    <script src="translations.js"></script>
     <script src="config-loader.js"></script>
     <script src="app.js"></script>
 </body>

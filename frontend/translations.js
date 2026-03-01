@@ -884,7 +884,7 @@ const TRANSLATIONS = {
 // Translation Manager
 class TranslationManager {
     constructor() {
-        this.currentLang = localStorage.getItem('pcos_language') || 'en';
+        this.currentLang = localStorage.getItem('pcos_insight_lang') || 'en';
         this.translations = TRANSLATIONS;
     }
 
@@ -895,7 +895,7 @@ class TranslationManager {
     setLang(lang) {
         if (this.translations[lang]) {
             this.currentLang = lang;
-            localStorage.setItem('pcos_language', lang);
+            localStorage.setItem('pcos_insight_lang', lang);
             this.applyTranslations();
             return true;
         }

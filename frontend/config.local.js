@@ -6,5 +6,5 @@ window.CONFIG = {
   OPENROUTER_API_KEY: 'your-openrouter-api-key-here',
   SUPABASE_URL: 'https://your-project.supabase.co',
   SUPABASE_ANON_KEY: 'your-supabase-anon-key',
-  BACKEND_URL: 'http://localhost:5000'
+  BACKEND_URL: 'https://pcos-zeta.vercel.app'
 };
