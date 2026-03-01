@@ -260,7 +260,7 @@ def get_statistics():
 def ai_chat():
     """Proxy AI chat requests to configured AI provider from the server.
 
-    Supports: OpenAI, Perplexity. Falls back to local AI if both fail.
+    Supports: OpenRouter (primary - cheapest), OpenAI, Perplexity. Falls back to local AI if all fail.
     Expects JSON payload: {model, messages, temperature, max_tokens (optional)}
     """
     if not request.is_json:
@@ -277,7 +277,29 @@ def ai_chat():
     try:
         import requests
 
-        # Try OpenAI first (primary)
+        # Try OpenRouter first (primary - cheapest)
+        openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        if openrouter_key and openrouter_key != "sk-or-v1-...":
+            try:
+                OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {openrouter_key}",
+                    "HTTP-Referer": "https://pcos-zeta.vercel.app",
+                    "X-Title": "PCOS AI Assistant",
+                }
+                resp = requests.post(OPENROUTER_API_URL, json=payload, headers=headers, timeout=30)
+                if resp.status_code == 200:
+                    try:
+                        return jsonify(resp.json()), 200
+                    except Exception:
+                        pass
+                else:
+                    logger.warning(f"OpenRouter returned {resp.status_code}, trying fallback...")
+            except Exception as e:
+                logger.warning(f"OpenRouter proxy error: {e}, trying OpenAI...")
+
+        # Try OpenAI as fallback
         openai_key = os.getenv("OPENAI_API_KEY")
         if openai_key and openai_key != "sk-proj-...":
             try:
@@ -295,7 +317,7 @@ def ai_chat():
             except Exception as e:
                 logger.warning(f"OpenAI proxy error: {e}, trying Perplexity...")
 
-        # Try Perplexity as fallback
+        # Try Perplexity as second fallback
         perplexity_key = os.getenv("PERPLEXITY_API_KEY")
         if perplexity_key and perplexity_key != "pplx-...":
             try:
@@ -313,8 +335,8 @@ def ai_chat():
             except Exception as e:
                 logger.warning(f"Perplexity proxy error: {e}")
 
-        # Fallback to local AI if external APIs fail
-        logger.info("Using local AI fallback (external APIs not available)")
+        # Fallback to local AI if all external APIs fail
+        logger.info("Using local AI fallback (all external APIs unavailable)")
         return jsonify(generate_local_ai_response(payload)), 200
 
     except Exception as e:
