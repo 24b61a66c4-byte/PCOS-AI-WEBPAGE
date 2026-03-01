@@ -143,19 +143,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Theme switching
+  // Professional Theme System with system preference support
   const THEME_KEY = 'pcos_theme';
   
   function initTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
-    if (savedTheme === 'light') {
-      document.body.classList.add('light-theme');
-    }
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
   }
 
   function toggleTheme() {
-    const isLight = document.body.classList.toggle('light-theme');
-    localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem(THEME_KEY, newTheme);
+    
+    // Add animation class to theme toggle button for smooth transition
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.classList.add('animating');
+      setTimeout(() => themeToggle.classList.remove('animating'), 450);
+    }
   }
 
   const themeToggle = document.getElementById('themeToggle');

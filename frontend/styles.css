@@ -90,43 +90,80 @@ textarea:active {
 }
  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@16..72,300;16..72,600&display=swap');
 
+/* ===== PROFESSIONAL THEME SYSTEM ===== */
+/* Light Theme (Default) */
 :root {
+  --bg-primary: #fafafa;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #ffffff;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  
+  --text-primary: #1a1a1a;
+  --text-secondary: #525252;
+  --text-muted: #737373;
+  
+  --border-color: #e5e5e5;
+  --border-subtle: #f0f0f0;
+  
   --primary: #0ea5e9;
+  --primary-hover: #0284c7;
   --secondary: #10b981;
   --accent: #f59e0b;
   --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  
+  --radius: 14px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Legacy support */
+  --bg: var(--bg-primary);
+  --bg-alt: var(--bg-secondary);
+  --card: var(--surface);
+  --text: var(--text-primary);
+  --border: var(--border-color);
+  --shadow: var(--shadow-md);
+}
+
+/* Dark Theme - Professional grays, no pure black */
+[data-theme="dark"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1a1a1a;
+  --surface: #171717;
+  --surface-elevated: #1f1f1f;
+  
+  --text-primary: #fafafa;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  
+  --border-color: #262626;
+  --border-subtle: #1f1f1f;
+  
+  --primary: #38bdf8;
+  --primary-hover: #0ea5e9;
+  --secondary: #34d399;
+  --accent: #fbbf24;
+  --success: #4ade80;
   --danger: #f87171;
   --warning: #fbbf24;
-  --bg: #070e14;
-  --bg-alt: #0c1620;
-  --card: #0f1c29;
-  --text: #e8edf5;
-  --text-muted: #99a3b5;
-  --border: #192535;
-  --shadow: 0 10px 28px rgba(0, 0, 0, 0.42), 0 4px 12px rgba(0, 0, 0, 0.28);
-  --shadow-lg: 0 22px 38px rgba(0, 0, 0, 0.5);
-  --radius: 14px;
-  --transition: all 0.3s ease;
-}
-
-body.light-theme {
-  --bg: #f9fafb;
-  --bg-alt: #eef2f7;
-  --card: #ffffff;
-  --text: #0f172a;
-  --text-muted: #475569;
-  --border: #d9e2ec;
-  --shadow: 0 6px 18px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(15, 23, 42, 0.05);
-  --shadow-lg: 0 14px 28px rgba(15, 23, 42, 0.12), 0 6px 14px rgba(15, 23, 42, 0.06);
-}
-
-body.light-theme {
-  background:
-    radial-gradient(ellipse 1200px 900px at 16% -8%, rgba(14, 165, 233, 0.08), transparent 55%),
-    radial-gradient(ellipse 900px 700px at 78% -6%, rgba(16, 185, 129, 0.08), transparent 50%),
-    radial-gradient(ellipse 1200px 900px at 40% 10%, rgba(245, 158, 11, 0.06), transparent 55%),
-    linear-gradient(180deg, #f9fafb, #ffffff 45%),
-    #ffffff;
+  
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.5);
+  
+  /* Legacy support */
+  --bg: var(--bg-primary);
+  --bg-alt: var(--bg-secondary);
+  --card: var(--surface);
+  --text: var(--text-primary);
+  --border: var(--border-color);
+  --shadow: var(--shadow-md);
 }
 
 * {
@@ -137,35 +174,34 @@ body.light-theme {
 
 html, body {
   height: 100%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background:
-    radial-gradient(1400px 900px at 18% -12%, rgba(14, 165, 233, 0.14), transparent 58%),
-    radial-gradient(1200px 780px at 82% -6%, rgba(16, 185, 129, 0.14), transparent 52%),
-    radial-gradient(1000px 700px at 48% 6%, rgba(245, 158, 11, 0.06), transparent 55%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 36%),
-    var(--bg);
-  color: var(--text);
+    radial-gradient(ellipse 1200px 900px at 16% -8%, rgba(14, 165, 233, 0.08), transparent 55%),
+    radial-gradient(ellipse 900px 700px at 78% -6%, rgba(16, 185, 129, 0.08), transparent 50%),
+    radial-gradient(ellipse 1200px 900px at 40% 10%, rgba(245, 158, 11, 0.06), transparent 55%),
+    linear-gradient(180deg, var(--bg-primary), var(--bg-tertiary) 45%),
+    var(--bg-primary);
+  color: var(--text-primary);
   line-height: 1.7;
   letter-spacing: 0.1px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .navbar {
-  background: var(--card);
+  background: var(--surface);
   backdrop-filter: blur(12px);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid var(--border);
-}
-
-body.light-theme .navbar {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .nav-container {
@@ -221,9 +257,16 @@ body.light-theme .navbar {
   min-width: 160px;
   padding: 8px 12px;
   border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg-alt);
-  color: var(--text);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all 0.25s ease;
+}
+
+.lang-switch select:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
 }
 
 /* ============================================== */
@@ -357,97 +400,119 @@ body:not(.light-theme) .theme-icon::after {
 }
 
 /* ============================================== */
-/* TRUE BLACK THEME (Ultra Dark Mode) */
-/* ============================================== */
-.dark-theme,
-.dark-theme body,
-.dark-theme html {
-    background: #000 !important;
-    color: #fff !important;
-  }
+/* ===== UNIVERSAL COMPONENT STYLES ===== */
+/* All components use CSS variables for automatic theme support */
 
-  .dark-theme .card,
-  .dark-theme .form-container,
-  .dark-theme .navbar,
-  .dark-theme .step-indicator,
-  .dark-theme .results-container,
-  .dark-theme .dashboard,
-  .dark-theme .modal,
-  .dark-theme .dropdown-menu {
-    background-color: #000 !important;
-    color: #fff !important;
-    border-color: #222 !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.7);
-  }
+.card,
+.form-container,
+.step-indicator,
+.results-container,
+.dashboard,
+.modal,
+.dropdown-menu,
+.form-section,
+.form-step,
+.health-card,
+.ai-chatbot {
+  background-color: var(--surface) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
 
-  .dark-theme input,
-  .dark-theme select,
-  .dark-theme textarea {
-    background-color: #111 !important;
-    color: #fff !important;
-    border: 1px solid #333 !important;
-    caret-color: #ffd700 !important;
-  }
-  .dark-theme input:focus,
-  .dark-theme select:focus,
-  .dark-theme textarea:focus {
-    border-color: #ffd700 !important;
-    outline: none !important;
-  }
-  .dark-theme input::placeholder,
-  .dark-theme textarea::placeholder {
-    color: #bbbbbb !important;
-    opacity: 1;
-  }
+input[type="number"],
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  caret-color: var(--primary) !important;
+  transition: all 0.25s ease;
+}
 
-  .dark-theme button,
-  .dark-theme .btn {
-    background-color: #111 !important;
-    color: #ffd700 !important;
-    border: 1px solid #ffd700 !important;
-    transition: background 0.2s, color 0.2s;
-  }
-  .dark-theme button:hover,
-  .dark-theme .btn:hover {
-    background-color: #ffd700 !important;
-    color: #000 !important;
-  }
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
 
-  .dark-theme .step-indicator .active {
-    background-color: #ffd700 !important;
-    color: #000 !important;
-  }
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1;
+}
 
-  .dark-theme .checkbox-grid label {
-    background: #111 !important;
-    color: #fff !important;
-    border: 1px solid #ffd700 !important;
-  }
-  .dark-theme .checkbox-grid label input[type="checkbox"]:checked + span {
-    background: #ffd700 !important;
-    color: #000 !important;
-  }
+button,
+.btn {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  transition: all 0.25s ease;
+}
 
-  .dark-theme .health-card {
-    background: #111 !important;
-    color: #ffd700 !important;
-    border: 1px solid #ffd700 !important;
-  }
+button:hover,
+.btn:hover {
+  background-color: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+}
 
-  .dark-theme .ai-chatbot {
-    background: #000 !important;
-    color: #fff !important;
-    border: 1px solid #ffd700 !important;
-  }
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  color: #0b0f14 !important;
+  border: none !important;
+}
 
-  .dark-theme .navbar a {
-    color: #ffd700 !important;
-    transition: color 0.2s;
-  }
-  .dark-theme .navbar a.active {
-    color: #fff !important;
-    border-bottom: 2px solid #ffd700 !important;
-  }
+a {
+  color: var(--primary) !important;
+  transition: color 0.25s ease;
+}
+
+a:hover {
+  color: var(--primary-hover) !important;
+}
+
+table {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+}
+
+th, td {
+  border-color: var(--border-color) !important;
+  background: var(--surface) !important;
+}
+
+.navbar a {
+  color: var(--text-primary) !important;
+  transition: color 0.25s ease;
+}
+
+.navbar a.active {
+  color: var(--primary) !important;
+  border-bottom: 2px solid var(--primary) !important;
+}
+
+.form-title,
+.section-title,
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary) !important;
+}
+
+.checkbox-grid label {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.checkbox-grid label input[type="checkbox"]:checked + span {
+  background: var(--primary) !important;
+  color: #fff !important;
+}
 
   .dark-theme .form-title,
   .dark-theme .section-title {
