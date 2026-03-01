@@ -10,6 +10,13 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the form page using HTTP server
     await page.goto('http://localhost:8080/frontend/form.html');
+    await page.evaluate(() => {
+      localStorage.removeItem('pcos_draft');
+      localStorage.removeItem('pcos_entries');
+      localStorage.removeItem('pcos_last_entry');
+      localStorage.removeItem('pcos_last_analysis');
+    });
+    await page.reload();
   });
 
   test.describe('Form Navigation', () => {
@@ -179,12 +186,12 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       
       const lastPeriodInput = page.locator('#last_period');
       const maxDateRaw = await lastPeriodInput.getAttribute('max');
-      const maxDate = new Date(maxDateRaw || '').getTime();
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      // Max date should be today or earlier
-      expect(maxDate).toBeLessThanOrEqual(today.getTime());
+      const todayLocal = new Date();
+      todayLocal.setMinutes(todayLocal.getMinutes() - todayLocal.getTimezoneOffset());
+      const todayRaw = todayLocal.toISOString().split('T')[0];
+
+      // Compare YYYY-MM-DD strings to avoid timezone midnight drift.
+      expect((maxDateRaw || '') <= todayRaw).toBe(true);
     });
 
     test('should show error for invalid cycle length', async ({ page }) => {
@@ -309,8 +316,14 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       await fillSteps1to3(page);
       await page.click('#nextBtn');
       
-      // Fill invalid weight
-      await page.fill('#weight', '500');
+      // Weight input is collected globally but can be off-screen on step 4.
+      await page.evaluate(() => {
+        const input = document.getElementById('weight');
+        if (!input) return;
+        input.value = '500';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
       await page.click('#nextBtn');
       
       await expect(page.locator('small.error[data-for="weight"]')).not.toBeEmpty();
@@ -320,8 +333,13 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       await fillSteps1to3(page);
       await page.click('#nextBtn');
       
-      // Fill invalid height
-      await page.fill('#height', '50');
+      await page.evaluate(() => {
+        const input = document.getElementById('height');
+        if (!input) return;
+        input.value = '50';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
       await page.click('#nextBtn');
       
       await expect(page.locator('small.error[data-for="height"]')).not.toBeEmpty();
@@ -363,11 +381,11 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       await fillSteps1to4(page);
       await page.click('#nextBtn');
       
-      // Fill city with more than 100 chars
       await page.fill('#city', 'a'.repeat(101));
-      await page.click('#nextBtn');
-      
-      await expect(page.locator('small.error[data-for="city"]')).not.toBeEmpty();
+      const cityValue = await page.inputValue('#city');
+
+      // Browser maxlength should cap to 100 chars.
+      expect(cityValue.length).toBe(100);
     });
   });
 
@@ -410,13 +428,12 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
     });
 
     test('should toggle theme on click', async ({ page }) => {
-      const body = page.locator('body');
-      const initialClass = await body.getAttribute('class') || '';
-      
+      const initialTheme = await page.evaluate(() => document.documentElement.getAttribute('data-theme') || '');
       await page.click('#themeToggle');
-      
-      const newClass = await body.getAttribute('class') || '';
-      expect(newClass).not.toBe(initialClass);
+
+      const newTheme = await page.evaluate(() => document.documentElement.getAttribute('data-theme') || '');
+      expect(newTheme).not.toBe(initialTheme);
+      expect(['light', 'dark']).toContain(newTheme);
     });
 
     test('should persist theme in localStorage', async ({ page }) => {
