@@ -255,6 +255,50 @@ def get_statistics():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/api/ai/chat", methods=["POST"])
+@rate_limit
+def ai_chat():
+    """Proxy AI chat requests to OpenRouter from the server using a server-side key.
+
+    This avoids exposing API keys to the browser. Expects a JSON payload similar
+    to OpenRouter's chat completions API (e.g., {model, messages, temperature}).
+    """
+    # Read server-side key from env
+    openrouter_key = os.getenv("OPENROUTER_API_KEY")
+    if not openrouter_key:
+        return jsonify({"error": "AI service not configured on server"}), 503
+
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+
+    payload = request.get_json()
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Invalid request body"}), 400
+
+    # Basic validation to avoid misuse
+    if "model" not in payload or "messages" not in payload:
+        return jsonify({"error": "Missing required fields: model, messages"}), 400
+
+    try:
+        import requests
+
+        OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {openrouter_key}",
+        }
+        resp = requests.post(OPENROUTER_API_URL, json=payload, headers=headers, timeout=30)
+        # Relay status code and JSON (safe-copy)
+        try:
+            data = resp.json()
+        except Exception:
+            data = {"error": "AI provider returned non-JSON response"}
+        return jsonify(data), resp.status_code
+    except Exception as e:
+        logger.error(f"AI proxy error: {e}")
+        return jsonify({"error": "AI proxy failed"}), 502
+
+
 def save_entry(data):
     try:
         if supabase is None:
