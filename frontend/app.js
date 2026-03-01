@@ -713,18 +713,12 @@ document.addEventListener('DOMContentLoaded', function () {
     return stored;
   }
 
-  const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
   let chatHistory = [];
   let currentImage = null;
 
   async function sendChatMessage(userMessage, imageBase64 = null) {
     try {
       await waitForConfigReady();
-      const openRouterApiKey = getOpenRouterApiKey();
-      if (!openRouterApiKey) {
-        return 'AI assistant is not configured. Add a valid OpenRouter API key in your local config and refresh.';
-      }
 
       const entry = (await fetchLatestEntryFromSupabase()) || getLatestEntry();
       const entries = JSON.parse(localStorage.getItem('pcos_entries') || '[]');
@@ -736,77 +730,35 @@ document.addEventListener('DOMContentLoaded', function () {
         stats: stats,
       };
 
-      let systemPrompt = `You are a helpful health assistant specializing in PCOS (Polycystic Ovary Syndrome). You analyze user health data and provide personalized, evidence-based insights.
+      // Build request payload for backend
+      const payload = {
+        message: userMessage,
+        image: imageBase64 || null,
+        chat_history: chatHistory,
+        context: contextData
+      };
 
-User's health data:
-${JSON.stringify(contextData, null, 2)}
+      // Call backend API endpoint instead of calling OpenRouter directly
+      const backendUrl = getBackendUrl();
+      const apiUrl = backendUrl.endsWith('/') 
+        ? backendUrl + 'api/ai/chat'
+        : backendUrl + '/api/ai/chat';
 
-Guidelines:
-- Provide clear, supportive, and actionable insights
-- Reference specific data points when relevant
-- Remind users this is educational guidance, not medical diagnosis
-- Suggest consulting healthcare providers for medical decisions
-- Be empathetic and encouraging
-- Focus on patterns, trends, and general wellness recommendations`;
-
-      if (imageBase64) {
-        systemPrompt += `
-
-Image Analysis Instructions:
-- Analyze the image for PCOS-related symptoms visible in skin/hair
-- Look for: acne, excess facial/body hair (hirsutism), hair thinning, skin darkening (acanthosis nigricans)
-- Provide supportive, educational observations
-- Suggest when to consult a dermatologist or endocrinologist
-- Be sensitive and encouraging`;
-      }
-
-      let userContent = userMessage;
-      if (imageBase64) {
-        userContent = [
-          {
-            type: 'text',
-            text: userMessage || 'Please analyze this image for PCOS-related symptoms.'
-          },
-          {
-            type: 'image_url',
-            image_url: {
-              url: imageBase64
-            }
-          }
-        ];
-      }
-
-      const messages = [
-        { role: 'system', content: systemPrompt },
-        ...chatHistory,
-        { role: 'user', content: userContent }
-      ];
-
-      const modelToUse = imageBase64
-        ? 'meta-llama/llama-3.2-11b-vision-instruct:free'
-        : 'meta-llama/llama-3.1-8b-instruct:free';
-
-      const response = await fetch(OPENROUTER_API_URL, {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${openRouterApiKey}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': window.location.origin,
         },
-        body: JSON.stringify({
-          model: modelToUse,
-          messages: messages,
-          temperature: 0.7,
-          max_tokens: 600,
-        })
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `API error: ${response.status}`);
       }
 
       const data = await response.json();
-      const assistantMessage = data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.';
+      const assistantMessage = data.message || data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.';
 
       chatHistory.push({ role: 'user', content: userMessage || 'Image uploaded' });
       chatHistory.push({ role: 'assistant', content: assistantMessage });
@@ -821,7 +773,7 @@ Image Analysis Instructions:
 
       let errorMessage = 'Sorry, I encountered an error. ';
       if (error.message?.includes('API error: 401')) {
-        errorMessage += 'Authentication failed. Please check your API key.';
+        errorMessage += 'Authentication failed. Please check the API configuration.';
       } else if (error.message?.includes('API error: 429')) {
         errorMessage += 'Rate limit reached. Please wait a moment and try again.';
       } else if (error.message?.includes('API error')) {
