@@ -14,24 +14,24 @@
    =========================================== */
 :root {
   /* ===== COLOR SYSTEM ===== */
-  /* Primary - Calming Medical Blue */
-  --color-primary: #0ea5e9;
-  --color-primary-light: #38bdf8;
-  --color-primary-dark: #0284c7;
+  /* Primary - Professional Medical Blue */
+  --color-primary: #2563eb;
+  --color-primary-light: #60a5fa;
+  --color-primary-dark: #1d4ed8;
 
   /* Secondary - Health Green */
-  --color-secondary: #10b981;
-  --color-secondary-light: #2dd4bf;
+  --color-secondary: #059669;
+  --color-secondary-light: #10b981;
 
   /* Accent */
-  --color-accent: #06b6d4;
+  --color-accent: #0891b2;
   --color-accent-warm: #f59e0b;
 
   /* Semantic Colors */
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-info: #3b82f6;
+  --color-success: #16a34a;
+  --color-warning: #ea580c;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
 
   /* Light Theme Backgrounds */
   --bg-primary: #f8fafc;
@@ -73,9 +73,9 @@
   --radius-full: 9999px;
 
   /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Newsreader', 'Playfair Display', Georgia, serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+  --font-mono: 'Courier New', Courier, monospace;
 
   /* Transitions */
   --transition-fast: 150ms ease;
@@ -154,9 +154,9 @@ body::before {
   pointer-events: none;
   z-index: -1;
   background:
-    radial-gradient(ellipse 1000px 800px at 15% -10%, rgba(14, 165, 233, 0.08), transparent 50%),
-    radial-gradient(ellipse 800px 600px at 80% -5%, rgba(16, 185, 129, 0.06), transparent 50%),
-    radial-gradient(ellipse 1000px 800px at 50% 15%, rgba(245, 158, 11, 0.04), transparent 50%);
+    radial-gradient(ellipse 1000px 800px at 15% -10%, rgba(37, 99, 235, 0.05), transparent 50%),
+    radial-gradient(ellipse 800px 600px at 80% -5%, rgba(5, 150, 105, 0.04), transparent 50%),
+    radial-gradient(ellipse 1000px 800px at 50% 15%, rgba(245, 158, 11, 0.03), transparent 50%);
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -649,6 +649,15 @@ body:not(.light-theme) .healthcare-card.glass {
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ===== MULTI-STEP FORM ===== */
+.form-step {
+  display: none;
+}
+
+.form-step.active {
+  display: block;
 }
 
 .form-group {
