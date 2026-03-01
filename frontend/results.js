@@ -131,19 +131,39 @@ const insightI18n = {
   },
 };
 
-document.addEventListener('DOMContentLoaded', function () {
-  const savedTheme = localStorage.getItem('pcos_theme') || 'dark';
-  if (savedTheme === 'light') {
-    document.body.classList.add('light-theme');
-  }
+// Theme Management
+const THEME_KEY = 'pcos_theme';
 
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem(THEME_KEY, newTheme);
+
+  // Add animation class to theme toggle button for smooth transition
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('light-theme');
-      const isLight = document.body.classList.contains('light-theme');
-      localStorage.setItem('pcos_theme', isLight ? 'light' : 'dark');
-    });
+    themeToggle.classList.add('animating');
+    setTimeout(() => themeToggle.classList.remove('animating'), 450);
+  }
+}
+
+// Initialize theme immediately (before DOMContentLoaded)
+initTheme();
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Setup theme toggle button
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
   }
 
   requestAnimationFrame(loadAnalysisResults);
