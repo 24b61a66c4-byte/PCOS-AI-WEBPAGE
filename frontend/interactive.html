@@ -25,7 +25,7 @@
       color: #e5e7eb;
       overflow-x: hidden;
     }
-    .light body {
+    [data-theme="light"] body {
       background: radial-gradient(1200px 800px at 10% 10%, rgba(124, 58, 237, 0.08), transparent 50%),
                   radial-gradient(1200px 900px at 90% 0%, rgba(14, 165, 233, 0.1), transparent 55%),
                   #f8fafc;
@@ -290,24 +290,40 @@
   </footer>
 
   <script>
-    const state = { light: false, testimonials: [
-      { quote: '“PulseOS cut our incident response time by 40%.”', meta: '— Alex Chen, VP Eng @ Fluxor' },
-      { quote: '“The dashboard feels native. Our PMs finally stopped exporting to sheets.”', meta: '— Priya Raman, Head of Product @ Northwind' },
-      { quote: '“Beautiful, fast, compliant out of the box.”', meta: '— Dana Ruiz, CTO @ LumenWave' },
+    const state = { testimonials: [
+      { quote: '"PulseOS cut our incident response time by 40%."', meta: '— Alex Chen, VP Eng @ Fluxor' },
+      { quote: '"The dashboard feels native. Our PMs finally stopped exporting to sheets."', meta: '— Priya Raman, Head of Product @ Northwind' },
+      { quote: '"Beautiful, fast, compliant out of the box."', meta: '— Dana Ruiz, CTO @ LumenWave' },
     ], idx: 0 };
+
+    // Theme Management
+    const THEME_KEY = 'pcos_theme';
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem(THEME_KEY, newTheme);
+    }
+
+    // Initialize theme immediately
+    initTheme();
 
     // Loading overlay
     window.addEventListener('load', () => {
       document.getElementById('loader').style.display = 'none';
     });
 
-    // Theme toggle
-    const root = document.documentElement;
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      state.light = !state.light;
-      document.documentElement.classList.toggle('light', state.light);
-      document.body.classList.toggle('light', state.light);
-    });
+    // Theme toggle button
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
     // Navbar shrink on scroll
     const navbar = document.getElementById('navbar');
