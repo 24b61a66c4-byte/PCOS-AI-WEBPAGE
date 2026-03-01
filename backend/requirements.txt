@@ -7,4 +7,4 @@ numpy==1.26.4
 pandas==2.2.1
 
 # Marshmallow for input validation used in backend/app.py
-marshmallow==3.20.1
+marshmallow==4.2.2
