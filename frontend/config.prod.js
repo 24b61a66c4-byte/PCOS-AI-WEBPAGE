@@ -2,11 +2,15 @@
 
 window.CONFIG = {
   // OpenRouter API key (required for AI assistant)
+  // NOTE: In production, consider using environment variables or a backend proxy
+  // IMPORTANT: Do NOT commit real API keys. Use backend proxy or env vars.
   OPENROUTER_API_KEY: 'YOUR_OPENROUTER_API_KEY',
 
   // Supabase configuration (uses localStorage + Supabase)
-  SUPABASE_URL: 'https://hrcjgcqzhulmxdyfeymw.supabase.co',
-  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyY2pnY3F6aHVsbXhkeWZleW13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5Mjk3MDYsImV4cCI6MjA4NjUwNTcwNn0.ub_wgpTDdjrmkvMSLPRnJ24eCbMnSycSxgYAY7MbpfM',
+  // NOTE: Supabase anon key is safe to expose in frontend - it has limited permissions
+  // For enhanced security, use Row Level Security (RLS) policies in Supabase
+  SUPABASE_URL: 'https://YOUR_SUPABASE_PROJECT.supabase.co',
+  SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY',
 
   // Backend API URL - auto-detect environment
   BACKEND_URL: (function () {
@@ -34,4 +38,17 @@ window.CONFIG = {
   })()
 };
 
-console.log('Config loaded. Backend API:', window.CONFIG.BACKEND_URL);
+// Security: Mask sensitive info in console logs
+(function () {
+  const safeBackendUrl = window.CONFIG.BACKEND_URL || 'not configured';
+  const maskedSupabase = window.CONFIG.SUPABASE_URL
+    ? window.CONFIG.SUPABASE_URL.replace(/https?:\/\//, '').split('.')[0] + '...'
+    : 'not configured';
+
+  console.log('Config loaded. Backend API:', safeBackendUrl, '| Supabase:', maskedSupabase);
+
+  // Warn about API key if still using placeholder
+  if (window.CONFIG.OPENROUTER_API_KEY === 'YOUR_OPENROUTER_API_KEY') {
+    console.warn('SECURITY WARNING: OpenRouter API key is still set to placeholder. Update config.prod.js with your actual key.');
+  }
+})();

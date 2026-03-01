@@ -2,10 +2,14 @@
 .env
 .env.local
 .env.production
+**/.env
+**/.env.local
+**/.env.production
 
 # API Keys and Secrets
 config.js
 secrets.js
+agent-secrets.local.json
 
 # Node modules
 node_modules/
