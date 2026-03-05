@@ -109,12 +109,9 @@ document.addEventListener('DOMContentLoaded', function () {
     return hasValue(backendUrl) ? backendUrl.trim() : 'http://localhost:5000';
   }
 
-  function getOpenRouterApiKey() {
-    const apiKey = getConfig().OPENROUTER_API_KEY;
-    if (!hasValue(apiKey) || isPlaceholder(apiKey)) {
-      return '';
-    }
-    return apiKey.trim();
+  function getAiChatEndpoint() {
+    const baseUrl = getBackendUrl().replace(/\/+$/, '');
+    return `${baseUrl}/api/ai/chat`;
   }
 
   let supabaseClientCache = null;
@@ -723,17 +720,15 @@ document.addEventListener('DOMContentLoaded', function () {
     return stored;
   }
 
-  const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
   let chatHistory = [];
   let currentImage = null;
 
   async function sendChatMessage(userMessage, imageBase64 = null) {
     try {
       await waitForConfigReady();
-      const openRouterApiKey = getOpenRouterApiKey();
-      if (!openRouterApiKey) {
-        return 'AI assistant is not configured. Add a valid OpenRouter API key in your local config and refresh.';
+      const aiChatUrl = getAiChatEndpoint();
+      if (!hasValue(aiChatUrl)) {
+        return 'AI assistant backend is not configured. Set a valid BACKEND_URL and refresh.';
       }
 
       const entry = (await fetchLatestEntryFromSupabase()) || getLatestEntry();
@@ -770,20 +765,10 @@ Image Analysis Instructions:
 - Be sensitive and encouraging`;
       }
 
-      let userContent = userMessage;
+      let userContent = userMessage || 'Please provide guidance based on my PCOS-related question.';
       if (imageBase64) {
-        userContent = [
-          {
-            type: 'text',
-            text: userMessage || 'Please analyze this image for PCOS-related symptoms.'
-          },
-          {
-            type: 'image_url',
-            image_url: {
-              url: imageBase64
-            }
-          }
-        ];
+        // Backend providers currently use text-first chat payloads; keep image context as explicit text.
+        userContent += '\n\n[User uploaded an image for symptom context. Provide educational, non-diagnostic guidance.]';
       }
 
       const messages = [
@@ -792,31 +777,39 @@ Image Analysis Instructions:
         { role: 'user', content: userContent }
       ];
 
-      const modelToUse = imageBase64
-        ? 'meta-llama/llama-3.2-11b-vision-instruct:free'
-        : 'meta-llama/llama-3.1-8b-instruct:free';
-
-      const response = await fetch(OPENROUTER_API_URL, {
+      const response = await fetch(aiChatUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${openRouterApiKey}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': window.location.origin,
         },
         body: JSON.stringify({
-          model: modelToUse,
-          messages: messages,
+          // Use a broadly supported model hint; backend can override/fallback as needed.
+          model: 'sonar',
+          messages,
           temperature: 0.7,
           max_tokens: 600,
-        })
+        }),
       });
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        let backendError = '';
+        try {
+          const errorPayload = await response.json();
+          if (errorPayload && typeof errorPayload.error === 'string') {
+            backendError = ` ${errorPayload.error}`;
+          }
+        } catch (parseError) {
+          // Keep generic HTTP code if backend error body is not JSON.
+        }
+        throw new Error(`Backend AI error: ${response.status}${backendError}`);
       }
 
       const data = await response.json();
-      const assistantMessage = data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.';
+      const assistantMessage = data.choices?.[0]?.message?.content || '';
+
+      if (!assistantMessage) {
+        throw new Error('Backend AI returned an empty response.');
+      }
 
       chatHistory.push({ role: 'user', content: userMessage || 'Image uploaded' });
       chatHistory.push({ role: 'assistant', content: assistantMessage });
@@ -830,12 +823,14 @@ Image Analysis Instructions:
       console.error('Chat error:', error);
 
       let errorMessage = 'Sorry, I encountered an error. ';
-      if (error.message?.includes('API error: 401')) {
-        errorMessage += 'Authentication failed. Please check your API key.';
-      } else if (error.message?.includes('API error: 429')) {
-        errorMessage += 'Rate limit reached. Please wait a moment and try again.';
-      } else if (error.message?.includes('API error')) {
-        errorMessage += 'The AI service returned an error. Please try again.';
+      if (error.message?.includes('Failed to fetch')) {
+        errorMessage += 'Cannot reach AI backend. Start the backend server and try again.';
+      } else if (error.message?.includes('Backend AI error: 401')) {
+        errorMessage += 'Backend authentication failed. Check server-side API keys.';
+      } else if (error.message?.includes('Backend AI error: 429')) {
+        errorMessage += 'Backend rate limit reached. Please wait a moment and try again.';
+      } else if (error.message?.includes('Backend AI error')) {
+        errorMessage += 'The backend AI service returned an error. Please try again.';
       } else if (!navigator.onLine) {
         errorMessage += 'No internet connection detected. Please check your connection.';
       } else {

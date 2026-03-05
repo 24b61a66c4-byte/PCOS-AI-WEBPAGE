@@ -26,7 +26,7 @@ Write-Host "✓ Opening dashboard: $url" -ForegroundColor Green
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
 Write-Host "`n📌 Quick Tips:" -ForegroundColor Magenta
 Write-Host "  • Press Ctrl+Shift+R to hard refresh if styles don't load" -ForegroundColor White
-Write-Host "  • Vercel URL: https://pcos-zeta.vercel.app/dashboard.html" -ForegroundColor White
-Write-Host "  • Local URL:  http://localhost:8000/dashboard.html`n" -ForegroundColor White
+Write-Host "  • Use Local URL for latest code: http://localhost:8000/dashboard.html" -ForegroundColor White
+Write-Host "  • Deployed Vercel page may be stale until redeployed`n" -ForegroundColor Yellow
 
 Start-Process $url

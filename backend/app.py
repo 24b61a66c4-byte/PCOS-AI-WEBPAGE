@@ -38,13 +38,37 @@ logger = logging.getLogger("pcos-backend")
 
 load_dotenv()
 
+
+def load_local_secrets():
+    """Load local secrets into environment for development-only convenience."""
+    try:
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        secrets_path = os.path.join(project_root, "agent-secrets.local.json")
+        if not os.path.exists(secrets_path):
+            return
+
+        with open(secrets_path, "r", encoding="utf-8-sig") as handle:
+            secrets = json.load(handle)
+
+        for key in ["OPENROUTER_API_KEY", "OPENAI_API_KEY", "PERPLEXITY_API_KEY"]:
+            value = secrets.get(key)
+            if not os.getenv(key) and isinstance(value, str) and value.strip():
+                os.environ[key] = value.strip()
+    except Exception as exc:
+        logger.warning(f"Local secrets bootstrap skipped: {exc}")
+
+
+load_local_secrets()
+
 app = Flask(__name__, static_folder="../frontend", static_url_path="/")
 
 # Configure CORS
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLOWED_ORIGINS") else [
     "http://localhost:3000",
+    "http://localhost:8000",
     "http://localhost:8080",
     "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000",
     "http://127.0.0.1:8080",
 ]
 if os.getenv("VERCEL_URL"):
