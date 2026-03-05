@@ -23,10 +23,10 @@ window.CONFIG = {
         // Development: use local backend
         return 'http://localhost:5000';
       } else if (isVercel) {
-        // Vercel deployment: use Vercel serverless API
+        // Vercel deployment: use Vercel root (app.js appends /api/... paths)
         return window.location.origin;
       } else if (isGitHubPages) {
-        // GitHub Pages: use Vercel API (need to configure)
+        // GitHub Pages: use Vercel domain (app.js appends /api/... paths)
         return 'https://pcos-zeta.vercel.app';
       }
       // Default fallback

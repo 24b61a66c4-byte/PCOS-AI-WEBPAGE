@@ -25,12 +25,12 @@
         // Set fallback config BEFORE config-loader runs
         if (!window.CONFIG) {
             // Auto-detect backend URL based on environment
-            var isProduction = window.location.hostname !== 'localhost' && 
-                               window.location.hostname !== '127.0.0.1';
-            var backendURL = isProduction 
-                ? 'https://pcos-zeta.vercel.app/api'  // Use Vercel serverless API
-                : 'http://localhost:5000';               // Use local Flask backend
-            
+            var isProduction = window.location.hostname !== 'localhost' &&
+                window.location.hostname !== '127.0.0.1';
+            var backendURL = isProduction
+                ? 'https://pcos-zeta.vercel.app'  // Use Vercel serverless API (app.js appends /api/...)
+                : 'http://localhost:5000';          // Use local Flask backend (app.js appends /api/...)
+
             window.CONFIG = {
                 BACKEND_URL: backendURL,
                 SUPABASE_URL: 'https://hrcjgcqzhulmxdyfeymw.supabase.co/',
