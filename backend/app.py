@@ -219,6 +219,10 @@ class AnalyzeSchema(Schema):
     city = fields.String()
     weight = fields.Float()
     height = fields.Float()
+    # Optional lifestyle fields (captured from frontend but not currently used in analysis)
+    stress = fields.String()
+    sleep = fields.Float()
+    exercise = fields.String()
 
 
 @app.route("/api/analyze", methods=["POST"])
