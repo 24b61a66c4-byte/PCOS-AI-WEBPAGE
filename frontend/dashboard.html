@@ -24,12 +24,19 @@
     <script>
         // Set fallback config BEFORE config-loader runs
         if (!window.CONFIG) {
+            // Auto-detect backend URL based on environment
+            var isProduction = window.location.hostname !== 'localhost' && 
+                               window.location.hostname !== '127.0.0.1';
+            var backendURL = isProduction 
+                ? 'https://pcos-zeta.vercel.app/api'  // Use Vercel serverless API
+                : 'http://localhost:5000';               // Use local Flask backend
+            
             window.CONFIG = {
-                BACKEND_URL: 'http://localhost:5000',
+                BACKEND_URL: backendURL,
                 SUPABASE_URL: 'https://hrcjgcqzhulmxdyfeymw.supabase.co/',
                 SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyY2pnY3F6aHVsbXhkeWZleW13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5Mjk3MDYsImV4cCI6MjA4NjUwNTcwNn0.ub_wgpTDdjrmkvMSLPRnJ24eCbMnSycSxgYAY7MbpfM'
             };
-            console.log('[Config] Using inline fallback config');
+            console.log('[Config] Backend URL: ' + backendURL + ' (environment: ' + (isProduction ? 'production' : 'development') + ')');
         }
     </script>
     <link rel="stylesheet" href="styles.css">
