@@ -1,4 +1,4 @@
-a// PCOS Smart Assistant - Translations System
+// PCOS Smart Assistant - Translations System
 // Supports: English (en), Telugu (te), Hindi (hi)
 
 const TRANSLATIONS = {

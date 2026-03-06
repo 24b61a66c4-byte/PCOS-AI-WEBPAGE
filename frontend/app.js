@@ -158,6 +158,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const theme = savedTheme || (prefersDark ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'light') {
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+    }
   }
 
   function toggleTheme() {
@@ -166,6 +171,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', newTheme);
     localStorage.setItem(THEME_KEY, newTheme);
+
+    if (newTheme === 'light') {
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+    }
+
 
     // Add animation class to theme toggle button for smooth transition
     const themeToggle = document.getElementById('themeToggle');
