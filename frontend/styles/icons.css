@@ -124,3 +124,27 @@ a:hover i {
 [data-theme="light"] i.fa-regular {
     opacity: 0.9;
 }
+
+/* Accessibility: clear keyboard focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--primary, #0ea5e9);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+/* Accessibility: respect user reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+    i.fa-solid,
+    i.fa-regular,
+    i.fa-brands,
+    .btn:hover i,
+    a:hover i {
+        transition: none !important;
+        transform: none !important;
+    }
+}

@@ -49,3 +49,18 @@ coverage/
 .vercel
 
 .env*.local
+
+# Python cache and bytecode
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Python virtual environments
+.venv/
+venv/
+
+# Test artifacts
+test_results.txt
+.pytest_cache/
