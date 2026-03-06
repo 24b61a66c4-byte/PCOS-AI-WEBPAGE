@@ -22,6 +22,9 @@
     </script>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles/healthcare.css">
+    <link rel="stylesheet" href="styles/icons.css">
+    <!-- Font Awesome Icons CDN (Professional SVG Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/gh/darkroomengineering/lenis@latest/bundled/lenis.js"></script>
@@ -32,17 +35,13 @@
     <!-- Premium Loader Overlay -->
     <div class="premium-loader" id="formLoader" style="display:none;">
         <div class="premium-loader-content">
-            <div class="loader-logo">Saving Entry...</div>
-            <div class="loader-dots"><span></span><span></span><span></span></div>
-            <div class="loader-progress">
-                <div class="loader-progress-bar"></div>
-            </div>
-            <div class="loader-text">Please wait</div>
+            <div class="loader-logo"><i class="fas fa-hospital" style="margin-right: 8px;"></i></div>
+            <div class="loader-text" data-i18n="form.savingEntry">Saving Entry...</div>
         </div>
     </div>
     <div class="navbar">
         <div class="nav-container">
-            <div class="logo">🏥 PCOS Smart Assistant</div>
+            <div class="logo"><i class="fas fa-hospital" style="margin-right: 8px;"></i> PCOS Smart Assistant</div>
             <div class="nav-actions">
                 <ul class="nav-menu">
                     <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
@@ -73,7 +72,7 @@
 
         <div class="step-indicators progress-stepper">
             <div class="step-indicator active" data-step="1">
-                <span class="step-icon">👤</span>
+                <span class="step-icon"><i class="fas fa-user" style="margin-right: 8px;"></i></span>
                 <span class="step-label">Personal</span>
             </div>
             <div class="step-indicator" data-step="2">
@@ -81,7 +80,7 @@
                 <span class="step-label">Menstrual</span>
             </div>
             <div class="step-indicator" data-step="3">
-                <span class="step-icon">⚠️</span>
+                <span class="step-icon"><i class="fas fa-triangle-exclamation" style="margin-right: 8px;"></i></span>
                 <span class="step-label">Symptoms</span>
             </div>
             <div class="step-indicator" data-step="4">
@@ -89,7 +88,7 @@
                 <span class="step-label">Lifestyle</span>
             </div>
             <div class="step-indicator" data-step="5">
-                <span class="step-icon">🏥</span>
+                <span class="step-icon"><i class="fas fa-hospital" style="margin-right: 8px;"></i></span>
                 <span class="step-label">Clinical</span>
             </div>
             <div class="step-indicator" data-step="6">
@@ -106,7 +105,7 @@
                     <div class="form-slider" id="formSlider">
                         <div class="form-step active" data-step="1">
                             <div class="form-section">
-                                <h2 data-i18n="form.personalInfo">👤 Personal Information</h2>
+                                <h2 data-i18n="form.personalInfo"><i class="fas fa-user" style="margin-right: 8px;"></i> Personal Information</h2>
                                 <p class="step-subtitle" id="form-title" data-i18n="form.startWithBasic">Let's start
                                     with your basic information</p>
 
@@ -182,7 +181,7 @@
 
                         <div class="form-step" data-step="3">
                             <div class="form-section">
-                                <h2>⚠️ Current Symptoms</h2>
+                                <h2><i class="fas fa-triangle-exclamation" style="margin-right: 8px;"></i> Current Symptoms</h2>
                                 <p class="step-subtitle">Select all that apply to you</p>
 
                                 <div class="checkbox-grid symptoms-grid">
@@ -252,7 +251,7 @@
 
                         <div class="form-step" data-step="5">
                             <div class="form-section">
-                                <h2>🏥 Clinical Information</h2>
+                                <h2><i class="fas fa-hospital" style="margin-right: 8px;"></i> Clinical Information</h2>
                                 <p class="step-subtitle">Important medical details</p>
 
                                 <div class="single-field">

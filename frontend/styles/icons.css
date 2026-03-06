@@ -1,0 +1,126 @@
+/* Font Awesome Icon Enhancements */
+
+/* Icon styling for better appearance */
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    line-height: 1;
+    margin-right: 8px;
+}
+
+/* Button icons */
+.btn i {
+    font-size: 1.1em;
+    margin-right: 8px;
+    line-height: 1;
+}
+
+.btn--primary i {
+    opacity: 0.95;
+}
+
+.btn--secondary i {
+    opacity: 0.9;
+}
+
+.btn--ghost i {
+    opacity: 0.85;
+}
+
+/* Card icons */
+.healthcare-card i {
+    margin-right: 8px;
+    font-size: 1.15em;
+}
+
+/* Chat bubble icons */
+.chat-message i {
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+/* Alert and warning icons */
+.alert-icon,
+.warning-icon {
+    margin-right: 8px;
+    font-size: 1.2em;
+    vertical-align: middle;
+}
+
+/* Navigation icons */
+nav i {
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+/* Icon accent colors */
+i.icon-primary {
+    color: var(--primary, #0ea5e9);
+}
+
+i.icon-accent {
+    color: var(--accent, #ec4899);
+}
+
+i.icon-success {
+    color: #10b981;
+}
+
+i.icon-warning {
+    color: #f59e0b;
+}
+
+i.icon-danger {
+    color: #ef4444;
+}
+
+/* Smooth icon transitions */
+i.fa-solid,
+i.fa-regular,
+i.fa-brands {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:hover i,
+a:hover i {
+    transform: scale(1.1);
+}
+
+/* Icon spacing utilities */
+.icon-gap-small {
+    margin-right: 4px;
+}
+
+.icon-gap-medium {
+    margin-right: 8px;
+}
+
+.icon-gap-large {
+    margin-right: 12px;
+}
+
+/* Responsive icon sizing */
+@media (max-width: 768px) {
+    .btn i {
+        font-size: 1em;
+        margin-right: 6px;
+    }
+
+    .icon {
+        font-size: 1.1em;
+        margin-right: 6px;
+    }
+}
+
+/* Dark mode icon adjustments */
+[data-theme="dark"] i.fa-solid,
+[data-theme="dark"] i.fa-regular {
+    opacity: 0.95;
+}
+
+[data-theme="light"] i.fa-solid,
+[data-theme="light"] i.fa-regular {
+    opacity: 0.9;
+}
