@@ -234,6 +234,178 @@ def health_check():
     })
 
 
+@app.route("/api/docs")
+def api_docs():
+    """API Documentation endpoint"""
+    docs = {
+        "service": "PCOS Smart Assistant API",
+        "version": "2.1.0",
+        "updated": "2026-03-06",
+        "description": "Privacy-first health analysis API for PCOS risk assessment and lifestyle recommendations",
+        "base_url": {
+            "production": "https://pcos-zeta.vercel.app/api",
+            "local": "http://localhost:5000/api"
+        },
+        "security": {
+            "cors": "Restricted to allowed origins only",
+            "rate_limiting": "60 requests per minute per IP",
+            "encryption": "HTTPS/TLS 1.2+ required",
+            "data_privacy": "No PHI stored on servers - local storage only"
+        },
+        "endpoints": [
+            {
+                "path": "/api/health",
+                "method": "GET",
+                "description": "Health check - verify API is operational",
+                "authentication": "None",
+                "request": None,
+                "response": {
+                    "status": "string",
+                    "service": "string",
+                    "timestamp": "string"
+                },
+                "example": "curl https://pcos-zeta.vercel.app/api/health"
+            },
+            {
+                "path": "/api/docs",
+                "method": "GET",
+                "description": "API documentation (this endpoint)",
+                "authentication": "None",
+                "request": None,
+                "response": "JSON documentation object"
+            },
+            {
+                "path": "/api/analyze-step",
+                "method": "POST",
+                "description": "Analyze partial form data (step-by-step insights)",
+                "authentication": "None",
+                "rate_limit": "60 req/min",
+                "request": {
+                    "step": "integer (1-6)",
+                    "stepData": "object - varies by step"
+                },
+                "response": {
+                    "step": "integer",
+                    "step_name": "string",
+                    "findings": ["array of insights"],
+                    "tips": ["array of recommendations"],
+                    "has_sufficient_data": "boolean"
+                },
+                "example_request": {
+                    "step": 2,
+                    "stepData": {
+                        "cycle_length": 35,
+                        "period_length": 5,
+                        "last_period": "2026-02-15"
+                    }
+                }
+            },
+            {
+                "path": "/api/analyze",
+                "method": "POST",
+                "description": "Full health analysis with risk assessment",
+                "authentication": "None",
+                "rate_limit": "60 req/min",
+                "request": {
+                    "age": "integer (required)",
+                    "cycle_length": "integer (required)",
+                    "period_length": "integer (required)",
+                    "symptoms": "array of strings (optional)",
+                    "weight": "number (optional)",
+                    "height": "number (optional)",
+                    "city": "string (optional)",
+                    "stress": "integer 1-10 (optional)",
+                    "sleep": "integer 1-10 (optional)",
+                    "exercise": "string (optional)"
+                },
+                "response": {
+                    "risk_score": "integer 0-100",
+                    "risk_level": "string (low|moderate|high)",
+                    "summary": "string",
+                    "recommendations": ["array of strings"],
+                    "cycle_analysis": "object",
+                    "doctor_recommendations": ["array of doctor info"],
+                    "percentile": "number"
+                },
+                "example_request": {
+                    "age": 28,
+                    "cycle_length": 35,
+                    "period_length": 5,
+                    "symptoms": ["Irregular cycles", "Weight gain"],
+                    "weight": 65,
+                    "height": 165,
+                    "city": "Hyderabad"
+                }
+            },
+            {
+                "path": "/api/stats",
+                "method": "GET",
+                "description": "Get anonymized dataset statistics",
+                "authentication": "None",
+                "request": None,
+                "response": {
+                    "total_entries": "integer",
+                    "avg_cycle_length": "number",
+                    "avg_period_length": "number",
+                    "symptom_frequency": "object"
+                }
+            },
+            {
+                "path": "/api/ai/chat",
+                "method": "POST",
+                "description": "AI health assistant chat (educational only)",
+                "authentication": "None",
+                "rate_limit": "30 req/min",
+                "ai_providers": [
+                    "OpenRouter (primary)",
+                    "OpenAI (fallback)",
+                    "Perplexity (fallback)",
+                    "Local AI (final fallback)"
+                ],
+                "request": {
+                    "message": "string (required)",
+                    "history": "array of message objects (optional)"
+                },
+                "response": {
+                    "response": "string",
+                    "provider": "string",
+                    "timestamp": "string"
+                },
+                "disclaimer": "AI responses are educational only and NOT medical advice",
+                "privacy": "No identifying information sent to AI providers",
+                "example_request": {
+                    "message": "What is PCOS?",
+                    "history": []
+                }
+            }
+        ],
+        "important_notes": [
+            "⚠️ MEDICAL DISCLAIMER: This API provides educational information only, NOT medical advice",
+            "🔒 PRIVACY: User health data is stored locally in browser, not on our servers",
+            "📊 ANALYTICS: Only anonymized, aggregated statistics are analyzed",
+            "🤖 AI SERVICES: AI chat queries are anonymized before being sent to third-party providers",
+            "⚡ RATE LIMITS: Enforced to prevent abuse (60 req/min for most endpoints)"
+        ],
+        "data_flow": {
+            "user_data_storage": "Browser localStorage (user's device only)",
+            "server_data_storage": "None - we do NOT store user health data",
+            "ai_data_sharing": "Only chat queries (no health form data)",
+            "encryption": "HTTPS for all communications"
+        },
+        "links": {
+            "github": "https://github.com/24b61a66c4-byte/PCOS-AI-WEBPAGE",
+            "privacy_policy": "https://pcos-zeta.vercel.app/frontend/privacy.html",
+            "medical_disclaimer": "https://pcos-zeta.vercel.app/frontend/medical-disclaimer.html",
+            "documentation": "https://github.com/24b61a66c4-byte/PCOS-AI-WEBPAGE/blob/main/README.md"
+        },
+        "support": {
+            "issues": "https://github.com/24b61a66c4-byte/PCOS-AI-WEBPAGE/issues",
+            "email": "Open an issue on GitHub"
+        }
+    }
+    return jsonify(docs)
+
+
 @app.route("/test-route-2026-03-01")
 def test_route():
     """Test route to verify Vercel is serving updated code"""

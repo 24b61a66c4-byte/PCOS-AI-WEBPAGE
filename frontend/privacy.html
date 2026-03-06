@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — PCOS Smart Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/healthcare.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <style>
+        .privacy-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .privacy-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .privacy-section {
+            margin-bottom: 32px;
+        }
+
+        .privacy-section h2 {
+            color: var(--primary);
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+
+        .privacy-section h3 {
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        .privacy-section ul {
+            line-height: 1.8;
+        }
+
+        .highlight-box {
+            background: var(--panel-strong);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 8px;
+        }
+
+        .last-updated {
+            color: var(--muted);
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">🏥 PCOS Smart Assistant</div>
+            <div class="nav-actions">
+                <a href="dashboard.html" class="btn-secondary">← Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <main class="privacy-container">
+        <div class="privacy-header">
+            <h1>Privacy Policy</h1>
+            <p class="hero-subtitle">How we protect your health information</p>
+        </div>
+
+        <div class="highlight-box">
+            <strong>🔒 Your Privacy is Our Priority</strong>
+            <p style="margin-top: 12px; margin-bottom: 0;">
+                Your health data is <strong>stored locally on your device</strong>. We do not transmit, store,
+                or share your personal health information on our servers.
+            </p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>1. Information We Collect</h2>
+
+            <h3>1.1 Health Data (Stored Locally)</h3>
+            <p>When you use the PCOS Smart Assistant, the following information is stored <strong>only on your
+                    device</strong> using browser localStorage:</p>
+            <ul>
+                <li>Personal information (age, weight, height)</li>
+                <li>Menstrual cycle data (cycle length, period length, last period date)</li>
+                <li>Symptoms and health indicators</li>
+                <li>Lifestyle information (stress, sleep, exercise)</li>
+                <li>Clinical measurements (if provided)</li>
+            </ul>
+
+            <h3>1.2 Anonymous Analytics (Optional)</h3>
+            <p>With your consent, we may collect anonymous usage statistics to improve the application:</p>
+            <ul>
+                <li>Page views and feature usage</li>
+                <li>Error logs (without personal identifiers)</li>
+                <li>Performance metrics</li>
+            </ul>
+            <p><strong>Note:</strong> These analytics do NOT include any health data.</p>
+
+            <h3>1.3 AI Chat Interactions</h3>
+            <p>When you use the AI health assistant:</p>
+            <ul>
+                <li>Your chat messages may be processed by third-party AI providers (OpenRouter, OpenAI, Perplexity)
+                </li>
+                <li>We anonymize queries and do not send personally identifiable health data</li>
+                <li>Conversations are not stored permanently</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>2. How We Use Your Information</h2>
+
+            <h3>2.1 Local Processing</h3>
+            <p>All health analysis and risk assessment calculations are performed <strong>on your device</strong>. Your
+                data never leaves your browser unless you explicitly choose to:</p>
+            <ul>
+                <li>Use the AI chat feature</li>
+                <li>Export your data</li>
+                <li>Enable cloud backup (if available)</li>
+            </ul>
+
+            <h3>2.2 AI Services</h3>
+            <p>When you interact with the AI health assistant:</p>
+            <ul>
+                <li>Only your chat questions are sent to AI providers</li>
+                <li>No identifying information is included</li>
+                <li>Previous health data entered in forms is NOT sent to AI services</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>3. Data Storage and Security</h2>
+
+            <h3>3.1 Local Storage</h3>
+            <ul>
+                <li>Data is stored in your browser's localStorage</li>
+                <li>Data remains on your device until you clear browser data or delete it manually</li>
+                <li>No one else can access this data (unless they have physical access to your device)</li>
+            </ul>
+
+            <h3>3.2 Security Measures</h3>
+            <ul>
+                <li>HTTPS encryption for all web communications</li>
+                <li>Content Security Policy (CSP) headers</li>
+                <li>No server-side storage of health data</li>
+                <li>Regular security audits</li>
+            </ul>
+
+            <h3>3.3 Optional Cloud Backup (If Enabled)</h3>
+            <p>If you choose to enable Supabase cloud backup:</p>
+            <ul>
+                <li>Data is encrypted in transit (TLS/SSL)</li>
+                <li>Data is stored with row-level security (RLS)</li>
+                <li>You can delete your cloud data at any time</li>
+                <li>Backup is optional and OFF by default</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>4. Third-Party Services</h2>
+
+            <h3>4.1 AI Providers</h3>
+            <p>AI chat functionality uses:</p>
+            <ul>
+                <li><strong>OpenRouter:</strong> <a href="https://openrouter.ai/privacy" target="_blank">Privacy
+                        Policy</a></li>
+                <li><strong>OpenAI:</strong> <a href="https://openai.com/privacy" target="_blank">Privacy Policy</a>
+                </li>
+                <li><strong>Perplexity:</strong> <a href="https://www.perplexity.ai/privacy" target="_blank">Privacy
+                        Policy</a></li>
+            </ul>
+
+            <h3>4.2 Hosting and Infrastructure</h3>
+            <ul>
+                <li><strong>Vercel:</strong> Application hosting - <a href="https://vercel.com/legal/privacy-policy"
+                        target="_blank">Privacy Policy</a></li>
+                <li><strong>Supabase (Optional):</strong> Cloud backup - <a href="https://supabase.com/privacy"
+                        target="_blank">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h2>5. Your Rights and Choices</h2>
+
+            <h3>5.1 Data Control</h3>
+            <p>You have complete control over your data:</p>
+            <ul>
+                <li><strong>Access:</strong> View all your stored data anytime</li>
+                <li><strong>Export:</strong> Download your data in JSON/CSV format</li>
+                <li><strong>Delete:</strong> Clear all data from your device instantly</li>
+                <li><strong>Modify:</strong> Edit or update any information</li>
+            </ul>
+
+            <h3>5.2 AI Chat Opt-Out</h3>
+            <p>You can choose not to use the AI chat feature. The core health analysis functions work without AI.</p>
+
+            <h3>5.3 Analytics Opt-Out</h3>
+            <p>You can disable anonymous analytics in the settings (if enabled).</p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>6. Children's Privacy</h2>
+            <p>This service is intended for users 13 years and older. We do not knowingly collect information from
+                children under 13. If you believe we have inadvertently collected such information, please contact us
+                immediately.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>7. Changes to This Policy</h2>
+            <p>We may update this privacy policy from time to time. We will notify you of significant changes by:</p>
+            <ul>
+                <li>Displaying a notice on the application</li>
+                <li>Updating the "Last Updated" date below</li>
+            </ul>
+            <p>Continued use of the service after changes indicates acceptance of the updated policy.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h2>8. Contact Us</h2>
+            <p>If you have questions about this privacy policy or your data, please contact:</p>
+            <ul>
+                <li><strong>GitHub:</strong> <a href="https://github.com/24b61a66c4-byte/PCOS-AI-WEBPAGE"
+                        target="_blank">PCOS-AI-WEBPAGE Repository</a></li>
+                <li><strong>Issues:</strong> Open an issue on GitHub for privacy concerns</li>
+            </ul>
+        </div>
+
+        <div class="highlight-box">
+            <strong>⚠️ Medical Disclaimer</strong>
+            <p style="margin-top: 12px; margin-bottom: 0;">
+                This application provides educational information and risk assessment tools. It is NOT a substitute
+                for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare
+                provider for medical concerns.
+            </p>
+        </div>
+
+        <div class="last-updated">
+            <p><strong>Last Updated:</strong> March 6, 2026</p>
+            <p>Version 1.0</p>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        // Initialize theme from localStorage
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+    </script>
+</body>
+
+</html>
