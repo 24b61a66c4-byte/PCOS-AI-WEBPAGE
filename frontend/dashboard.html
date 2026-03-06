@@ -28,8 +28,8 @@
             var isProduction = window.location.hostname !== 'localhost' &&
                 window.location.hostname !== '127.0.0.1';
             var backendURL = isProduction
-                ? 'https://pcos-zeta.vercel.app'  // Use Vercel serverless API (app.js appends /api/...)
-                : 'http://localhost:5000';          // Use local Flask backend (app.js appends /api/...)
+                ? 'https://pcos-ai-webpage.railway.app'  // Use Railway backend API
+                : 'http://localhost:5000';          // Use local Flask backend
 
             window.CONFIG = {
                 BACKEND_URL: backendURL,
