@@ -1,0 +1,59 @@
+# Exclude frontend files (deployed on Vercel)
+frontend/
+node_modules/
+node_modules_old/
+
+# Exclude test files
+tests/
+test_results.txt
+comprehensive_test.ps1
+playwright-report/
+test-results/
+
+# Exclude Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Exclude documentation
+docs/
+*.md
+!backend/README.md
+
+# Exclude environment files (set in Railway dashboard instead)
+.env
+.env.local
+.env.example
+
+# Exclude git files
+.git/
+.gitignore
+
+# Exclude IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Exclude development files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Exclude deployment configs for other platforms
+vercel.json
+.vercel/
+railway.toml
+
+# Exclude scripts
+scripts/
+*.ps1
+*.sh
+
+# Exclude data files (if any)
+data/
+*.csv
+*.json
+!backend/requirements.txt

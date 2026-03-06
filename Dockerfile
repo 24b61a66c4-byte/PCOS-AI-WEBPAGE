@@ -12,9 +12,11 @@ COPY backend/ .
 # Set environment
 ENV FLASK_APP=app.py
 ENV PYTHONUNBUFFERED=1
+ENV FLASK_ENV=production
 
-# Expose port
-EXPOSE 5000
+# Railway provides PORT environment variable dynamically
+# Expose port (Railway will override this with $PORT)
+EXPOSE $PORT
 
-# Run the app
+# Run the app (will use PORT from environment)
 CMD ["python", "app.py"]
