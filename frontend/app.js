@@ -1954,4 +1954,18 @@ Image Analysis Instructions:
       }
     });
   }
+
+  // Function to view full report
+  window.viewFullReport = function() {
+    const savedAnalysis = localStorage.getItem('pcos_last_analysis');
+    const savedEntry = localStorage.getItem('pcos_last_entry');
+    
+    if (!savedAnalysis && !savedEntry) {
+      alert('No report saved yet. Please complete a symptom analysis first by clicking "Log Today\'s Symptoms".');
+      return;
+    }
+    
+    // Navigate to results page
+    window.location.href = 'results.html';
+  };
 });
