@@ -177,6 +177,16 @@ def health_check():
     return jsonify({"status": "healthy", "service": "PCOS Smart Assistant API"}), 200
 
 
+@app.route("/api/health", methods=["GET"])
+def api_health_check():
+    return jsonify({
+        "status": "ok",
+        "timestamp": datetime.now().isoformat(),
+        "version": "1.0.0",
+        "service": "PCOS Smart Assistant API"
+    }), 200
+
+
 @app.route("/api/analyze-step", methods=["POST"])
 @rate_limit
 def analyze_step():

@@ -478,9 +478,9 @@ function renderRiskAssessment(analysis) {
 }
 
 function getRiskLevel(score) {
-  if (score <= 25) return { key: 'low', label: 'Low Risk' };
-  if (score <= 50) return { key: 'moderate', label: 'Moderate Risk' };
-  return { key: 'high', label: 'Higher Risk' };
+  if (score <= 25) return { key: 'low', label: 'Low Indication' };
+  if (score <= 50) return { key: 'moderate', label: 'Moderate Indication' };
+  return { key: 'high', label: 'Strong Indication' };
 }
 
 function renderPcosInsightResult(entry, analysis) {
