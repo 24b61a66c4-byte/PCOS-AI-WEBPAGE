@@ -1186,8 +1186,39 @@ Image Analysis Instructions:
     const loader = document.getElementById('formLoader');
     submitBtn.disabled = isSubmitting;
     submitBtn.classList.toggle('is-loading', isSubmitting);
-    submitBtn.textContent = isSubmitting ? 'Saving...' : submitLabel;
+    submitBtn.textContent = isSubmitting ? 'Analysing...' : submitLabel;
     if (loader) loader.classList.toggle('hidden', !isSubmitting);
+  }
+
+  function runLoaderAnimation() {
+    const loaderText = document.getElementById('loaderText');
+    if (!loaderText) return Promise.resolve();
+
+    // Total animation minimum duration: 4.5 seconds
+    const P1_DURATION = 1500;
+    const P2_DURATION = 1500;
+    const P3_DURATION = 1500;
+
+    return new Promise((resolve) => {
+      // Phase 1 (0 to 1.5s): Analysing the inputs...
+      loaderText.textContent = 'Analysing the inputs...';
+      if (window.i18n) loaderText.setAttribute('data-i18n', 'form.analysingInputs');
+
+      setTimeout(() => {
+        // Phase 2 (1.5 to 3.0s): Diagnosing it...
+        loaderText.textContent = 'Diagnosing it...';
+        if (window.i18n) loaderText.setAttribute('data-i18n', 'form.diagnosingIt');
+      }, P1_DURATION);
+
+      setTimeout(() => {
+        // Phase 3 (3.0 to 4.5s): Preparing the result report...
+        loaderText.textContent = 'Preparing the result report...';
+        if (window.i18n) loaderText.setAttribute('data-i18n', 'form.preparingReport');
+      }, P1_DURATION + P2_DURATION);
+
+      // Resolve when full animation completes
+      setTimeout(resolve, P1_DURATION + P2_DURATION + P3_DURATION);
+    });
   }
 
   function collectDraft() {
@@ -1831,6 +1862,9 @@ Image Analysis Instructions:
       };
 
       try {
+        // Start animation sequence
+        const animationPromise = runLoaderAnimation();
+
         // Save locally
         const entries = JSON.parse(localStorage.getItem('pcos_entries') || '[]');
         entries.push(fullData);
@@ -1838,39 +1872,47 @@ Image Analysis Instructions:
         localStorage.setItem('pcos_last_entry', JSON.stringify(fullData));
         localStorage.removeItem(DRAFT_KEY);
 
-        // Push to Supabase
-        void pushEntryToSupabase(fullData);
+        // Core data processing wrapped in a promise representing the network/local analysis work
+        const processDataPromise = (async () => {
+          // Push to Supabase
+          void pushEntryToSupabase(fullData);
 
-        // Call backend API for analysis
-        await waitForConfigReady();
-        const backendUrl = getBackendUrl();
+          // Call backend API for analysis
+          await waitForConfigReady();
+          const backendUrl = getBackendUrl();
 
-        let resultToStore = buildFallbackAnalysisResult(fullData);
-        let usedFallback = true;
+          let resultToStore = buildFallbackAnalysisResult(fullData);
+          let usedFallback = true;
 
-        try {
-          const response = await fetch(`${backendUrl}/api/analyze`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(fullData)
-          });
+          try {
+            const response = await fetch(`${backendUrl}/api/analyze`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(fullData)
+            });
 
-          if (response.ok) {
-            const result = await response.json();
-            if (result && typeof result === 'object') {
-              resultToStore = result;
-              usedFallback = false;
+            if (response.ok) {
+              const result = await response.json();
+              if (result && typeof result === 'object') {
+                resultToStore = result;
+                usedFallback = false;
+              }
+            } else {
+              console.warn('Analyze API returned non-OK status:', response.status);
             }
-          } else {
-            console.warn('Analyze API returned non-OK status:', response.status);
+          } catch (apiError) {
+            console.log('Backend API not available, using fallback:', apiError);
           }
-        } catch (apiError) {
-          console.log('Backend API not available, using fallback:', apiError);
-        }
 
-        localStorage.setItem('pcos_last_analysis', JSON.stringify(resultToStore));
+          localStorage.setItem('pcos_last_analysis', JSON.stringify(resultToStore));
+          return usedFallback;
+        })();
+
+        // Wait for both the minimum animation time and the data processing to finish
+        const [, usedFallback] = await Promise.all([animationPromise, processDataPromise]);
+
         showMessage(
           usedFallback
             ? '✨ Saved. Backend is unavailable, so we prepared your report using local analysis.'
@@ -1878,9 +1920,8 @@ Image Analysis Instructions:
           'success'
         );
 
-        setTimeout(() => {
-          window.location.href = 'results.html';
-        }, 1200);
+        // Redirect immediately after both complete
+        window.location.href = 'results.html';
       } catch (err) {
         showMessage('⚠️ Error saving data. Please try again.', 'error');
         console.error('Storage error:', err);
