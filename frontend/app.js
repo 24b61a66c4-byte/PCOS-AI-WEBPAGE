@@ -106,7 +106,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function getBackendUrl() {
     const backendUrl = getConfig().BACKEND_URL;
-    return hasValue(backendUrl) ? backendUrl.trim() : 'http://localhost:5000';
+    if (hasValue(backendUrl)) {
+      return backendUrl.trim();
+    }
+
+    // Auto-detect production environments
+    const hostname = window.location.hostname || '';
+    if (hostname.includes('vercel.app') || hostname.includes('github.io')) {
+      return ''; // Use relative paths on deployed platforms
+    }
+
+    return 'http://localhost:5000';
   }
 
   function getAiChatEndpoint() {
