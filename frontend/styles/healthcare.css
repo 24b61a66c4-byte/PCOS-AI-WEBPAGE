@@ -49,6 +49,134 @@
   color: var(--color-text-secondary, #475569);
 }
 
+/* Dashboard Utility Classes */
+.stat-icon--calendar {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0ea5e9;
+}
+
+.stat-icon--period {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.stat-icon--health {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.stat-icon--symptoms {
+  background: rgba(147, 51, 234, 0.1);
+  color: #9333ea;
+}
+
+.quick-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn--full-center {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  gap: var(--space-sm, 0.5rem);
+}
+
+.btn--full-center>i {
+  line-height: 1;
+}
+
+.privacy-info-flex {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.privacy-emoji {
+  font-size: 2rem;
+}
+
+.privacy-title {
+  margin-bottom: 4px;
+}
+
+.privacy-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.cta-box--privacy {
+  margin-top: 32px;
+  background: rgba(14, 165, 233, 0.05);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+.progress-bar--mt {
+  margin-top: 16px;
+}
+
+.progress-bar__fill--75 {
+  width: 75%;
+}
+
+.cycle-note {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+}
+
+.assistant-card--modal {
+  max-width: 600px;
+}
+
+.assistant-body--tall {
+  height: 400px;
+}
+
+.assistant-header-title {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.chat-welcome-list {
+  margin: 8px 0 0 20px;
+}
+
+.chat-input--flex {
+  flex: 1;
+}
+
+.fab-icon-large {
+  font-size: 2.1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mt-12 {
+  margin-top: 12px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.info-box--mt {
+  margin-top: 40px;
+}
+
 .step-indicator:not(:last-child)::after {
   content: '';
   position: absolute;
@@ -113,9 +241,19 @@
   font-size: 2.1rem;
   border-radius: var(--radius-full, 9999px);
   background: var(--color-bg-tertiary, #e2e8f0);
-  padding: 0.5rem 0.7rem;
   box-shadow: 0 2px 8px rgba(14, 165, 233, 0.07);
-  margin-right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  margin-right: 0;
+}
+
+.recommendation-item__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
 }
 
 .healthcare-card__title,
@@ -256,6 +394,7 @@
 .healthcare-card.glass,
 .card.glass {
   background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
   backdrop-filter: blur(12px) saturate(1.2);
   border: 1.5px solid rgba(14, 165, 233, 0.13);
   box-shadow: 0 8px 32px rgba(14, 165, 233, 0.13), 0 3px 12px rgba(15, 23, 42, 0.10);
@@ -690,6 +829,9 @@ a:hover {
   font-size: 1.5rem;
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   color: white;
+  padding: 0;
+  margin-right: 0;
+  box-sizing: border-box;
 }
 
 .healthcare-card__title {
@@ -970,7 +1112,10 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  margin-right: 0;
   margin-bottom: var(--space-md);
+  box-sizing: border-box;
 }
 
 .stat-item__value {
@@ -1058,6 +1203,7 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 100;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.95);
 }
@@ -1075,6 +1221,32 @@ a:hover {
   gap: var(--space-md);
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.nav__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-primary);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.nav__logo:hover {
+  color: var(--color-primary-dark);
+}
+
+.logo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  line-height: 1;
 }
 
 /* ===========================================
@@ -1296,6 +1468,58 @@ body:not(.light-theme) .circular-progress .progress-ring__bg {
 .metric-display__status--alert {
   background: rgba(239, 68, 68, 0.1);
   color: var(--color-danger);
+}
+
+.health-metric {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.health-metric__icon {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--color-primary);
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.health-metric__info {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.health-metric__unit {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.health-metric__trend {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full, 9999px);
+  white-space: nowrap;
+}
+
+.health-metric__trend--up {
+  color: var(--color-success);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.health-metric__trend--down {
+  color: var(--color-danger);
+  background: rgba(239, 68, 68, 0.1);
 }
 
 /* ===========================================
@@ -1740,6 +1964,15 @@ body:not(.light-theme) .circular-progress .progress-ring__bg {
     flex-direction: column;
     text-align: center;
     gap: var(--space-md);
+  }
+
+  .health-metric {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .health-metric__trend {
+    margin-left: auto;
   }
 
   .metric-display__chart {

@@ -1187,7 +1187,7 @@ Image Analysis Instructions:
     submitBtn.disabled = isSubmitting;
     submitBtn.classList.toggle('is-loading', isSubmitting);
     submitBtn.textContent = isSubmitting ? 'Saving...' : submitLabel;
-    if (loader) loader.style.display = isSubmitting ? 'flex' : 'none';
+    if (loader) loader.classList.toggle('hidden', !isSubmitting);
   }
 
   function collectDraft() {
@@ -1338,9 +1338,9 @@ Image Analysis Instructions:
 
     updateProgress();
 
-    if (prevBtn) prevBtn.style.display = step === 1 ? 'none' : 'block';
-    if (nextBtn) nextBtn.style.display = step === totalSteps ? 'none' : 'block';
-    if (submitBtn) submitBtn.style.display = step === totalSteps ? 'block' : 'none';
+    if (prevBtn) prevBtn.classList.toggle('hidden', step === 1);
+    if (nextBtn) nextBtn.classList.toggle('hidden', step === totalSteps);
+    if (submitBtn) submitBtn.classList.toggle('hidden', step !== totalSteps);
 
     lenis.scrollTo(document.querySelector('.form-section'), {
       offset: -150,
@@ -1367,6 +1367,8 @@ Image Analysis Instructions:
       const age = Number(document.getElementById('age').value || NaN);
       const weightInput = document.getElementById('weight').value;
       const heightInput = document.getElementById('height').value;
+      const weight = Number(weightInput || NaN);
+      const height = Number(heightInput || NaN);
 
       // Age is required
       if (!Number.isFinite(age) || age < 10 || age > 80) {
@@ -1375,26 +1377,20 @@ Image Analysis Instructions:
       }
       if (isValid) formData.age = age;
 
-      // Weight is optional - only validate if provided
-      if (weightInput && weightInput.trim() !== '') {
-        const weight = Number(weightInput);
-        if (weight < 30 || weight > 300) {
-          setError('weight', 'Enter a valid weight between 30 and 300 kg.');
-          isValid = false;
-        } else if (weight > 0) {
-          formData.weight = weight;
-        }
+      // Weight is required
+      if (!weightInput || weightInput.trim() === '' || !Number.isFinite(weight) || weight < 30 || weight > 300) {
+        setError('weight', 'Enter a valid weight between 30 and 300 kg.');
+        isValid = false;
+      } else {
+        formData.weight = weight;
       }
 
-      // Height is optional - only validate if provided
-      if (heightInput && heightInput.trim() !== '') {
-        const height = Number(heightInput);
-        if (height < 100 || height > 250) {
-          setError('height', 'Enter a valid height between 100 and 250 cm.');
-          isValid = false;
-        } else if (height > 0) {
-          formData.height = height;
-        }
+      // Height is required
+      if (!heightInput || heightInput.trim() === '' || !Number.isFinite(height) || height < 100 || height > 250) {
+        setError('height', 'Enter a valid height between 100 and 250 cm.');
+        isValid = false;
+      } else {
+        formData.height = height;
       }
     }
 
@@ -1956,15 +1952,15 @@ Image Analysis Instructions:
   }
 
   // Function to view full report
-  window.viewFullReport = function() {
+  window.viewFullReport = function () {
     const savedAnalysis = localStorage.getItem('pcos_last_analysis');
     const savedEntry = localStorage.getItem('pcos_last_entry');
-    
+
     if (!savedAnalysis && !savedEntry) {
       alert('No report saved yet. Please complete a symptom analysis first by clicking "Log Today\'s Symptoms".');
       return;
     }
-    
+
     // Navigate to results page
     window.location.href = 'results.html';
   };
