@@ -1,7 +1,11 @@
 // Smart Config Loader
 // Loads config with environment-aware fallback sequence and exposes readiness promise.
 (function () {
-  const candidates = ['config.local.js', 'config.prod.js', 'config.js'];
+  const localHostnames = ['localhost', '127.0.0.1', '::1', '0.0.0.0'];
+  const isLocal = localHostnames.indexOf(window.location.hostname) !== -1;
+  const candidates = isLocal
+    ? ['config.local.js', 'config.js']
+    : ['config.prod.js', 'config.js'];
 
   let resolveConfigReady;
   window.__CONFIG_READY__ = new Promise((resolve) => {
@@ -36,9 +40,7 @@
 
     const configPath = candidates[index];
     const script = document.createElement('script');
-    // Add cache buster to force fresh load (important for development)
-    const cacheBuster = Date.now();
-    script.src = `${configPath}?cb=${cacheBuster}`;
+    script.src = configPath;
 
     script.onload = () => {
       const hasConfig = window.CONFIG && typeof window.CONFIG === 'object';
