@@ -498,6 +498,82 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       await expect(page.locator('#latest-timestamp')).toContainText(/no entries yet/i);
       await expect(page.locator('#latest-status')).toContainText(/add first entry/i);
     });
+
+    test('should send a PCOS question from dashboard assistant and render AI reply', async ({ page }) => {
+      await page.route('**/api/ai/chat', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            id: 'test-chat-success',
+            object: 'chat.completion',
+            created: Date.now(),
+            model: 'test-model',
+            choices: [
+              {
+                index: 0,
+                message: {
+                  role: 'assistant',
+                  content: 'PCOS can involve irregular cycles and acne. Balanced diet, exercise, and sleep hygiene can help.'
+                },
+                finish_reason: 'stop'
+              }
+            ]
+          }),
+        });
+      });
+
+      await page.goto('http://localhost:8080/frontend/dashboard.html');
+      await page.evaluate(() => {
+        const button = document.getElementById('openAIFab');
+        if (button) button.click();
+      });
+      await expect(page.locator('#assistantPanel')).toHaveClass(/open/);
+
+      const initialAssistantCount = await page.locator('#chatMessages .assistant-msg').count();
+      const chatResponse = page.waitForResponse((res) => res.url().includes('/api/ai/chat') && res.status() === 200);
+
+      await page.fill('#chatInput', 'What are common PCOS symptoms?');
+      await page.press('#chatInput', 'Enter');
+      await chatResponse;
+
+      await expect(page.locator('#chatMessages .user-msg').last()).toContainText('What are common PCOS symptoms?');
+      await expect(page.locator('#chatMessages .assistant-msg')).toHaveCount(initialAssistantCount + 1);
+      await expect(page.locator('#chatMessages .assistant-msg').last()).toContainText(/PCOS can involve irregular cycles and acne/i);
+    });
+
+    test('should show assistant error banner when AI backend fails', async ({ page }) => {
+      await page.route('**/api/ai/chat', async (route) => {
+        await route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'Internal test failure' }),
+        });
+      });
+
+      await page.route('**/api/client-log', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ success: true }),
+        });
+      });
+
+      await page.goto('http://localhost:8080/frontend/dashboard.html');
+      await page.evaluate(() => {
+        const button = document.getElementById('openAIFab');
+        if (button) button.click();
+      });
+
+      const chatResponse = page.waitForResponse((res) => res.url().includes('/api/ai/chat') && res.status() === 500);
+      await page.fill('#chatInput', 'Can you help with PCOS lifestyle tips?');
+      await page.press('#chatInput', 'Enter');
+      await chatResponse;
+
+      await expect(page.locator('.chat-error-banner')).toBeVisible();
+      await expect(page.locator('.chat-error-banner')).toContainText(/encountered an error|backend ai service/i);
+      await expect(page.locator('.chat-retry-btn')).toBeVisible();
+    });
   });
 
   test.describe('Results Page', () => {
@@ -679,6 +755,21 @@ test.describe('PCOS Smart Assistant - E2E Tests', () => {
       expect(data.status).toBe('ok');
       expect(data.timestamp).toBeDefined();
       expect(data.version).toBeDefined();
+    });
+
+    test('should accept /api/client-log telemetry payload', async ({ page }) => {
+      const response = await page.request.post('http://localhost:5000/api/client-log', {
+        data: {
+          event: 'ai_chat_error',
+          severity: 'warning',
+          message: 'test telemetry event',
+          meta: { source: 'e2e' }
+        }
+      });
+
+      expect(response.status()).toBe(200);
+      const data = await response.json();
+      expect(data.success).toBe(true);
     });
   });
 

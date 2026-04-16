@@ -19,8 +19,9 @@ function runLoader({ hostname, outcomes }) {
   const mockDocument = {
     head: {
       appendChild: jest.fn((script) => {
-        appended.push(script.src);
-        const outcome = outcomes[script.src] || { type: 'error' };
+        const normalizedSrc = String(script.src || '').split('?')[0];
+        appended.push(normalizedSrc);
+        const outcome = outcomes[normalizedSrc] || { type: 'error' };
 
         if (outcome.type === 'load') {
           if (Object.prototype.hasOwnProperty.call(outcome, 'config')) {

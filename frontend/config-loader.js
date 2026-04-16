@@ -1,7 +1,30 @@
 // Smart Config Loader
 // Loads config with environment-aware fallback sequence and exposes readiness promise.
 (function () {
-  const candidates = ['config.local.js', 'config.prod.js', 'config.js'];
+  const hostname = (window.location && window.location.hostname) || '';
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+  const hasInlineConfig = window.CONFIG && typeof window.CONFIG === 'object';
+
+  // Respect page-level inline config on deployed environments.
+  // This avoids production accidentally being overwritten by local config files.
+  if (!isLocalhost && hasInlineConfig) {
+    window.__CONFIG_READY__ = Promise.resolve(window.CONFIG);
+    try {
+      window.dispatchEvent(new CustomEvent('config:ready', {
+        detail: {
+          path: 'inline',
+          config: window.CONFIG,
+        },
+      }));
+    } catch (error) {
+      // No-op for environments without CustomEvent support.
+    }
+    return;
+  }
+
+  const candidates = isLocalhost
+    ? ['config.local.js', 'config.js']
+    : ['config.prod.js', 'config.js'];
 
   let resolveConfigReady;
   window.__CONFIG_READY__ = new Promise((resolve) => {

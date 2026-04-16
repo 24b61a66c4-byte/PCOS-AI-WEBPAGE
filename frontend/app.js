@@ -140,6 +140,50 @@ document.addEventListener('DOMContentLoaded', function () {
     return `${baseUrl}/api/ai/chat`;
   }
 
+  function getClientLogEndpoint() {
+    const baseUrl = getBackendUrl().replace(/\/+$/, '');
+    return `${baseUrl}/api/client-log`;
+  }
+
+  function reportAiClientError(context) {
+    const payload = {
+      event: 'ai_chat_error',
+      severity: 'warning',
+      message: context?.message || 'Unknown AI chat error',
+      meta: {
+        status: context?.status || null,
+        online: navigator.onLine,
+        path: window.location.pathname,
+        userAgent: navigator.userAgent,
+        at: new Date().toISOString(),
+      },
+    };
+
+    const endpoint = getClientLogEndpoint();
+    const body = JSON.stringify(payload);
+
+    try {
+      if (navigator.sendBeacon) {
+        const blob = new Blob([body], { type: 'application/json' });
+        navigator.sendBeacon(endpoint, blob);
+        return;
+      }
+    } catch (sendBeaconError) {
+      console.warn('Client telemetry sendBeacon failed:', sendBeaconError);
+    }
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
+      keepalive: true,
+    }).catch((telemetryError) => {
+      console.warn('Client telemetry fetch failed:', telemetryError);
+    });
+  }
+
   let supabaseClientCache = null;
   let supabaseInitLogged = false;
 
@@ -859,6 +903,11 @@ Image Analysis Instructions:
       return assistantMessage;
     } catch (error) {
       console.error('Chat error:', error);
+      const statusMatch = String(error && error.message ? error.message : '').match(/Backend AI error:\s*(\d{3})/);
+      reportAiClientError({
+        message: error && error.message ? error.message : 'AI chat request failed',
+        status: statusMatch ? Number(statusMatch[1]) : null,
+      });
 
       let errorMessage = 'Sorry, I encountered an error. ';
       if (error.message?.includes('Failed to fetch')) {

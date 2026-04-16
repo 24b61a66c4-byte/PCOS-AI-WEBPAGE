@@ -592,6 +592,38 @@ def ai_chat():
     return jsonify(generate_local_ai_response(payload)), 200
 
 
+@app.route("/api/client-log", methods=["POST"])
+def client_log():
+    """Accept sanitized client telemetry logs for diagnostics."""
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+
+    payload = request.get_json(silent=True) or {}
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Invalid request body"}), 400
+
+    event = sanitize_input(str(payload.get("event", "client_event")), "event")[:80]
+    severity = sanitize_input(str(payload.get("severity", "info")), "severity").lower()[:10]
+    message = sanitize_input(str(payload.get("message", "")), "message")[:500]
+    meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+
+    safe_meta = {}
+    for key, value in meta.items():
+        safe_key = sanitize_input(str(key), "meta_key")[:60]
+        safe_value = sanitize_input(str(value), "meta_value")[:300]
+        safe_meta[safe_key] = safe_value
+
+    log_line = f"client-log event={event} severity={severity} message={message} meta={safe_meta}"
+    if severity == "error":
+        logger.error(log_line)
+    elif severity == "warning":
+        logger.warning(log_line)
+    else:
+        logger.info(log_line)
+
+    return jsonify({"success": True}), 200
+
+
 
 
 def call_openrouter(payload, api_key):
