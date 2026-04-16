@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function () {
     suggestions.push('If you ever feel severe pain, heavy bleeding, or faintness, seek urgent care using your local emergency number.');
 
     if (city) {
-      suggestions.push(`Check for women\'s health or endocrinology clinics in ${city} if you need a specialist.`);
+      suggestions.push(`Check for women's health or endocrinology clinics in ${city} if you need a specialist.`);
     }
 
     if (pcos === 'not_diagnosed' && symptoms.length > 0) {

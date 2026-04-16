@@ -3,6 +3,8 @@
  * Reusable state management and side-effect logic
  */
 
+import React from 'react';
+
 /**
  * useLocalStorage - Persist state in localStorage
  */

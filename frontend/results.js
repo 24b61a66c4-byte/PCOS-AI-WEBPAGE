@@ -575,7 +575,7 @@ function renderDoctors() {
     {
       name: 'Dr. Sarah Johnson',
       specialty: 'Gynecologist',
-      hospital: "City Women's Health Center",
+      hospital: 'City Women\'s Health Center',
       rating: '4.8',
       expertise: ['PCOS', 'Fertility', 'Endocrinology'],
     },
