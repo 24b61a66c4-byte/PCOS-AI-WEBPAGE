@@ -807,6 +807,13 @@ document.addEventListener('DOMContentLoaded', function () {
     return stored;
   }
 
+  function confirmLanguageChange(languageLabel) {
+    const message = window.i18n && typeof window.i18n.t === 'function'
+      ? window.i18n.t('common.changeLanguageConfirm', { language: languageLabel })
+      : `Switch to ${languageLabel}? The page will update immediately.`;
+    return window.confirm(message);
+  }
+
   let chatHistory = [];
   let currentImage = null;
 
@@ -2092,6 +2099,12 @@ Image Analysis Instructions:
 
     insightLanguage.addEventListener('change', (e) => {
       const selectedLang = e.target.value;
+      const selectedLabel = e.target.options?.[e.target.selectedIndex]?.text || selectedLang;
+      const currentLang = window.i18n ? window.i18n.getLang() : getInsightLanguage();
+      if (!confirmLanguageChange(selectedLabel)) {
+        insightLanguage.value = currentLang;
+        return;
+      }
       // Save language preference
       localStorage.setItem(INSIGHT_LANG_KEY, selectedLang || 'en');
       // Use TranslationManager if available
@@ -2119,6 +2132,12 @@ Image Analysis Instructions:
 
     languageSelect.addEventListener('change', (e) => {
       const selectedLang = e.target.value;
+      const selectedLabel = e.target.options?.[e.target.selectedIndex]?.text || selectedLang;
+      const currentLang = window.i18n ? window.i18n.getLang() : getInsightLanguage();
+      if (!confirmLanguageChange(selectedLabel)) {
+        languageSelect.value = currentLang;
+        return;
+      }
       if (window.i18n) {
         window.i18n.setLang(selectedLang);
         languageSelect.value = selectedLang || 'en';
