@@ -24,12 +24,17 @@
     <script>
         // Set fallback config BEFORE config-loader runs
         if (!window.CONFIG) {
-            // Auto-detect backend URL based on environment
-            var isProduction = window.location.hostname !== 'localhost' &&
-                window.location.hostname !== '127.0.0.1';
-            var backendURL = isProduction
-                ? 'https://pcos-ai-webpage.railway.app'  // Use Railway backend API
-                : 'http://localhost:5000';          // Use local Flask backend
+            // Auto-detect backend URL based on environment.
+            // Production builds on Vercel/GitHub Pages should call the deployed API route/root.
+            var hostname = window.location.hostname;
+            var isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+            var isVercel = hostname.indexOf('vercel.app') !== -1;
+            var isGitHubPages = hostname.indexOf('github.io') !== -1;
+            var backendURL = isLocalhost
+                ? 'http://localhost:5000'
+                : (isVercel || isGitHubPages)
+                    ? window.location.origin
+                    : 'https://pcos-zeta.vercel.app';
 
             window.CONFIG = {
                 BACKEND_URL: backendURL,
@@ -74,15 +79,15 @@
         <div class="top-nav__right">
             <div class="lang-switch">
                 <select id="languageSelect" aria-label="Select language">
-                    <option value="en">English</option>
-                    <option value="te">తెలుగు</option>
-                    <option value="hi">हिंदी</option>
+                    <option value="en" data-i18n="language.en">English</option>
+                    <option value="te" data-i18n="language.te">తెలుగు</option>
+                    <option value="hi" data-i18n="language.hi">हिंदी</option>
                 </select>
             </div>
             <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
                 <span class="theme-icon"></span>
             </button>
-            <a href="form.html" class="btn btn--primary btn--sm">Add Entry</a>
+            <a href="form.html" class="btn btn--primary btn--sm" data-i18n="nav.addEntry">Add Entry</a>
         </div>
     </header>
 
