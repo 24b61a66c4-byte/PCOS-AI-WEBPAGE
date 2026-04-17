@@ -199,7 +199,7 @@
                     <div class="progress-bar progress-bar--mt">
                         <div class="progress-bar__fill progress-bar__fill--75"></div>
                     </div>
-                    <p class="cycle-note">Day 21 of cycle - follicular phase</p>
+                    <p class="cycle-note" data-i18n="dashboard.cycleNote">Day 21 of cycle - follicular phase</p>
                 </div>
             </div>
 
@@ -236,8 +236,9 @@
             <div class="privacy-info-flex">
                 <div class="privacy-emoji">🔒</div>
                 <div>
-                    <h4 class="privacy-title">Your Privacy is Protected</h4>
-                    <p class="privacy-text">All your health data is stored locally on your device. We never transmit or
+                    <h4 class="privacy-title" data-i18n="dashboard.yourPrivacy">Your Privacy is Protected</h4>
+                    <p class="privacy-text" data-i18n="dashboard.privacyMessage">All your health data is stored locally
+                        on your device. We never transmit or
                         share your personal information.</p>
                 </div>
             </div>
@@ -275,13 +276,14 @@
                         <div class="ai-avatar-inner"><i class="fas fa-robot" aria-hidden="true"></i></div>
                     </div>
                     <div class="assistant-header-content">
-                        <h2 class="assistant-header-title">AI Health Assistant</h2>
+                        <h2 class="assistant-header-title" data-i18n="dashboard.aiHealthAssistant">AI Health Assistant
+                        </h2>
                         <div class="assistant-header-subtitle">
                             <span class="ai-badge">
                                 <span class="ai-badge-dot"></span>
                                 AI
                             </span>
-                            <span>● Online</span>
+                            <span data-i18n="dashboard.online">● Online</span>
                         </div>
                     </div>
                 </div>
@@ -293,12 +295,13 @@
                     <div class="chat-message assistant-msg">
                         <div class="message-avatar hidden"><i class="fas fa-robot" aria-hidden="true"></i></div>
                         <div class="message-content">
-                            <p>👋 Hello! I'm your AI Health Assistant.</p>
-                            <p>I can help you understand your health data better. Ask me about:</p>
+                            <p data-i18n="dashboard.helloAI">👋 Hello! I'm your AI Health Assistant.</p>
+                            <p data-i18n="dashboard.helpWith">I can help you understand your health data better. Ask me
+                                about:</p>
                             <ul class="chat-welcome-list">
-                                <li>Your cycle patterns</li>
-                                <li>Symptom analysis</li>
-                                <li>Lifestyle recommendations</li>
+                                <li data-i18n="dashboard.cyclePatterns">Your cycle patterns</li>
+                                <li data-i18n="dashboard.symptomAnalysis">Symptom analysis</li>
+                                <li data-i18n="dashboard.lifestyleRecommendations">Lifestyle recommendations</li>
                             </ul>
                         </div>
                     </div>
@@ -307,14 +310,16 @@
                     <input type="file" id="imageUpload" accept="image/*" class="hidden" aria-label="Upload Image">
                     <button class="btn btn--ghost btn--icon" id="uploadBtn" type="button" title="Upload image"
                         aria-label="Upload Image" tabindex="0"><i class="fas fa-camera" aria-hidden="true"></i></button>
-                    <textarea id="chatInput" placeholder="Type your question..." rows="1" class="chat-input--flex"
-                        aria-label="Chat Input" tabindex="0"></textarea>
+                    <textarea id="chatInput" data-i18n-placeholder="dashboard.typeYourQuestion"
+                        placeholder="Type your question..." rows="1" class="chat-input--flex" aria-label="Chat Input"
+                        tabindex="0"></textarea>
                     <button class="btn btn--primary btn--icon" id="chatSend" type="button" aria-label="Send Message"
                         tabindex="0"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
                 </div>
                 <p class="ai-disclaimer">
-                    <i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Educational only. Not medical advice.
-                    Consult a healthcare provider.
+                    <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+                    <span data-i18n="dashboard.educationalOnly">Educational only. Not medical advice. Consult a
+                        healthcare provider.</span>
                 </p>
             </div>
         </div>

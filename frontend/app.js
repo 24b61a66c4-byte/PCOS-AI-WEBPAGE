@@ -1143,9 +1143,17 @@ Image Analysis Instructions:
     });
   }
 
-  function initDashboard() {
+  function tDashboard(key, fallback, params = {}) {
+    if (window.i18n && typeof window.i18n.t === 'function') {
+      const translated = window.i18n.t(key, params);
+      return translated && translated !== key ? translated : fallback;
+    }
+    return fallback;
+  }
+
+  function initDashboard(showLoader = true) {
     const loader = document.getElementById('dashboardLoader');
-    if (loader) loader.style.display = 'flex';
+    if (loader && showLoader) loader.style.display = 'flex';
     const timestampEl = document.getElementById('latest-timestamp');
     const lastPeriodEl = document.getElementById('latest-last-period');
     if (!timestampEl || !lastPeriodEl) return;
@@ -1169,30 +1177,40 @@ Image Analysis Instructions:
     } catch (err) {
       console.warn('Dashboard load failed:', err);
     } finally {
-      if (loader) setTimeout(() => { loader.style.display = 'none'; }, 600);
+      if (loader) {
+        if (showLoader) {
+          setTimeout(() => { loader.style.display = 'none'; }, 600);
+        } else {
+          loader.style.display = 'none';
+        }
+      }
     }
 
+    const dayLabel = tDashboard('dashboard.days', 'days');
+    const selectedLabel = tDashboard('dashboard.selected', 'selected');
+    const savedPrefix = tDashboard('dashboard.savedOn', 'Saved {date}');
+
     if (lastEntry) {
-      timestampEl.textContent = `Saved ${formatDate(lastEntry.timestamp)}`;
+      timestampEl.textContent = savedPrefix.replace('{date}', formatDate(lastEntry.timestamp));
       lastPeriodEl.textContent = formatDate(lastEntry.last_period);
       if (cycleEl) {
-        cycleEl.textContent = lastEntry.cycle_length ? `${lastEntry.cycle_length} days` : '—';
+        cycleEl.textContent = lastEntry.cycle_length ? `${lastEntry.cycle_length} ${dayLabel}` : '—';
       }
       if (periodEl) {
-        periodEl.textContent = lastEntry.period_length ? `${lastEntry.period_length} days` : '—';
+        periodEl.textContent = lastEntry.period_length ? `${lastEntry.period_length} ${dayLabel}` : '—';
       }
       if (symptomsEl) {
         symptomsEl.textContent = Array.isArray(lastEntry.symptoms)
-          ? `${lastEntry.symptoms.length} selected`
+          ? `${lastEntry.symptoms.length} ${selectedLabel}`
           : '—';
       }
       if (summaryEl) {
-        summaryEl.textContent = 'Your latest details are ready to review.';
+        summaryEl.textContent = tDashboard('dashboard.latestDetailsReady', 'Your latest details are ready to review.');
       }
     } else {
-      timestampEl.textContent = 'No entries yet';
+      timestampEl.textContent = tDashboard('dashboard.noEntriesYet', 'No entries yet');
       if (summaryEl) {
-        summaryEl.textContent = 'Add your first details to unlock insights.';
+        summaryEl.textContent = tDashboard('dashboard.addFirstDetails', 'Add your first details to unlock insights.');
       }
     }
 
@@ -1207,10 +1225,10 @@ Image Analysis Instructions:
         : null;
 
       if (insightCycleEl) {
-        insightCycleEl.textContent = avgCycle ? `${avgCycle} days` : '—';
+        insightCycleEl.textContent = avgCycle ? `${avgCycle} ${dayLabel}` : '—';
       }
       if (insightPeriodEl) {
-        insightPeriodEl.textContent = avgPeriod ? `${avgPeriod} days` : '—';
+        insightPeriodEl.textContent = avgPeriod ? `${avgPeriod} ${dayLabel}` : '—';
       }
       if (insightSymptomsEl) {
         const symptomCount = lastEntry && Array.isArray(lastEntry.symptoms)
@@ -2082,16 +2100,22 @@ Image Analysis Instructions:
       if (window.i18n) {
         window.i18n.setLang(selectedLang);
         languageSelect.value = selectedLang || 'en';
+        initDashboard(false);
         renderFormSuggestions();
         renderPcosInsight();
       } else {
         localStorage.setItem(INSIGHT_LANG_KEY, selectedLang || 'en');
         languageSelect.value = selectedLang || 'en';
+        initDashboard(false);
         renderFormSuggestions();
         renderPcosInsight();
       }
     });
   }
+
+  window.addEventListener('languageChanged', () => {
+    initDashboard(false);
+  });
 
   // Function to view full report
   window.viewFullReport = function () {
