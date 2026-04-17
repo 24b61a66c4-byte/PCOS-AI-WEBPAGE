@@ -668,33 +668,54 @@ def client_log():
 
 
 def call_openrouter(payload, api_key):
-    """Call OpenRouter API with fallback on failure"""
+    """Call OpenRouter API with model fallback on failure."""
     try:
         messages = payload.get("messages", [])
         if not messages:
             return None
-        
-        response = requests.post(
-            "https://api.openrouter.ai/api/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://pcos-zeta.vercel.app"
-            },
-            json={
-                "model": "meta-llama/llama-3.1-8b-instruct:free",
-                "messages": messages,
-                "temperature": 0.7,
-                "max_tokens": 600
-            },
-            timeout=10
-        )
-        
-        if response.status_code == 200:
-            return response.json()
+
+        configured_models = os.getenv("OPENROUTER_MODELS", "").strip()
+        model_candidates = [m.strip() for m in configured_models.split(",") if m.strip()] if configured_models else [
+            "meta-llama/llama-3.1-8b-instruct:free",
+            "qwen/qwen-2.5-7b-instruct:free",
+            "openai/gpt-4o-mini"
+        ]
+
+        for model_name in model_candidates:
+            response = requests.post(
+                "https://api.openrouter.ai/api/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://pcos-zeta.vercel.app",
+                    "X-Title": "PCOS Smart Assistant"
+                },
+                json={
+                    "model": model_name,
+                    "messages": messages,
+                    "temperature": 0.7,
+                    "max_tokens": 600
+                },
+                timeout=15
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+                # Preserve provider/model details for diagnostics in client logs.
+                result["provider"] = "openrouter"
+                result["provider_model"] = model_name
+                return result
+
+            logger.warning(
+                "OpenRouter model %s failed with status %s: %s",
+                model_name,
+                response.status_code,
+                (response.text or "")[:300]
+            )
+
         return None
     except Exception as e:
-        print(f"OpenRouter failed: {e}")
+        logger.warning(f"OpenRouter failed: {e}")
         return None
 
 
