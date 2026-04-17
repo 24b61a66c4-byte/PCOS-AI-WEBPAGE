@@ -1244,6 +1244,28 @@ Image Analysis Instructions:
 
   const form = document.getElementById('pcos-form');
   if (!form) {
+    const dashboardLanguageSelect = document.getElementById('languageSelect');
+    if (dashboardLanguageSelect) {
+      if (window.i18n) {
+        dashboardLanguageSelect.value = window.i18n.getLang();
+      }
+
+      dashboardLanguageSelect.addEventListener('change', (e) => {
+        const selectedLang = e.target.value || 'en';
+        if (window.i18n) {
+          window.i18n.setLang(selectedLang);
+        } else {
+          localStorage.setItem(INSIGHT_LANG_KEY, selectedLang);
+        }
+        dashboardLanguageSelect.value = selectedLang;
+        initDashboard(false);
+      });
+
+      window.addEventListener('languageChanged', () => {
+        initDashboard(false);
+      });
+    }
+
     return;
   }
 
