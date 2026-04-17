@@ -86,24 +86,14 @@ Backend runs on http://localhost:5000
 **Terminal 2 - Start Frontend:**
 ```bash
 cd frontend
-# Use any local server, for example:
-python -m http.server 8080
-# or
+# Using Python
+python -m http.server 8000
+
+# Using Node.js
 npx serve
 ```
-Frontend runs on http://localhost:8080
-   ```bash
-   # Using Python
-   python -m http.server 8000
-   
-   # Using Node.js
-   npx serve
-   
-   # Using PHP
-   php -S localhost:8000
-   ```
 
-   Then visit `http://localhost:8000`
+Frontend runs on http://localhost:8000
 
 ## 🔑 API Setup
 
@@ -157,20 +147,40 @@ Frontend runs on http://localhost:8080
 ## 📁 Project Structure
 
 ```
-PSOC/
-├── index.html              # Entry point
+PCOS-AI-WEBPAGE/
+├── README.md               # This file
+├── SETUP.md                # Detailed setup guide
+├── index.html              # Entry redirect to frontend
 ├── frontend/
+│   ├── index.html          # Landing page
 │   ├── dashboard.html      # Main dashboard
-│   ├── form.html          # Health journey form
-│   ├── app.js             # Main application logic
-│   ├── styles.css         # All styles
-│   ├── manifest.json      # PWA manifest
-│   └── assets/            # Images & icons
+│   ├── form.html           # Health journey form
+│   ├── results.html        # Results display
+│   ├── medical-disclaimer.html
+│   ├── app.js              # Main application logic
+│   ├── styles.css          # Core styles
+│   ├── config.example.js   # Config template (copy → config.local.js)
+│   ├── config.prod.js      # Production config (auto-detected)
+│   ├── config-loader.js    # Environment-aware config bootstrap
+│   ├── manifest.json       # PWA manifest
+│   ├── assets/             # Images & icons
+│   ├── components/         # Reusable UI components
+│   ├── services/           # API service layer
+│   ├── utils/              # Helper utilities
+│   ├── hooks/              # Custom hooks
+│   └── ai/                 # AI chat integration
 ├── backend/
-│   ├── sql/               # Database schemas
-│   └── SUPABASE_SETUP.md  # Setup instructions
-└── data/
-    └── README.md          # Dataset information
+│   ├── app.py              # Flask API server
+│   ├── analysis_engine.py  # PCOS risk analysis
+│   ├── doctor_recommendations.py
+│   ├── requirements.txt    # Python dependencies
+│   ├── sql/                # Database schemas
+│   └── tests/              # Backend unit tests
+├── api/                    # Vercel serverless functions
+├── data/                   # Dataset documentation
+├── docs/                   # Internal docs & guides
+├── scripts/                # Build & CI utilities
+└── tests/                  # Frontend E2E tests
 ```
 
 ## 🔒 Privacy & Security

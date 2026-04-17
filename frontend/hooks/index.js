@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Custom Hooks
  * Reusable state management and side-effect logic
  */

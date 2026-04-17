@@ -8,6 +8,7 @@
 
 # API Keys and Secrets
 config.js
+config.local.js
 secrets.js
 agent-secrets.local.json
 
@@ -34,9 +35,11 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Testing
+# Test artifacts
 coverage/
 .nyc_output/
+playwright-report/
+test-results/
 
 # Local database
 *.db

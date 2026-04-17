@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Navbar Component
  * Reusable navigation bar with theme toggle and language selector
  */

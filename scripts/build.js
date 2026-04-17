@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Build script for production
  * Minifies CSS and JS files
  * Run with: node scripts/build.js

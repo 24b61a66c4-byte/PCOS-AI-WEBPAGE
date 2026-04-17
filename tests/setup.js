@@ -1,4 +1,4 @@
-﻿// Jest setup file
+// Jest setup file
 // Mock global objects needed for tests
 
 // Mock localStorage

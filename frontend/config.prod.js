@@ -1,4 +1,4 @@
-﻿// Production API Configuration for GitHub Pages & Vercel Deployment
+// Production API Configuration for GitHub Pages & Vercel Deployment
 
 window.CONFIG = {
   // AI requests are proxied through backend API routes.

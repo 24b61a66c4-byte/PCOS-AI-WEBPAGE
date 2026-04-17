@@ -1,4 +1,4 @@
-﻿/**
+/**
  * FormWizard Component
  * Multi-step health journey form with validation and progress tracking
  */

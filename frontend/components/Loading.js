@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Loading Component
  * Premium loading states with smooth animations
  */

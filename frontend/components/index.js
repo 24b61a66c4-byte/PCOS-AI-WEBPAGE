@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Components Index
  * Export all reusable components
  */

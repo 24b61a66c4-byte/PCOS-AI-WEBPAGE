@@ -1,4 +1,4 @@
-﻿/**
+/**
  * PCOS Smart Assistant - Unit Tests
  * Tests for frontend JavaScript functions
  */
