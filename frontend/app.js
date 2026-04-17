@@ -162,8 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Save entry to both localStorage and Supabase
   async function saveEntry(entry) {
     // Save to localStorage
-    let analysisRaw = localStorage.getItem('pcos_last_analysis');
-    let analysis = analysisRaw ? JSON.parse(analysisRaw) : { entries: [] };
+    const analysisRaw = localStorage.getItem('pcos_last_analysis');
+    const analysis = analysisRaw ? JSON.parse(analysisRaw) : { entries: [] };
     analysis.entries = [entry, ...(analysis.entries || [])];
     localStorage.setItem('pcos_last_analysis', JSON.stringify(analysis));
 

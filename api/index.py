@@ -7,16 +7,18 @@ import os
 import sys
 
 # Add parent directory to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "backend"))
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 import json
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 # Import analysis modules
 try:
     from analysis_engine import PCOSAnalyzer
     from doctor_recommendations import DoctorRecommender
+
     ANALYZER_AVAILABLE = True
 except ImportError:
     ANALYZER_AVAILABLE = False
@@ -45,20 +47,19 @@ def analyze_step():
     """
     if not ANALYZER_AVAILABLE:
         return jsonify({"error": "Analysis service unavailable"}), 503
-        
+
     try:
         data = request.json
         step = data.get("step", 1)
         step_data = data.get("stepData", {})
-        
+
         analysis_result = analyzer.analyze_step(step, step_data)
-        
-        return jsonify({
-            "success": True,
-            "step": step,
-            "analysis": analysis_result
-        }), 200
-        
+
+        return (
+            jsonify({"success": True, "step": step, "analysis": analysis_result}),
+            200,
+        )
+
     except Exception as e:
         print(f"Error in step analysis: {str(e)}")
         return jsonify({"error": str(e)}), 500
@@ -71,7 +72,7 @@ def analyze_data():
     """
     if not ANALYZER_AVAILABLE:
         return jsonify({"error": "Analysis service unavailable"}), 503
-        
+
     try:
         data = request.json
 
@@ -93,12 +94,17 @@ def analyze_data():
         # Generate complete report
         report = generate_report(data, analysis_result, doctors)
 
-        return jsonify({
-            "success": True,
-            "analysis": analysis_result,
-            "doctors": doctors,
-            "report": report,
-        }), 200
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "analysis": analysis_result,
+                    "doctors": doctors,
+                    "report": report,
+                }
+            ),
+            200,
+        )
 
     except Exception as e:
         print(f"Error in analysis: {str(e)}")
@@ -112,7 +118,7 @@ def get_statistics():
     """
     if not ANALYZER_AVAILABLE:
         return jsonify({"error": "Analysis service unavailable"}), 503
-        
+
     try:
         stats = analyzer.get_dataset_statistics()
         return jsonify(stats), 200

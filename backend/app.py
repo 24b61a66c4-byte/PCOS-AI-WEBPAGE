@@ -3,17 +3,17 @@ PCOS Smart Assistant - Backend API
 Analyzes user data, generates health reports, and recommends doctors
 """
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from supabase._sync.client import create_client
-import os
-from dotenv import load_dotenv
-from datetime import datetime
 import json
+import os
+from datetime import datetime
 
 # Import analysis modules
 from analysis_engine import PCOSAnalyzer
 from doctor_recommendations import DoctorRecommender
+from dotenv import load_dotenv
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from supabase._sync.client import create_client
 
 load_dotenv()
 
@@ -51,16 +51,15 @@ def analyze_step():
         data = request.json
         step = data.get("step", 1)
         step_data = data.get("stepData", {})
-        
+
         # Perform incremental analysis based on current step
         analysis_result = analyzer.analyze_step(step, step_data)
-        
-        return jsonify({
-            "success": True,
-            "step": step,
-            "analysis": analysis_result
-        }), 200
-        
+
+        return (
+            jsonify({"success": True, "step": step, "analysis": analysis_result}),
+            200,
+        )
+
     except Exception as e:
         print(f"Error in step analysis: {str(e)}")
         return jsonify({"error": str(e)}), 500

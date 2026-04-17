@@ -1,6 +1,7 @@
-﻿{
+{
   "name": "pcos-smart-assistant",
   "version": "1.0.0",
+  "type": "module",
   "description": "PCOS Smart Assistant - Health Tracking Platform",
   "scripts": {
     "test": "jest",
@@ -19,9 +20,11 @@
     "start": "cd backend && python app.py"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.40.0",
     "clean-css-cli": "^5.6.3",
-    "eslint": "^8.56.0",
+    "eslint": "^9.39.4",
+    "globals": "^17.5.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^23.0.1",

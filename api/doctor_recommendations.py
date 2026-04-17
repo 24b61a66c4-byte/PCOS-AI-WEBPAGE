@@ -3,7 +3,7 @@ Doctor Recommendation System for Vercel
 Recommends gynecologists, endocrinologists, and specialists based on location and condition
 """
 
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 class DoctorRecommender:

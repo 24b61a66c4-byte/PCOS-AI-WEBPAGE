@@ -2,9 +2,10 @@
 pytest configuration and fixtures for backend tests
 """
 
-import pytest
-import sys
 import os
+import sys
+
+import pytest
 
 # Add the backend directory to the path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
