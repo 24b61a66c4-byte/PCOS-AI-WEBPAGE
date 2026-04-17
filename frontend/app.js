@@ -985,12 +985,14 @@ Image Analysis Instructions:
     const openPanel = () => {
       panel.classList.add('open');
       panel.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('assistant-open');
       if (chatInput) chatInput.focus();
     };
 
     const closePanel = () => {
       panel.classList.remove('open');
       panel.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('assistant-open');
     };
 
     const handleSend = async () => {
@@ -2043,8 +2045,11 @@ Image Analysis Instructions:
       // Use TranslationManager if available
       if (window.i18n) {
         window.i18n.setLang(selectedLang);
+        insightLanguage.value = selectedLang || 'en';
+        renderFormSuggestions();
         renderPcosInsight(); // Update the insight section
       } else {
+        insightLanguage.value = selectedLang || 'en';
         renderPcosInsight();
       }
     });
@@ -2064,10 +2069,14 @@ Image Analysis Instructions:
       const selectedLang = e.target.value;
       if (window.i18n) {
         window.i18n.setLang(selectedLang);
-        location.reload();
+        languageSelect.value = selectedLang || 'en';
+        renderFormSuggestions();
+        renderPcosInsight();
       } else {
         localStorage.setItem(INSIGHT_LANG_KEY, selectedLang || 'en');
-        location.reload();
+        languageSelect.value = selectedLang || 'en';
+        renderFormSuggestions();
+        renderPcosInsight();
       }
     });
   }
