@@ -12,10 +12,10 @@
  */
 export function formatDate(date, options = {}) {
   const d = new Date(date);
-  const defaultOptions = { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  const defaultOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   };
   return d.toLocaleDateString('en-US', { ...defaultOptions, ...options });
 }
@@ -55,7 +55,7 @@ export function debounce(func, wait = 300) {
  */
 export function throttle(func, limit = 100) {
   let inThrottle;
-  return function(...args) {
+  return function (...args) {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;
@@ -169,13 +169,13 @@ export function calculateRiskScore(factors) {
     familyHistory: 15,
     other: 10,
   };
-  
+
   let score = 0;
   Object.entries(factors).forEach(([key, value]) => {
     const weight = weights[key] || 0;
     score += (value * weight) / 100;
   });
-  
+
   return Math.round(score);
 }
 

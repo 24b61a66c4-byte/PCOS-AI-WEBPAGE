@@ -395,12 +395,19 @@ def client_log():
 
     event = sanitize_input(str(payload.get("event", "client_event")))[:80]
     severity = sanitize_input(str(payload.get("severity", "info"))).lower()[:10]
+    allowed_severities = {"debug", "info", "warning", "error"}
+    if severity not in allowed_severities:
+        severity = "info"
     message = sanitize_input(str(payload.get("message", "")))[:500]
     meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+    sensitive_keys = {"token", "password", "authorization", "apikey", "api_key", "secret", "cookie"}
 
     safe_meta = {}
-    for key, value in meta.items():
+    for key, value in list(meta.items())[:20]:
         safe_key = sanitize_input(str(key))[:60]
+        if safe_key.lower() in sensitive_keys:
+            safe_meta[safe_key] = "[redacted]"
+            continue
         safe_value = sanitize_input(str(value))[:300]
         safe_meta[safe_key] = safe_value
 

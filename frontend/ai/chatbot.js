@@ -26,7 +26,7 @@ class AIService {
     }
 
     this.isProcessing = true;
-    
+
     // Add user message to context
     this.context.push({ role: 'user', content: message });
 

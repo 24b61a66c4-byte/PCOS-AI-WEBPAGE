@@ -68,10 +68,10 @@ export function useMediaQuery(query) {
     if (media.matches !== matches) {
       setMatches(media.matches);
     }
-    
+
     const listener = () => setMatches(media.matches);
     media.addEventListener('change', listener);
-    
+
     return () => media.removeEventListener('change', listener);
   }, [matches, query]);
 
@@ -90,7 +90,7 @@ export function useFetch(url, options = {}) {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const response = await fetch(url, options);
         if (!response.ok) {
@@ -123,9 +123,9 @@ export function useForm(initialValues = {}, validationSchema = {}) {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const val = type === 'checkbox' ? checked : value;
-    
+
     setValues(prev => ({ ...prev, [name]: val }));
-    
+
     // Validate on change if field was touched
     if (touched[name] && validationSchema[name]) {
       validateField(name, val);
@@ -135,7 +135,7 @@ export function useForm(initialValues = {}, validationSchema = {}) {
   const handleBlur = (e) => {
     const { name, value } = e.target;
     setTouched(prev => ({ ...prev, [name]: true }));
-    
+
     if (validationSchema[name]) {
       validateField(name, value);
     }
@@ -154,7 +154,7 @@ export function useForm(initialValues = {}, validationSchema = {}) {
   const validate = () => {
     let isValid = true;
     const newErrors = {};
-    
+
     Object.keys(validationSchema).forEach(field => {
       const error = validationSchema[field](values[field], values);
       if (error) {
@@ -162,14 +162,14 @@ export function useForm(initialValues = {}, validationSchema = {}) {
         isValid = false;
       }
     });
-    
+
     setErrors(newErrors);
     return isValid;
   };
 
   const handleSubmit = async (onSubmit) => {
     setIsSubmitting(true);
-    
+
     if (validate()) {
       try {
         await onSubmit(values);
@@ -177,7 +177,7 @@ export function useForm(initialValues = {}, validationSchema = {}) {
         console.error('Form submission error:', e);
       }
     }
-    
+
     setIsSubmitting(false);
   };
 

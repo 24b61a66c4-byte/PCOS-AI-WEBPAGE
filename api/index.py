@@ -593,6 +593,7 @@ def ai_chat():
 
 
 @app.route("/api/client-log", methods=["POST"])
+@rate_limit
 def client_log():
     """Accept sanitized client telemetry logs for diagnostics."""
     if not request.is_json:
@@ -604,12 +605,19 @@ def client_log():
 
     event = sanitize_input(str(payload.get("event", "client_event")), "event")[:80]
     severity = sanitize_input(str(payload.get("severity", "info")), "severity").lower()[:10]
+    allowed_severities = {"debug", "info", "warning", "error"}
+    if severity not in allowed_severities:
+        severity = "info"
     message = sanitize_input(str(payload.get("message", "")), "message")[:500]
     meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+    sensitive_keys = {"token", "password", "authorization", "apikey", "api_key", "secret", "cookie"}
 
     safe_meta = {}
-    for key, value in meta.items():
+    for key, value in list(meta.items())[:20]:
         safe_key = sanitize_input(str(key), "meta_key")[:60]
+        if safe_key.lower() in sensitive_keys:
+            safe_meta[safe_key] = "[redacted]"
+            continue
         safe_value = sanitize_input(str(value), "meta_value")[:300]
         safe_meta[safe_key] = safe_value
 

@@ -31,6 +31,7 @@ const TRANSLATIONS = {
             symptomsLogged: 'Symptoms Logged',
             latestEntry: 'Latest Entry',
             noEntriesYet: 'No entries yet',
+            addFirstEntry: 'Add first entry',
             aiRecommendations: 'AI Recommendations',
             personalizedInsights: 'Personalized insights',
             cycleTrends: 'Cycle Trends',
@@ -68,6 +69,9 @@ const TRANSLATIONS = {
         },
         // Form - Health Journey
         form: {
+            analysingInputs: 'Analysing the inputs...',
+            diagnosingIt: 'Diagnosing your health patterns...',
+            preparingReport: 'Preparing your personalized report...',
             stepOf: 'Step {current} of {total}',
             personal: 'Personal',
             menstrual: 'Menstrual',
@@ -118,6 +122,7 @@ const TRANSLATIONS = {
             selectStress: 'Select stress level',
             low: 'Low',
             medium: 'Moderate',
+            moderate: 'Moderate',
             high: 'High',
             dietNotes: 'Any specific diet notes?',
             dietPlaceholder: 'e.g., vegetarian, low-carb, gluten-free',
@@ -328,6 +333,7 @@ const TRANSLATIONS = {
             symptomsLogged: ' symptoms లాగ్',
             latestEntry: 'తాజా ఎంట్రీ',
             noEntriesYet: 'ఇంకా ఎంట్రీలు లేవు',
+            addFirstEntry: 'మొదటి ఎంట్రీ జోడించండి',
             aiRecommendations: 'AI recomm endations',
             personalizedInsights: 'person alized insights',
             cycleTrends: 'cycle Trends',
@@ -361,6 +367,9 @@ const TRANSLATIONS = {
         },
         // Form
         form: {
+            analysingInputs: 'ఇన్‌పుట్‌లను విశ్లేషిస్తోంది...',
+            diagnosingIt: 'మీ ఆరోగ్య నమూనాలను విశ్లేషిస్తోంది...',
+            preparingReport: 'మీ వ్యక్తిగత నివేదికను సిద్ధం చేస్తోంది...',
             stepOf: 'Step {current} of {total}',
             personal: 'Personal',
             menstrual: 'Menstrual',
@@ -411,6 +420,7 @@ const TRANSLATIONS = {
             selectStress: 'Select stress level',
             low: 'Low',
             medium: 'Moderate',
+            moderate: 'Moderate',
             high: 'High',
             dietNotes: 'Diet notes?',
             dietPlaceholder: 'e.g., vegetarian',
@@ -618,6 +628,7 @@ const TRANSLATIONS = {
             symptomsLogged: 'लॉग किए गए लक्षण',
             latestEntry: 'नवीनतम एंट्री',
             noEntriesYet: 'अभी तक कोई एंट्री नहीं',
+            addFirstEntry: 'पहली एंट्री जोड़ें',
             aiRecommendations: 'AI सुझाव',
             personalizedInsights: 'व्यक्तिगत अंतर्दृष्टि',
             cycleTrends: 'चक्र रुझान',
@@ -651,6 +662,9 @@ const TRANSLATIONS = {
         },
         // Form
         form: {
+            analysingInputs: 'इनपुट का विश्लेषण हो रहा है...',
+            diagnosingIt: 'आपके स्वास्थ्य पैटर्न का विश्लेषण हो रहा है...',
+            preparingReport: 'आपकी व्यक्तिगत रिपोर्ट तैयार की जा रही है...',
             stepOf: 'चरण {current} में से {total}',
             personal: 'व्यक्तिगत',
             menstrual: 'मासिक धर्म',
@@ -701,6 +715,7 @@ const TRANSLATIONS = {
             selectStress: 'तनाव चुनें',
             low: 'कम',
             medium: 'मध्यम',
+            moderate: 'मध्यम',
             high: 'उच्च',
             dietNotes: 'आहार नोट्स?',
             dietPlaceholder: 'जैसे, शाकाहारी',

@@ -46,15 +46,16 @@
                 Assistant</div>
             <div class="nav-actions">
                 <ul class="nav-menu">
-                    <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-                    <li><a href="form.html" class="nav-link active">Health Journey</a></li>
+                    <li><a href="dashboard.html" class="nav-link" data-i18n="nav.dashboard">Dashboard</a></li>
+                    <li><a href="form.html" class="nav-link active" data-i18n="nav.healthJourney">Health Journey</a>
+                    </li>
                 </ul>
                 <div class="lang-switch">
-                    <label for="insightLanguage">Language</label>
+                    <label for="insightLanguage" data-i18n="language.select">Language</label>
                     <select id="insightLanguage">
-                        <option value="en">English</option>
-                        <option value="te">తెలుగు</option>
-                        <option value="hi">हिंदी</option>
+                        <option value="en" data-i18n="language.en">English</option>
+                        <option value="te" data-i18n="language.te">తెలుగు</option>
+                        <option value="hi" data-i18n="language.hi">हिंदी</option>
                     </select>
                 </div>
                 <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
@@ -75,27 +76,27 @@
         <div class="step-indicators progress-stepper">
             <div class="step-indicator active" data-step="1">
                 <span class="step-icon"><i class="fas fa-user" aria-hidden="true"></i></span>
-                <span class="step-label">Personal</span>
+                <span class="step-label" data-i18n="form.personal">Personal</span>
             </div>
             <div class="step-indicator" data-step="2">
                 <span class="step-icon">🔄</span>
-                <span class="step-label">Menstrual</span>
+                <span class="step-label" data-i18n="form.menstrual">Menstrual</span>
             </div>
             <div class="step-indicator" data-step="3">
                 <span class="step-icon"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i></span>
-                <span class="step-label">Symptoms</span>
+                <span class="step-label" data-i18n="form.symptoms">Symptoms</span>
             </div>
             <div class="step-indicator" data-step="4">
                 <span class="step-icon">🏃</span>
-                <span class="step-label">Lifestyle</span>
+                <span class="step-label" data-i18n="form.lifestyle">Lifestyle</span>
             </div>
             <div class="step-indicator" data-step="5">
                 <span class="step-icon"><i class="fas fa-hospital" aria-hidden="true"></i></span>
-                <span class="step-label">Clinical</span>
+                <span class="step-label" data-i18n="form.clinical">Clinical</span>
             </div>
             <div class="step-indicator" data-step="6">
                 <span class="step-icon">✨</span>
-                <span class="step-label">Review</span>
+                <span class="step-label" data-i18n="form.review">Review</span>
             </div>
         </div>
 
@@ -113,25 +114,27 @@
                                     with your basic information</p>
 
                                 <div class="single-field">
-                                    <label for="age">What is your age? *</label>
+                                    <label for="age" data-i18n="form.age">What is your age? *</label>
                                     <input type="number" id="age" name="age" min="10" max="80"
-                                        placeholder="Enter your age" aria-describedby="age-error" aria-label="Age"
-                                        tabindex="0" required>
+                                        data-i18n-placeholder="form.enterAge" placeholder="Enter your age"
+                                        aria-describedby="age-error" aria-label="Age" tabindex="0" required>
                                     <small class="error" data-for="age" id="age-error" role="alert"
                                         aria-live="assertive"></small>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="weight">What is your weight? (kg) *</label>
+                                    <label for="weight" data-i18n="form.weightKg">What is your weight? (kg) *</label>
                                     <input type="number" id="weight" name="weight" min="30" max="300"
-                                        placeholder="e.g., 65" step="0.1" aria-label="Weight" tabindex="0" required>
+                                        data-i18n-placeholder="form.weightPlaceholder" placeholder="e.g., 65" step="0.1"
+                                        aria-label="Weight" tabindex="0" required>
                                     <small class="error" data-for="weight"></small>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="height">What is your height? (cm) *</label>
+                                    <label for="height" data-i18n="form.heightCm">What is your height? (cm) *</label>
                                     <input type="number" id="height" name="height" min="100" max="250"
-                                        placeholder="e.g., 165" aria-label="Height" tabindex="0" required>
+                                        data-i18n-placeholder="form.heightPlaceholder" placeholder="e.g., 165"
+                                        aria-label="Height" tabindex="0" required>
                                     <small class="error" data-for="height"></small>
                                 </div>
                             </div>
@@ -184,68 +187,84 @@
 
                         <div class="form-step" data-step="3">
                             <div class="form-section">
-                                <h2><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Current Symptoms</h2>
-                                <p class="step-subtitle">Select all that apply to you</p>
+                                <h2><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> <span
+                                        data-i18n="form.currentSymptoms">Current Symptoms</span></h2>
+                                <p class="step-subtitle" data-i18n="form.selectAllApply">Select all that apply to you
+                                </p>
 
                                 <div class="checkbox-grid symptoms-grid">
-                                    <label><input type="checkbox" name="symptoms" value="irregular_cycles"> Irregular
-                                        cycles</label>
-                                    <label><input type="checkbox" name="symptoms" value="weight_gain"> Weight
-                                        gain</label>
-                                    <label><input type="checkbox" name="symptoms" value="hirsutism"> Excess hair
-                                        growth</label>
-                                    <label><input type="checkbox" name="symptoms" value="acne"> Acne</label>
-                                    <label><input type="checkbox" name="symptoms" value="hair_loss"> Hair loss</label>
-                                    <label><input type="checkbox" name="symptoms" value="mood_changes"> Mood
-                                        changes</label>
-                                    <label><input type="checkbox" name="symptoms" value="fatigue"> Fatigue</label>
-                                    <label><input type="checkbox" name="symptoms" value="pelvic_pain"> Pelvic
-                                        pain</label>
-                                    <label><input type="checkbox" name="symptoms" value="infertility"> Infertility
-                                        concerns</label>
-                                    <label><input type="checkbox" name="symptoms" value="darkening"> Skin
-                                        darkening</label>
+                                    <label><input type="checkbox" name="symptoms" value="irregular_cycles"> <span
+                                            data-i18n="form.irregularCycles">Irregular cycles</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="weight_gain"> <span
+                                            data-i18n="form.weightGain">Weight gain</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="hirsutism"> <span
+                                            data-i18n="form.excessHairGrowth">Excess hair growth</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="acne"> <span
+                                            data-i18n="form.acne">Acne</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="hair_loss"> <span
+                                            data-i18n="form.hairLoss">Hair loss</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="mood_changes"> <span
+                                            data-i18n="form.moodChanges">Mood changes</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="fatigue"> <span
+                                            data-i18n="form.fatigue">Fatigue</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="pelvic_pain"> <span
+                                            data-i18n="form.pelvicPain">Pelvic pain</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="infertility"> <span
+                                            data-i18n="form.infertilityConcerns">Infertility concerns</span></label>
+                                    <label><input type="checkbox" name="symptoms" value="darkening"> <span
+                                            data-i18n="form.skinDarkening">Skin darkening</span></label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-step" data-step="4">
                             <div class="form-section">
-                                <h2>🏃 Lifestyle & Habits</h2>
-                                <p class="step-subtitle">Help us understand your daily routine</p>
+                                <h2 data-i18n="form.lifestyleHabits">🏃 Lifestyle & Habits</h2>
+                                <p class="step-subtitle" data-i18n="form.dailyRoutine">Help us understand your daily
+                                    routine</p>
 
                                 <div class="single-field">
-                                    <label for="activity">What is your activity level?</label>
+                                    <label for="activity" data-i18n="form.activityLevel">What is your activity
+                                        level?</label>
                                     <select id="activity" name="activity">
-                                        <option value="">Select activity level</option>
-                                        <option value="sedentary">Sedentary (little or no exercise)</option>
-                                        <option value="light">Lightly active (1-3 days/week)</option>
-                                        <option value="moderate">Moderately active (3-5 days/week)</option>
-                                        <option value="active">Very active (6-7 days/week)</option>
+                                        <option value="" data-i18n="form.selectActivity">Select activity level</option>
+                                        <option value="sedentary" data-i18n="form.sedentary">Sedentary (little or no
+                                            exercise)</option>
+                                        <option value="light" data-i18n="form.light">Lightly active (1-3 days/week)
+                                        </option>
+                                        <option value="moderate" data-i18n="form.moderate">Moderately active (3-5
+                                            days/week)</option>
+                                        <option value="active" data-i18n="form.active">Very active (6-7 days/week)
+                                        </option>
                                     </select>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="sleep">How many hours do you sleep per night?</label>
+                                    <label for="sleep" data-i18n="form.sleepHours">How many hours do you sleep per
+                                        night?</label>
                                     <input type="number" id="sleep" name="sleep" min="0" max="24" step="0.5"
-                                        placeholder="e.g., 7 hours" aria-label="Sleep Hours" tabindex="0">
-                                    <small class="helper">Average nightly sleep helps personalize guidance.</small>
+                                        data-i18n-placeholder="form.sleepPlaceholder" placeholder="e.g., 7 hours"
+                                        aria-label="Sleep Hours" tabindex="0">
+                                    <small class="helper" data-i18n="form.sleepHelp">Average nightly sleep helps
+                                        personalize guidance.</small>
                                     <small class="error" data-for="sleep"></small>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="stress">How would you rate your stress level?</label>
+                                    <label for="stress" data-i18n="form.stressLevel">How would you rate your stress
+                                        level?</label>
                                     <select id="stress" name="stress">
-                                        <option value="">Select stress level</option>
-                                        <option value="low">Low</option>
-                                        <option value="moderate">Moderate</option>
-                                        <option value="high">High</option>
+                                        <option value="" data-i18n="form.selectStress">Select stress level</option>
+                                        <option value="low" data-i18n="form.low">Low</option>
+                                        <option value="moderate" data-i18n="form.moderate">Moderate</option>
+                                        <option value="high" data-i18n="form.high">High</option>
                                     </select>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="diet">Any specific diet notes?</label>
+                                    <label for="diet" data-i18n="form.dietNotes">Any specific diet notes?</label>
                                     <textarea id="diet" name="diet" maxlength="300"
+                                        data-i18n-placeholder="form.dietPlaceholder"
                                         placeholder="e.g., vegetarian, low-carb, gluten-free" rows="3"
                                         aria-label="Diet Notes" tabindex="0"></textarea>
                                 </div>
@@ -255,30 +274,38 @@
                         <div class="form-step" data-step="5">
                             <div class="form-section">
                                 <h2><i class="fas fa-hospital" aria-hidden="true"></i>
-                                    Clinical Information</h2>
-                                <p class="step-subtitle">Important medical details</p>
+                                    <span data-i18n="form.clinicalInfo">Clinical Information</span>
+                                </h2>
+                                <p class="step-subtitle" data-i18n="form.importantMedical">Important medical details</p>
 
                                 <div class="single-field">
-                                    <label for="city">What is your city/location?</label>
-                                    <input type="text" id="city" name="city" maxlength="100" placeholder="City name"
+                                    <label for="city" data-i18n="form.cityLocation">What is your city/location?</label>
+                                    <input type="text" id="city" name="city" maxlength="100"
+                                        data-i18n-placeholder="form.cityPlaceholder" placeholder="City name"
                                         aria-label="City" tabindex="0">
                                     <small class="error" data-for="city"></small>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="pcos">Have you been diagnosed with PCOS?</label>
+                                    <label for="pcos" data-i18n="form.diagnosedPCOS">Have you been diagnosed with
+                                        PCOS?</label>
                                     <select id="pcos" name="pcos">
-                                        <option value="">Select status</option>
-                                        <option value="diagnosed">Already diagnosed with PCOS</option>
-                                        <option value="suspected">Suspected PCOS</option>
-                                        <option value="family_history">Family history of PCOS</option>
-                                        <option value="not_diagnosed">Not diagnosed</option>
+                                        <option value="" data-i18n="form.selectStatus">Select status</option>
+                                        <option value="diagnosed" data-i18n="form.diagnosed">Already diagnosed with PCOS
+                                        </option>
+                                        <option value="suspected" data-i18n="form.suspected">Suspected PCOS</option>
+                                        <option value="family_history" data-i18n="form.familyHistory">Family history of
+                                            PCOS</option>
+                                        <option value="not_diagnosed" data-i18n="form.notDiagnosed">Not diagnosed
+                                        </option>
                                     </select>
                                 </div>
 
                                 <div class="single-field">
-                                    <label for="medications">Any current medications?</label>
+                                    <label for="medications" data-i18n="form.currentMedications">Any current
+                                        medications?</label>
                                     <input type="text" id="medications" name="medications" maxlength="200"
+                                        data-i18n-placeholder="form.medicationsPlaceholder"
                                         placeholder="e.g., Metformin, Birth control" aria-label="Medications"
                                         tabindex="0">
                                     <small class="error" data-for="medications"></small>
@@ -288,8 +315,9 @@
 
                         <div class="form-step" data-step="6">
                             <div class="form-section">
-                                <h2>✨ Review Your Information</h2>
-                                <p class="step-subtitle">Please review before submitting</p>
+                                <h2 data-i18n="form.reviewInfo">✨ Review Your Information</h2>
+                                <p class="step-subtitle" data-i18n="form.reviewBeforeSubmit">Please review before
+                                    submitting</p>
 
                                 <div id="review-container" class="review-container"></div>
                             </div>
@@ -297,17 +325,18 @@
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary hidden" id="prevBtn" aria-label="Previous Step"
-                            tabindex="0">← Previous</button>
+                            data-i18n="form.previous" tabindex="0">← Previous</button>
                         <button type="button" class="btn btn-primary" id="nextBtn" aria-label="Next Step"
-                            tabindex="0">Next →</button>
+                            data-i18n="form.next" tabindex="0">Next →</button>
                         <button type="submit" class="btn btn-primary hidden" id="submitBtn" aria-label="Submit Data"
-                            tabindex="0">✨ Save My Data</button>
+                            data-i18n="form.saveMyData" tabindex="0">✨ Save My Data</button>
                     </div>
             </form>
         </div>
 
         <div class="form-notes">
-            <p><strong>Note:</strong> Your information is processed locally on your device. We never store, transmit, or
+            <p data-i18n="form.notePrivacy"><strong>Note:</strong> Your information is processed locally on your device.
+                We never store, transmit, or
                 share your data with anyone.</p>
         </div>
     </main>

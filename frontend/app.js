@@ -15,20 +15,25 @@ function showToast(message, duration = 2200) {
 // Example: show toast after saving personal info (hook into your form logic)
 window.showSuccessToast = showToast;
 
+let lastGlobalToastAt = 0;
+function showGlobalErrorToast(message) {
+  const now = Date.now();
+  // Throttle repeated global errors to avoid UI spam loops.
+  if (now - lastGlobalToastAt < 3000) return;
+  lastGlobalToastAt = now;
+  showToast(message, 3000);
+}
+
 // Global error handling (sync errors)
 window.addEventListener('error', (event) => {
   console.error('Global error caught:', event.error);
-  showToast('An unexpected error occurred. Please refresh the page.', 3000);
-  // Prevent error propagation
-  event.preventDefault();
+  showGlobalErrorToast('An unexpected error occurred. Please refresh the page.');
 });
 
 // Global error handling (async/promise rejections)
 window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled promise rejection:', event.reason);
-  showToast('Failed to complete operation. Please try again.', 3000);
-  // Prevent error propagation
-  event.preventDefault();
+  showGlobalErrorToast('Failed to complete operation. Please try again.');
 });
 
 // Initialize translations immediately
