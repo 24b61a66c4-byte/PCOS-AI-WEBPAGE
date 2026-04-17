@@ -1,21 +1,21 @@
-﻿  // Toast notification
-  function showToast(message, duration = 2200) {
-    let toast = document.getElementById('globalToast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'globalToast';
-      toast.className = 'toast';
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), duration);
+﻿// Toast notification
+function showToast(message, duration = 2200) {
+  let toast = document.getElementById('globalToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'globalToast';
+    toast.className = 'toast';
+    document.body.appendChild(toast);
   }
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), duration);
+}
 
-  // Example: show toast after saving personal info (hook into your form logic)
-  window.showSuccessToast = showToast;
+// Example: show toast after saving personal info (hook into your form logic)
+window.showSuccessToast = showToast;
 // PCOS Smart Assistant - Multi-Step Form with Smooth Scrolling
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const lenis = new Lenis({
     duration: 1.2,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Theme switching
   const THEME_KEY = 'pcos_theme';
-  
+
   function initTheme() {
     const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
     if (savedTheme === 'light') {
@@ -49,12 +49,58 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
   }
 
+  function initMotion() {
+    if (!window.gsap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    const motionTargets = [
+      '.dashboard-hero',
+      '.results-header',
+      '.progress-container',
+      '.step-indicators',
+      '.assistant-panel',
+      '.insight-panel',
+      '.report-card',
+      '.form-step.active',
+      '.stat-card',
+      '.assistant-inline-item',
+      '.quick-action',
+      '.feature-card',
+      '.benefit-card',
+    ].flatMap((selector) => Array.from(document.querySelectorAll(selector)));
+
+    if (motionTargets.length) {
+      gsap.set(motionTargets, { autoAlpha: 0, y: 22, scale: 0.985 });
+      gsap.to(motionTargets, {
+        autoAlpha: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.75,
+        ease: 'power3.out',
+        stagger: 0.045,
+        clearProps: 'transform,opacity,visibility',
+      });
+    }
+
+    const buttons = document.querySelectorAll('.btn, .nav-link, button, select, input');
+    buttons.forEach((button) => {
+      button.addEventListener('mouseenter', () => {
+        gsap.to(button, { y: -2, scale: 1.01, duration: 0.2, ease: 'power2.out' });
+      });
+      button.addEventListener('mouseleave', () => {
+        gsap.to(button, { y: 0, scale: 1, duration: 0.2, ease: 'power2.out' });
+      });
+    });
+  }
+
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
     themeToggle.addEventListener('click', toggleTheme);
   }
 
   initTheme();
+  initMotion();
 
 
   // Animate stat numbers (count up effect)
@@ -567,7 +613,7 @@ Image Analysis Instructions:
         { role: 'user', content: userContent }
       ];
 
-      const modelToUse = imageBase64 
+      const modelToUse = imageBase64
         ? 'meta-llama/llama-3.2-11b-vision-instruct:free'
         : 'meta-llama/llama-3.1-8b-instruct:free';
 
@@ -603,7 +649,7 @@ Image Analysis Instructions:
       return assistantMessage;
     } catch (error) {
       console.error('Chat error:', error);
-      
+
       let errorMessage = 'Sorry, I encountered an error. ';
       if (error.message?.includes('API error: 401')) {
         errorMessage += 'Authentication failed. Please check your API key.';
@@ -616,7 +662,7 @@ Image Analysis Instructions:
       } else {
         errorMessage += 'Please check your connection and try again.';
       }
-      
+
       return errorMessage;
     }
   }
@@ -682,7 +728,7 @@ Image Analysis Instructions:
       if (!chatInput || !chatSend) return;
       const message = sanitizeInput(chatInput.value.trim(), 1000);
       const hasImage = currentImage !== null;
-      
+
       if (!message && !hasImage) return;
 
       addChatMessage(message || 'Please analyze this image', true, currentImage);
@@ -1325,7 +1371,7 @@ Image Analysis Instructions:
     // Always return local analysis so modal always shows
     return generateLocalAnalysis(step, stepData);
   }
-  
+
   // Generate local analysis when backend is not available
   function generateLocalAnalysis(step, stepData) {
     const analysis = {
@@ -1335,7 +1381,7 @@ Image Analysis Instructions:
       tips: [],
       next_step_preview: getStepPreview(step + 1)
     };
-    
+
     if (step === 1) {
       const age = Number(stepData.age);
       if (age && age >= 10 && age <= 80) {
@@ -1347,7 +1393,7 @@ Image Analysis Instructions:
       const weight = Number(stepData.weight);
       const height = Number(stepData.height);
       if (weight && height && height > 0) {
-        const bmi = weight / Math.pow(height/100, 2);
+        const bmi = weight / Math.pow(height / 100, 2);
         const bmiCat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
         analysis.findings.push(`BMI: ${bmi.toFixed(1)} (${bmiCat})`);
         if (bmi > 25) {
@@ -1443,15 +1489,15 @@ Image Analysis Instructions:
       analysis.findings.push('All information collected');
       analysis.tips.push('Click "Save My Data" to get your complete health report with doctor recommendations');
     }
-    
+
     return { success: true, step: step, analysis: analysis };
   }
-  
+
   function getStepName(step) {
     const names = { 1: 'Personal Information', 2: 'Menstrual Cycle', 3: 'Symptoms', 4: 'Lifestyle', 5: 'Clinical', 6: 'Review' };
     return names[step] || 'Step ' + step;
   }
-  
+
   function getStepPreview(step) {
     const previews = {
       2: 'Next: Menstrual Cycle details',
@@ -1497,38 +1543,38 @@ Image Analysis Instructions:
         </div>
       `;
       document.body.appendChild(resultModal);
-      
+
       document.getElementById('stepResultClose').addEventListener('click', () => {
         resultModal.classList.remove('active');
       });
-      
+
       document.getElementById('stepResultBack').addEventListener('click', () => {
         resultModal.classList.remove('active');
       });
-      
+
       document.getElementById('stepResultContinue').addEventListener('click', () => {
         resultModal.classList.remove('active');
         proceedToNextStep();
       });
     }
-    
+
     const findingsList = document.getElementById('findingsList');
     const tipsList = document.getElementById('tipsList');
     const nextPreviewText = document.getElementById('nextPreviewText');
     const stepNextPreview = document.getElementById('stepNextPreview');
-    
+
     if (analysis && analysis.analysis) {
       const data = analysis.analysis;
       document.getElementById('stepResultTitle').textContent = `Step ${data.step}: ${data.step_name}`;
-      
-      findingsList.innerHTML = data.findings && data.findings.length > 0 
+
+      findingsList.innerHTML = data.findings && data.findings.length > 0
         ? data.findings.map(f => `<li>${f}</li>`).join('')
         : '<li>No specific findings from this step.</li>';
-      
+
       tipsList.innerHTML = data.tips && data.tips.length > 0
         ? data.tips.map(t => `<li>${t}</li>`).join('')
         : '<li>Continue to the next step for more insights.</li>';
-      
+
       if (data.next_step_preview && currentStep < totalSteps) {
         nextPreviewText.textContent = data.next_step_preview;
         stepNextPreview.style.display = 'block';
@@ -1540,7 +1586,7 @@ Image Analysis Instructions:
       tipsList.innerHTML = '<li>Keep entering your health information for better insights.</li>';
       stepNextPreview.style.display = 'none';
     }
-    
+
     resultModal.classList.add('active');
   }
 
@@ -1595,7 +1641,7 @@ Image Analysis Instructions:
 
         // Call backend API for analysis
         const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:5000';
-        
+
         try {
           const response = await fetch(`${backendUrl}/api/analyze`, {
             method: 'POST',
@@ -1607,13 +1653,13 @@ Image Analysis Instructions:
 
           if (response.ok) {
             const result = await response.json();
-            
+
             // Save analysis result
             localStorage.setItem('pcos_last_analysis', JSON.stringify(result));
-            
+
             // Show analysis and redirect to results page
             showMessage('✨ Analysis complete! Redirecting to your health report...', 'success');
-            
+
             setTimeout(() => {
               window.location.href = 'results.html';
             }, 2000);
@@ -1643,7 +1689,7 @@ Image Analysis Instructions:
             setSubmitting(false);
           }, 2000);
         }
-        
+
       } catch (err) {
         showMessage('⚠️ Error saving data. Please try again.', 'error');
         console.error('Storage error:', err);

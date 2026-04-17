@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,17 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="styles/healthcare.css">
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/favicon.svg">
     <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800&family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/darkroomengineering/lenis@latest/bundled/lenis.js"></script>
 </head>
+
 <body>
     <div class="navbar">
         <div class="nav-container">
@@ -77,7 +86,7 @@
                 <div class="doctors-grid" id="doctorsGrid">
                     <p>Loading doctor recommendations...</p>
                 </div>
-                
+
                 <div class="helplines-section">
                     <h3>Emergency Helplines</h3>
                     <div class="helplines-grid" id="helplinesGrid"></div>
@@ -125,10 +134,12 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; 2026 PCOS Smart Assistant. This report is for educational purposes only and does not replace professional medical advice.</p>
+        <p>&copy; 2026 PCOS Smart Assistant. This report is for educational purposes only and does not replace
+            professional medical advice.</p>
     </footer>
 
     <script src="config-loader.js"></script>
     <script src="results.js"></script>
 </body>
+
 </html>
