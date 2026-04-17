@@ -21,10 +21,5 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "regions": ["iad1"],
-  "functions": {
-    "api/index.py": {
-      "runtime": "python3.11"
-    }
-  }
+  "regions": ["iad1"]
 }
