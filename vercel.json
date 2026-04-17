@@ -3,7 +3,7 @@
   "framework": null,
   "buildCommand": null,
   "outputDirectory": "frontend",
-  "installCommand": null,
+  "installCommand": "echo 'Skipping npm install'",
   "devCommand": null,
   "routes": [
     {
@@ -21,5 +21,7 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "regions": ["iad1"]
+  "regions": [
+    "iad1"
+  ]
 }
