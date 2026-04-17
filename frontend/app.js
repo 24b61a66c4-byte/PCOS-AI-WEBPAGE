@@ -864,19 +864,29 @@ Image Analysis Instructions:
         { role: 'user', content: userContent }
       ];
 
-      const response = await fetch(aiChatUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          // Use a broadly supported model hint; backend can override/fallback as needed.
-          model: 'sonar',
-          messages,
-          temperature: 0.7,
-          max_tokens: 600,
-        }),
-      });
+      const controller = new AbortController();
+      const timeoutMs = 20000;
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+      let response;
+      try {
+        response = await fetch(aiChatUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            // Use a broadly supported model hint; backend can override/fallback as needed.
+            model: 'sonar',
+            messages,
+            temperature: 0.7,
+            max_tokens: 600,
+          }),
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
       if (!response.ok) {
         let backendError = '';
@@ -915,7 +925,9 @@ Image Analysis Instructions:
       });
 
       let errorMessage = 'Sorry, I encountered an error. ';
-      if (error.message?.includes('Failed to fetch')) {
+      if (error.name === 'AbortError') {
+        errorMessage += 'The AI request timed out. Please try again.';
+      } else if (error.message?.includes('Failed to fetch')) {
         errorMessage += 'Cannot reach AI backend. Start the backend server and try again.';
       } else if (error.message?.includes('Backend AI error: 401')) {
         errorMessage += 'Backend authentication failed. Check server-side API keys.';
