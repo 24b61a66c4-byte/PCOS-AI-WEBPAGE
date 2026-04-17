@@ -599,10 +599,12 @@ def ai_chat():
         return jsonify({"error": "Invalid request body"}), 400
 
     # Try providers in order: OpenRouter → OpenAI → Perplexity → Local AI
+    external_provider_configured = False
     
     # 1. Try OpenRouter (primary)
     openrouter_key = os.getenv("OPENROUTER_API_KEY")
     if openrouter_key:
+        external_provider_configured = True
         result = call_openrouter(payload, openrouter_key)
         if result:
             return jsonify(result), 200
@@ -610,6 +612,7 @@ def ai_chat():
     # 2. Try OpenAI (first fallback)
     openai_key = os.getenv("OPENAI_API_KEY")
     if openai_key:
+        external_provider_configured = True
         result = call_openai(payload, openai_key)
         if result:
             return jsonify(result), 200
@@ -617,9 +620,17 @@ def ai_chat():
     # 3. Try Perplexity (second fallback)
     perplexity_key = os.getenv("PERPLEXITY_API_KEY")
     if perplexity_key:
+        external_provider_configured = True
         result = call_perplexity(payload, perplexity_key)
         if result:
             return jsonify(result), 200
+
+    # If keys are configured but providers failed, return an actionable error
+    # instead of masking the issue with local canned responses.
+    if external_provider_configured:
+        return jsonify({
+            "error": "External AI provider call failed. Verify API key validity, model access, and billing/credits."
+        }), 502
     
     # 4. Fallback to local AI (always available, never fails)
     return jsonify(generate_local_ai_response(payload)), 200
