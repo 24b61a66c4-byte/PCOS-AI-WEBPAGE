@@ -27,6 +27,39 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("pcos-api")
 
+
+def load_env_from_files(file_paths):
+    """Load simple KEY=VALUE pairs from env files without overriding existing env vars."""
+    for env_path in file_paths:
+        if not env_path or not os.path.exists(env_path):
+            continue
+
+        try:
+            with open(env_path, "r", encoding="utf-8-sig") as env_file:
+                for raw_line in env_file:
+                    line = raw_line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+
+                    key, value = line.split("=", 1)
+                    key = key.strip()
+                    value = value.strip().strip('"').strip("'")
+
+                    if key and key not in os.environ:
+                        os.environ[key] = value
+        except Exception as env_err:
+            logger.warning(f"Failed to load env file {env_path}: {env_err}")
+
+
+# Load local env files for non-managed environments (e.g., local dev/serverless bundles).
+# Managed platform variables (Vercel/Railway) still take precedence.
+_api_dir = os.path.dirname(__file__)
+_repo_root = os.path.abspath(os.path.join(_api_dir, ".."))
+load_env_from_files([
+    os.path.join(_repo_root, ".env"),
+    os.path.join(_repo_root, "backend", ".env"),
+])
+
 # Security: Configure CORS to only allow specific origins
 # In production, replace with actual allowed origins
 ALLOWED_ORIGINS = [
