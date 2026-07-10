@@ -1,0 +1,19 @@
+# GitHub Linguist - exclude generated/vendor files from language stats
+
+# Playwright test reports (auto-generated HTML - not source code)
+playwright-report/** linguist-generated=true
+test-results/** linguist-generated=true
+
+# Documentation files
+docs/** linguist-documentation=true
+
+# Config and data files
+data/** linguist-vendored=true
+scripts/** linguist-vendored=true
+security/** linguist-vendored=true
+
+# Markdown files (not source code)
+*.md linguist-documentation=true
+*.sh linguist-vendored=true
+*.ps1 linguist-vendored=true
+*.bat linguist-vendored=true
