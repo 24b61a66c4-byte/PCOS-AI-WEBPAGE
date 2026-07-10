@@ -3,6 +3,10 @@
 A comprehensive health analysis platform for PCOS (Polycystic Ovary Syndrome) with AI-powered insights, risk assessment, and personalized doctor recommendations.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-pcos--ai--webpage.vercel.app-brightgreen?style=for-the-badge)](https://pcos-ai-webpage.vercel.app)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 
 ## ✨ Features
 
@@ -216,3 +220,12 @@ If you have questions or need help:
 ---
 
 Made with ❤️ for PCOS awareness and women's health
+
+---
+
+## Built By
+
+**Ranadheer Reddy Singi** — 3rd Year B.Tech AI & ML @ NMREC, Hyderabad
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/ranadheer-reddy-singi)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)](https://github.com/24b61a66c4-byte)
