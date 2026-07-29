@@ -8,4 +8,4 @@ pandas==2.2.3
 requests==2.32.3
 
 # Marshmallow for input validation used in backend/app.py
-marshmallow==3.23.2
+marshmallow==3.26.2
