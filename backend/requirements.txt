@@ -5,7 +5,7 @@ supabase==2.10.0
 python-dotenv==1.0.1
 numpy==2.2.2
 pandas==2.2.3
-requests==2.32.3
+requests==2.33.0
 
 # Marshmallow for input validation used in backend/app.py
 marshmallow==3.23.2
